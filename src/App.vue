@@ -1,32 +1,66 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view />
+  <div>
+    <xl-select></xl-select>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+// @ is an alias to /src
+interface sourceDataProps {
+  id: number
+  title: string
 }
 
-nav {
-  padding: 30px;
+@Component({
+  name: 'App',
+  components: {}
+})
+export default class App extends Vue {
+  sourceData: object[] = []
+  columns = [
+    {
+      label: '标题',
+      prop: 'name',
+      attribute: { sortable: true }
+    },
+    {
+      label: '日期',
+      prop: 'date',
+      attribute: { sortable: 'custom' }
+    },
+    {
+      label: '地址',
+      prop: 'address',
+      attribute: { sortable: true }
+    }
+  ]
+  currentPage = 1
+  total = 100
+  pageSize = 10
+  tableAttribute = {
+    //'default-sort': { prop: 'date', order: 'descending' }
+  }
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+  private created() {
+    for (let i = 0; i < 10; i++) {
+      this.sourceData.push({
+        id: i,
+        date: (this as any).$dayjs().add(i, 'day').format('YYYY-MM-DD'),
+        name: '王小虎' + i,
+        address: '上海市普陀区金沙江路 1518 弄' + i
+      })
     }
   }
+
+  mounted() {}
+
+  public handleChangePage(page: object): void {
+    console.log(page, this.currentPage)
+  }
+
+  public handleSelect(): void {}
 }
-</style>
+</script>
+
+<style lang="scss"></style>
