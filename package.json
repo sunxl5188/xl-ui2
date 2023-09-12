@@ -1,9 +1,9 @@
 {
   "name": "sxl-ui",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "基于Element-UI二次封装",
   "author": "sunxl",
-  "main": "./lib/xl-ui.umd.js",
+  "main": "./lib/sxl-ui.umd.js",
   "sideEffects": false,
   "private": false,
   "scripts": {
