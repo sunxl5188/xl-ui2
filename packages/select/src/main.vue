@@ -20,6 +20,7 @@
       :remote-method="remoteMethod"
       placeholder="请选择"
       style="width: 100%"
+      popper-class="customSelect"
     >
       <el-option
         v-for="item in options"
@@ -52,10 +53,35 @@ export default {
       })
     }
   },
-  mounted() {},
+  async mounted() {
+    await this.$nextTick()
+    const div = document.createElement('div')
+    div.style.height = '1000px'
+    const el = document.getElementsByClassName('el-select-dropdown__wrap')[0]
+    el.appendChild(div)
+  },
   methods: {
     remoteMethod() {}
   }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss">
+.customSelect {
+  .el-scrollbar {
+    & .el-select-dropdown__wrap {
+      &.el-scrollbar__wrap {
+        position: relative;
+        .el-scrollbar__view {
+          &.el-select-dropdown__list {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

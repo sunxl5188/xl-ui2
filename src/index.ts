@@ -20,7 +20,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 export default {
-  version: '0.1.3',
+  version: '0.1.0',
   install,
   // 以下是单个导出的组件
   table,
