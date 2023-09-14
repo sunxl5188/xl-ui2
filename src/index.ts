@@ -1,9 +1,9 @@
 import table from '../packages/table'
 import pagination from '../packages/pagination'
-import select from '../packages/select'
+import virtualSelect from '../packages/virtual-select'
 
 // 存储组件列表
-const components = [table, pagination, select]
+const components = [table, pagination, virtualSelect]
 
 // 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册
 const install: any = function (Vue: any, opts: any): void {
@@ -25,5 +25,5 @@ export default {
   // 以下是单个导出的组件
   table,
   pagination,
-  select
+  virtualSelect
 }

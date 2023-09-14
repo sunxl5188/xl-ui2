@@ -1,6 +1,6 @@
 <template>
   <div>
-    <xl-select></xl-select>
+    <XlVirtualSelect></XlVirtualSelect>
   </div>
 </template>
 
