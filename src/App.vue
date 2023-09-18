@@ -7,6 +7,11 @@
       :listData="listData"
     ></XlVirtualSelect>
     <div></div>
+    <XlVirtualSelect
+      ref="vir"
+      v-model="value1"
+      :listData="options"
+    ></XlVirtualSelect>
     <!-- <el-select v-model="value1" multiple placeholder="请选择">
       <el-option
         v-for="item in options"
@@ -38,7 +43,7 @@ export default class App extends Vue {
   listData: option[] = []
   sourceData: object[] = []
   value = '20'
-  value1 = ['10', '11']
+  value1 = '10'
   label = ''
   columns = [
     {

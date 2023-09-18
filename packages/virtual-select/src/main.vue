@@ -153,13 +153,8 @@ export default class XlVirtualSelect extends Vue {
   //页面初始化
   private handleInit(): void {
     setTimeout(() => {
-      const select: any = this.$refs.list
       if (this.value) {
-        const li = this.screenHeight / this.itemHeight
-        const arg = select.multiple ? this.values[0] : this.values
-        let start = this.listData.findIndex(o => o.value === arg)
-        start = start > li ? start - 1 : 0
-        this.start = start
+        this.start = this.getStartPos()
       } else {
         this.start = 0 //列表开始索引
       }
@@ -177,7 +172,7 @@ export default class XlVirtualSelect extends Vue {
         setTimeout(() => {
           this.elwarp.getElementsByClassName(
             'el-select-dropdown__wrap'
-          )[0].scrollTop = this.start * this.itemHeight
+          )[0].scrollTop = this.getStartPos() * this.itemHeight
         }, 100)
       })
     } else {
@@ -186,6 +181,22 @@ export default class XlVirtualSelect extends Vue {
         this.isSearch = false
       }
     }
+  }
+  private getStartPos(): number {
+    let start = 0
+    const li = this.screenHeight / this.itemHeight
+    const select: any = this.$refs.list
+    const arg = select.multiple ? this.values[0] : this.values
+    let index = this.listData.findIndex(o => o.value === arg) + 1
+
+    if (index > li) {
+      start = index - li + 2
+    } else if (index === li) {
+      start = 1
+    } else {
+      start = 0
+    }
+    return start
   }
   public handleFilterMethod(query: string): void {
     if (query) {
