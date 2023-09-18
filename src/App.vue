@@ -5,9 +5,6 @@
       ref="vir"
       v-model="value"
       :listData="listData"
-      :attribute="{
-        //multiple: false
-      }"
     ></XlVirtualSelect>
     <div></div>
     <!-- <el-select v-model="value1" multiple placeholder="请选择">
@@ -40,7 +37,7 @@ interface option {
 export default class App extends Vue {
   listData: option[] = []
   sourceData: object[] = []
-  value = '1,2,3,99'
+  value = '20'
   value1 = ['10', '11']
   label = ''
   columns = [

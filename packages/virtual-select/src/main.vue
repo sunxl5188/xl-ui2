@@ -6,7 +6,7 @@
       :popper-class="'customSelect ' + id"
       v-bind="{
         ...{
-          multiple: true,
+          //multiple: true,
           clearable: true,
           'collapse-tags': true,
           filterable: true,
@@ -122,7 +122,8 @@ export default class XlVirtualSelect extends Vue {
     this.sourceData = JSON.parse(JSON.stringify(this.listData))
   }
 
-  mounted() {
+  async mounted() {
+    await this.$nextTick()
     const div = document.createElement('div')
     div.classList.add('listPhantom')
     div.style.height = this.computedListHeight + 'px'
@@ -151,20 +152,24 @@ export default class XlVirtualSelect extends Vue {
   }
   //页面初始化
   private handleInit(): void {
-    if (this.value) {
-      const li = this.screenHeight / this.itemHeight
-      let start = this.sourceData.findIndex(o => o.value === this.values[0])
-      start = start > li ? start - 1 : 0
-      this.start = start
-    } else {
-      this.start = 0 //列表开始索引
-    }
+    setTimeout(() => {
+      const select: any = this.$refs.list
+      if (this.value) {
+        const li = this.screenHeight / this.itemHeight
+        const arg = select.multiple ? this.values[0] : this.values
+        let start = this.listData.findIndex(o => o.value === arg)
+        start = start > li ? start - 1 : 0
+        this.start = start
+      } else {
+        this.start = 0 //列表开始索引
+      }
 
-    this.end = this.start + this.computedVisibleCount //列表结束索引
-    const scroll = this.elwarp.getElementsByClassName(
-      'el-select-dropdown__wrap'
-    )[0]
-    scroll.addEventListener('scroll', this.scrollEvent)
+      this.end = this.start + this.computedVisibleCount //列表结束索引
+      const scroll = this.elwarp.getElementsByClassName(
+        'el-select-dropdown__wrap'
+      )[0]
+      scroll.addEventListener('scroll', this.scrollEvent)
+    }, 10)
   }
   public handleVisiblechange(boole: boolean) {
     if (boole) {
