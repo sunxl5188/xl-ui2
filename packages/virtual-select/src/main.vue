@@ -2,7 +2,7 @@
   <div>
     <el-select
       ref="list"
-      v-model="value"
+      v-model="values"
       popper-class="customSelect"
       v-bind="{
         ...{
@@ -16,6 +16,7 @@
       }"
       :filter-method="handleFilterMethod"
       @visible-change="handleVisiblechange"
+      @change="handleChange"
     >
       <el-option
         v-for="item in computedVisibleData"
@@ -28,24 +29,37 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import {
+  Component,
+  Vue,
+  Prop,
+  Watch,
+  Model,
+  Emit
+} from 'vue-property-decorator'
+
+interface option {
+  label: string
+  value: string
+}
 
 @Component({
-  name: 'XlVirtualSelect111',
+  name: 'XlVirtualSelect',
   components: {}
 })
 export default class XlVirtualSelect extends Vue {
   @Prop(Object) attribute!: object
+  @Prop(Array) listData!: option[] //所有数据
 
-  value = ''
+  values: string | string[] = ''
+  label: string | string[] = ''
   loading = false
   sourceData: any[] = [] //搜索时用到所有数据
-  listData: any[] = [] //所有数据
   containerHeight = '100%'
   //每列高度
   itemHeight = 34
   //可视区域高度
-  screenHeight = 274
+  screenHeight = 272
   //偏移量
   startOffset = ''
   //起始索引
@@ -53,6 +67,25 @@ export default class XlVirtualSelect extends Vue {
   //结束索引
   end = 10
   isSearch = false //是否输入搜索过
+
+  @Model('change', { type: String }) readonly value!: string
+
+  @Watch('value', { immediate: true })
+  onValueChanged(val: string) {
+    setTimeout(() => {
+      const select: any = this.$refs.list
+      let data: string | string[] = []
+      if (select.multiple) {
+        if (val) {
+          data = val.split(',')
+        }
+      } else {
+        data = val || ''
+      }
+      this.values = data
+      this.handleChange()
+    }, 0)
+  }
 
   //获取真实显示列表数据
   get computedVisibleData() {
@@ -69,17 +102,8 @@ export default class XlVirtualSelect extends Vue {
   get computedVisibleCount() {
     return Math.ceil(this.screenHeight / this.itemHeight) + 1
   }
-  //偏移量对应的style
-  get computedGetTransform() {
-    return `translate3d(0,${this.startOffset}px,0)`
-  }
+
   created() {
-    for (let i = 1; i < 100000; i++) {
-      this.listData.push({
-        value: i,
-        label: '黄金糕' + i
-      })
-    }
     this.sourceData = JSON.parse(JSON.stringify(this.listData))
   }
 
@@ -92,8 +116,7 @@ export default class XlVirtualSelect extends Vue {
     this.handleInit()
   }
 
-  remoteMethod() {}
-  scrollEvent(e: any) {
+  private scrollEvent(e: any): void {
     //当前滚动位置
     let scrollTop = e.target.scrollTop
     //此时的开始索引
@@ -110,22 +133,32 @@ export default class XlVirtualSelect extends Vue {
     sel.style.transform = this.startOffset
   }
   //页面初始化
-  handleInit() {
-    this.start = 0 //列表开始索引
+  private handleInit(): void {
+    if (this.value) {
+      const li = this.screenHeight / this.itemHeight
+      let start = this.listData.findIndex(o => o.value === this.values[0])
+      start = start > li ? start - 1 : 0
+      this.start = start
+    } else {
+      this.start = 0 //列表开始索引
+    }
+
     this.end = this.start + this.computedVisibleCount //列表结束索引
     const scroll = document.getElementsByClassName(
       'el-select-dropdown__wrap'
     )[0]
     scroll.addEventListener('scroll', this.scrollEvent)
   }
-  handleVisiblechange(boole: boolean) {
+  public handleVisiblechange(boole: boolean) {
     if (boole) {
-      const sel: any = document.getElementsByClassName(
-        'el-select-dropdown__list'
-      )[0]
-      sel.style.transform = `translate3d(0,0,0)`
-      this.start = 0
-      this.computedVisibleData
+      this.$nextTick(() => {
+        const el = document.getElementsByClassName(
+          'el-select-dropdown__wrap'
+        )[0]
+        setTimeout(() => {
+          el.scrollTop = this.start * this.itemHeight
+        }, 0)
+      })
     } else {
       if (this.isSearch) {
         this.listData = JSON.parse(JSON.stringify(this.sourceData))
@@ -133,131 +166,46 @@ export default class XlVirtualSelect extends Vue {
       }
     }
   }
-  handleFilterMethod(query: string) {
+  public handleFilterMethod(query: string): void {
     if (query) {
       const data = this.sourceData.filter(o => o.label.indexOf(query) > -1)
       this.listData = data
       this.isSearch = true
     }
   }
-}
-/* export default {
-  name: 'XlVirtualSelect',
-  ,
-  data() {
-    return {
-      value: '',
-      loading: false,
-      sourceData: [], //搜索时用到所有数据
-      listData: [], //所有数据
-      containerHeight: '100%',
-      //每列高度
-      itemHeight: 34,
-      //可视区域高度
-      screenHeight: 274,
-      //偏移量
-      startOffset: 0,
-      //起始索引
-      start: 0,
-      //结束索引
-      end: null,
-      isSearch: false //是否输入搜索过
-    }
-  },
-  computed: {
-    //获取真实显示列表数据
-    computedVisibleData() {
-      return this.listData.slice(
-        this.start,
-        Math.min(this.end, this.listData.length)
-      )
-    },
-    //列表总高度
-    computedListHeight() {
-      return BigInt(this.listData.length * this.itemHeight)
-    },
-    //可显示的列表项数
-    computedVisibleCount() {
-      return Math.ceil(this.screenHeight / this.itemHeight) + 1
-    },
-    //偏移量对应的style
-    computedGetTransform() {
-      return `translate3d(0,${this.startOffset}px,0)`
-    }
-  },
-  created() {
-    for (let i = 1; i < 100000; i++) {
-      this.listData.push({
-        value: i,
-        label: '黄金糕' + i
-      })
-    }
-    this.sourceData = JSON.parse(JSON.stringify(this.listData))
-  },
-  async mounted() {
-    await this.$nextTick()
-    const div = document.createElement('div')
-    div.classList.add('listPhantom')
-    div.style.height = this.computedListHeight + 'px'
-    const el = document.getElementsByClassName('el-select-dropdown__wrap')[0]
-    el.appendChild(div)
-    this.handleInit()
-  },
-  methods: {
-    remoteMethod() {},
-    scrollEvent(e) {
-      //当前滚动位置
-      let scrollTop = e.target.scrollTop
-      //此时的开始索引
-      this.start = Math.floor(scrollTop / this.itemHeight)
-      //此时的结束索引
-      this.end = this.start + this.computedVisibleCount
-      //此时的偏移量
-      this.startOffset = `translate3d(0,${
-        scrollTop - (scrollTop % this.itemHeight)
-      }px,0)`
-      const sel: any = document.getElementsByClassName(
-        'el-select-dropdown__list'
-      )[0]
-      sel.style.transform = this.startOffset
-    },
-    //页面初始化
-    handleInit() {
-      this.start = 0 //列表开始索引
-      this.end = this.start + this.computedVisibleCount //列表结束索引
-      const scroll = document.getElementsByClassName(
-        'el-select-dropdown__wrap'
-      )[0]
-      scroll.addEventListener('scroll', this.scrollEvent)
-    },
-    handleVisiblechange(boole: boolean) {
-      if (boole) {
-        const sel: any = document.getElementsByClassName(
-          'el-select-dropdown__list'
-        )[0]
-        sel.style.transform = `translate3d(0,0,0)`
-        this.start = 0
-        this.computedVisibleData
+
+  // Emit装饰器，表示下面的函数的结尾会派发一个事件
+  // 如果Emit装饰器没有参数，则派发下面的函数名的kabeb-case，本例即update-count
+  // 函数的return值会被当作emit的第一个额外参数派发
+  // 函数的参数会被跟在第一个额外参数后面派发
+  // 但是按原写法直接this.$emit也没什么问题
+
+  @Emit('change')
+  public handleChange(): string | string[] {
+    setTimeout(() => {
+      let lable
+      const data = (this.$refs.list as any).selected
+      if (Object.prototype.toString.call(data) === '[object Array]') {
+        lable = data.map((item: any) => item.label)
+        lable = lable.join(',')
       } else {
-        if (this.isSearch) {
-          this.listData = JSON.parse(JSON.stringify(this.sourceData))
-          this.isSearch = false
-        }
+        lable = data.label
       }
-    },
-    handleFilterMethod(query: string) {
-      if (query) {
-        const data = this.sourceData.filter(o => o.label.indexOf(query) > -1)
-        this.listData = data
-        this.isSearch = true
-      }
+      this.label = lable
+    }, 0)
+    let data = ''
+    if (Object.prototype.toString.call(this.values) === '[object Array]') {
+      data = (this.values as Array<string>).join(',')
+    } else {
+      data = this.values as string
     }
+    return data
   }
-} */
+}
 </script>
 <style lang="scss">
 .customSelect {
-  height: 260px;
+  height: 258px;
 
   .el-scrollbar {
     & .el-select-dropdown__wrap {

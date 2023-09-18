@@ -1,6 +1,24 @@
 <template>
   <div>
-    <XlVirtualSelect></XlVirtualSelect>
+    {{ value }}
+    <XlVirtualSelect
+      ref="vir"
+      v-model="value"
+      :listData="listData"
+      :attribute="{
+        //multiple: false
+      }"
+    ></XlVirtualSelect>
+    <div></div>
+    <!-- <el-select v-model="value1" multiple placeholder="请选择">
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
+    </el-select> -->
   </div>
 </template>
 
@@ -11,13 +29,20 @@ interface sourceDataProps {
   id: number
   title: string
 }
-
+interface option {
+  label: string
+  value: string
+}
 @Component({
   name: 'App',
   components: {}
 })
 export default class App extends Vue {
+  listData: option[] = []
   sourceData: object[] = []
+  value = '1,2,3,99'
+  value1 = ['10', '11']
+  label = ''
   columns = [
     {
       label: '标题',
@@ -42,6 +67,53 @@ export default class App extends Vue {
     //'default-sort': { prop: 'date', order: 'descending' }
   }
 
+  options = [
+    {
+      value: '1',
+      label: '黄金糕'
+    },
+    {
+      value: '2',
+      label: '双皮奶'
+    },
+    {
+      value: '3',
+      label: '蚵仔煎'
+    },
+    {
+      value: '4',
+      label: '龙须面'
+    },
+    {
+      value: '5',
+      label: '北京烤鸭'
+    },
+    {
+      value: '6',
+      label: '黄金糕'
+    },
+    {
+      value: '7',
+      label: '双皮奶'
+    },
+    {
+      value: '8',
+      label: '蚵仔煎'
+    },
+    {
+      value: '9',
+      label: '龙须面'
+    },
+    {
+      value: '10',
+      label: '北京烤鸭'
+    },
+    {
+      value: '11',
+      label: '北京烤鸭'
+    }
+  ]
+
   private created() {
     for (let i = 0; i < 10; i++) {
       this.sourceData.push({
@@ -49,6 +121,12 @@ export default class App extends Vue {
         date: (this as any).$dayjs().add(i, 'day').format('YYYY-MM-DD'),
         name: '王小虎' + i,
         address: '上海市普陀区金沙江路 1518 弄' + i
+      })
+    }
+    for (let i = 1; i < 100000; i++) {
+      this.listData.push({
+        value: i.toString(),
+        label: '黄金糕' + i
       })
     }
   }
