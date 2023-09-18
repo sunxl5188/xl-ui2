@@ -3,7 +3,7 @@
     <el-select
       ref="list"
       v-model="values"
-      popper-class="customSelect"
+      :popper-class="'customSelect ' + id"
       v-bind="{
         ...{
           multiple: true,
@@ -14,6 +14,7 @@
         },
         ...attribute
       }"
+      v-on="events"
       :filter-method="handleFilterMethod"
       @visible-change="handleVisiblechange"
       @change="handleChange"
@@ -48,9 +49,22 @@ interface option {
   components: {}
 })
 export default class XlVirtualSelect extends Vue {
-  @Prop(Object) attribute!: object
-  @Prop(Array) listData!: option[] //所有数据
+  @Prop({
+    default() {
+      return {}
+    }
+  })
+  readonly attribute!: object
+  @Prop({
+    default() {
+      return {}
+    }
+  })
+  readonly events!: object
+  @Prop(Array) readonly listData!: option[] //所有数据
 
+  id = ''
+  elwarp: any = null
   values: string | string[] = ''
   label: string | string[] = ''
   loading = false
@@ -89,14 +103,14 @@ export default class XlVirtualSelect extends Vue {
 
   //获取真实显示列表数据
   get computedVisibleData() {
-    return this.listData.slice(
+    return this.sourceData.slice(
       this.start,
-      Math.min(this.end, this.listData.length)
+      Math.min(this.end, this.sourceData.length)
     )
   }
   //列表总高度
   get computedListHeight() {
-    return BigInt(this.listData.length * this.itemHeight)
+    return BigInt(this.sourceData.length * this.itemHeight)
   }
   //可显示的列表项数
   get computedVisibleCount() {
@@ -104,6 +118,7 @@ export default class XlVirtualSelect extends Vue {
   }
 
   created() {
+    this.id = 'custom-' + this.uuid()
     this.sourceData = JSON.parse(JSON.stringify(this.listData))
   }
 
@@ -111,7 +126,8 @@ export default class XlVirtualSelect extends Vue {
     const div = document.createElement('div')
     div.classList.add('listPhantom')
     div.style.height = this.computedListHeight + 'px'
-    const el = document.getElementsByClassName('el-select-dropdown__wrap')[0]
+    this.elwarp = document.getElementsByClassName(this.id)[0]
+    const el = this.elwarp.getElementsByClassName('el-select-dropdown__wrap')[0]
     el.appendChild(div)
     this.handleInit()
   }
@@ -127,16 +143,17 @@ export default class XlVirtualSelect extends Vue {
     this.startOffset = `translate3d(0,${
       scrollTop - (scrollTop % this.itemHeight)
     }px,0)`
-    const sel: any = document.getElementsByClassName(
+    const sel: any = this.elwarp.getElementsByClassName(
       'el-select-dropdown__list'
     )[0]
+
     sel.style.transform = this.startOffset
   }
   //页面初始化
   private handleInit(): void {
     if (this.value) {
       const li = this.screenHeight / this.itemHeight
-      let start = this.listData.findIndex(o => o.value === this.values[0])
+      let start = this.sourceData.findIndex(o => o.value === this.values[0])
       start = start > li ? start - 1 : 0
       this.start = start
     } else {
@@ -144,7 +161,7 @@ export default class XlVirtualSelect extends Vue {
     }
 
     this.end = this.start + this.computedVisibleCount //列表结束索引
-    const scroll = document.getElementsByClassName(
+    const scroll = this.elwarp.getElementsByClassName(
       'el-select-dropdown__wrap'
     )[0]
     scroll.addEventListener('scroll', this.scrollEvent)
@@ -152,24 +169,23 @@ export default class XlVirtualSelect extends Vue {
   public handleVisiblechange(boole: boolean) {
     if (boole) {
       this.$nextTick(() => {
-        const el = document.getElementsByClassName(
-          'el-select-dropdown__wrap'
-        )[0]
         setTimeout(() => {
-          el.scrollTop = this.start * this.itemHeight
-        }, 0)
+          this.elwarp.getElementsByClassName(
+            'el-select-dropdown__wrap'
+          )[0].scrollTop = this.start * this.itemHeight
+        }, 100)
       })
     } else {
       if (this.isSearch) {
-        this.listData = JSON.parse(JSON.stringify(this.sourceData))
+        this.sourceData = JSON.parse(JSON.stringify(this.listData))
         this.isSearch = false
       }
     }
   }
   public handleFilterMethod(query: string): void {
     if (query) {
-      const data = this.sourceData.filter(o => o.label.indexOf(query) > -1)
-      this.listData = data
+      const data = this.listData.filter(o => o.label.indexOf(query) > -1)
+      this.sourceData = data
       this.isSearch = true
     }
   }
@@ -200,6 +216,44 @@ export default class XlVirtualSelect extends Vue {
       data = this.values as string
     }
     return data
+  }
+
+  /**
+   * @param {Number} len uuid的长度
+   * @param {Boolean} firstU 将返回的首字母置为"u"
+   * @param {Nubmer} radix 生成uuid的基数(意味着返回的字符串都是这个基数),2-二进制,8-八进制,10-十进制,16-十六进制
+   */
+  private uuid = (len = 32, firstU = true, radix = 0) => {
+    const chars =
+      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
+    const uuid = []
+    radix = radix || chars.length
+
+    if (len) {
+      // 如果指定uuid长度,只是取随机的字符,0|x为位运算,能去掉x的小数位,返回整数位
+      for (let i = 0; i < len; i++) uuid[i] = chars[0 | (Math.random() * radix)]
+    } else {
+      let r
+      // rfc4122标准要求返回的uuid中,某些位为固定的字符
+      uuid[8] = '-'
+      uuid[13] = '-'
+      uuid[18] = '-'
+      uuid[23] = '-'
+      uuid[14] = '4'
+
+      for (let i = 0; i < 36; i++) {
+        if (!uuid[i]) {
+          r = 0 | (Math.random() * 16)
+          uuid[i] = chars[i === 19 ? (r & 0x3) | 0x8 : r]
+        }
+      }
+    }
+    // 移除第一个字符,并用u替代,因为第一个字符为数值时,该guuid不能用作id或者class
+    if (firstU) {
+      uuid.shift()
+      return `u${uuid.join('')}`
+    }
+    return uuid.join('')
   }
 }
 </script>
