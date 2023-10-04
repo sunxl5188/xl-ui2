@@ -1,7 +1,21 @@
 <template>
   <div>
+    <el-button type="primary" @click="handleSpeach">播报</el-button>
+    <XlSpeakTts
+      ref="speach"
+      text="初始化语音插件 - init内可以全部为空 - 自定义"
+    />
+    <!-- <div v-code="{ BM_GZRY_SJQT: '3', cache: true }">11111</div>
     {{ value }}
-    <XlVirtualSelect
+    <XlSelect
+      v-model="value"
+      v-bind="{
+        code: 'BM_GZRY_SJQT',
+        cache: 'true',
+        abc: '1111'
+      }"
+    ></XlSelect> -->
+    <!-- <XlVirtualSelect
       ref="vir"
       v-model="value"
       :listData="listData"
@@ -11,7 +25,7 @@
       ref="vir"
       v-model="value1"
       :listData="options"
-    ></XlVirtualSelect>
+    ></XlVirtualSelect> -->
     <!-- <el-select v-model="value1" multiple placeholder="请选择">
       <el-option
         v-for="item in options"
@@ -26,6 +40,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import request from './utils/request'
 // @ is an alias to /src
 interface sourceDataProps {
   id: number
@@ -42,7 +57,7 @@ interface option {
 export default class App extends Vue {
   listData: option[] = []
   sourceData: object[] = []
-  value = '20'
+  value = '1'
   value1 = '10'
   label = ''
   columns = [
@@ -140,6 +155,10 @@ export default class App extends Vue {
   }
 
   public handleSelect(): void {}
+
+  public handleSpeach(): void {
+    ;(this.$refs.speach as any).handleSpeech()
+  }
 }
 </script>
 
