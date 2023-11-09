@@ -1,18 +1,19 @@
 <template>
   <div>
-    <el-button type="primary" @click="handleSpeach">播报</el-button>
-    <XlSpeakTts
-      ref="speach"
-      text="初始化语音插件 - init内可以全部为空 - 自定义"
+    <XlCheckBox
+      v-model="checkvalue"
+      v-bind="{ code: '2', data: options, direction: 'horizontal' }"
     />
-    <!-- <div v-code="{ BM_GZRY_SJQT: '3', cache: true }">11111</div>
+    <!-- <div v-code="{ options: '3', cache: true }">11111</div> -->
+    <hr />
     {{ value }}
-    <XlSelect
+    <!-- <XlSelect
       v-model="value"
       v-bind="{
-        code: 'BM_GZRY_SJQT',
+        code: '1',
         cache: 'true',
         abc: '1111'
+        //data: options
       }"
     ></XlSelect> -->
     <!-- <XlVirtualSelect
@@ -26,21 +27,13 @@
       v-model="value1"
       :listData="options"
     ></XlVirtualSelect> -->
-    <!-- <el-select v-model="value1" multiple placeholder="请选择">
-      <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
-      >
-      </el-option>
-    </el-select> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import request from './utils/request'
+import XlCheckBox from '@/checkobx/src/main.vue'
 // @ is an alias to /src
 interface sourceDataProps {
   id: number
@@ -55,9 +48,10 @@ interface option {
   components: {}
 })
 export default class App extends Vue {
+  checkvalue: string[] = []
   listData: option[] = []
   sourceData: object[] = []
-  value = '1'
+  value = '0592'
   value1 = '10'
   label = ''
   columns = [
@@ -162,4 +156,4 @@ export default class App extends Vue {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

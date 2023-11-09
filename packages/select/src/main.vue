@@ -119,9 +119,8 @@ export default class XlSelect extends Vue {
   // 获取CODE这典
   getOption() {
     request({
-      url: '/code.php',
-      method: 'get',
-      params: { ...{ code: this.code }, ...this.params }
+      url: `/index/code/index/code/${this.code}`,
+      method: 'get'
     })
       .then(res => {
         this.options = res.data

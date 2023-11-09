@@ -5,6 +5,7 @@ export default {
   async bind(el: any, binding: any, vnode: any) {
     const { cache } = binding.value
     const code = Object.keys(binding.value)[0]
+    console.log(binding)
 
     const val = binding.value[code]
     let url = '/code.php?' + code
