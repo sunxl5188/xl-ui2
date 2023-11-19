@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-checkbox
+      v-if="isAll"
       :indeterminate="isIndeterminate"
       v-model="checkAll"
       @change="handleCheckAllChange"
@@ -24,16 +25,8 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Vue,
-  Prop,
-  Watch,
-  Model,
-  Emit
-} from 'vue-property-decorator'
+import { Component, Vue, Prop, Model, Emit } from 'vue-property-decorator'
 import { getCode } from '@/utils/api'
-import { filter } from 'node_modules/vue/types/umd'
 
 interface optionType {
   label: string
@@ -68,12 +61,6 @@ export default class XlCheckBox extends Vue {
   })
   readonly props!: optionType
 
-  //排列方向
-  /*   @Prop({
-    type: String,
-    default: 'horizontal' //vertical
-  })
-  readonly direction!: string */
   // code 字典表码-----------------------------
   @Prop({
     type: String,
@@ -89,15 +76,26 @@ export default class XlCheckBox extends Vue {
   })
   readonly data!: object[]
 
+  //是否显示全选
+
+  @Prop({
+    type: Boolean,
+    default: false
+  })
+  readonly isAll!: boolean
+
   //回调选中的值
   @Model('change', { type: Array }) readonly value!: (string | number)[]
 
   @Emit('change')
   public handleChange(value: Array<string | number>): (string | number)[] {
-    const data = this.options.filter(item =>
-      this.checkList.includes(item[this.props.value])
-    )
-    this.checkLable = data.map(item => item[this.props.label])
+    const data = this.options.filter((item: optionType) => {
+      return this.checkList.includes(item[this.props.value])
+    })
+
+    this.checkLable = data.map(item => {
+      return item[this.props.label]
+    })
 
     let checkedCount = value.length
 
@@ -108,37 +106,30 @@ export default class XlCheckBox extends Vue {
     return this.checkList
   }
 
-  //------------------------
-  @Watch('data')
-  getData(val, oldVal) {
-    console.log(val)
-  }
-
   // ---------------------
-  async mounted() {
-    if (this.code) {
-      const data = await this.getOption()
-      this.options = data
-    } else if (this.data) {
-      this.options = this.data
+  mounted() {
+    if (this.data) {
+      this.options = this.data as []
     }
-    this.optionVal = this.options.map(o => o[this.props.value])
+    if (this.code) {
+      this.getOption()
+    }
+    this.optionVal = this.options.map((o: optionType) => o[this.props.value])
   }
 
   //全选
-  handleCheckAllChange(e: boolean) {
+  handleCheckAllChange(e: any) {
     this.checkList = e ? this.optionVal : []
     this.isIndeterminate = false
   }
+
   // 获取CODE这典
   getOption() {
-    return new Promise((resolve, reject) => {
-      getCode(this.global.codeApi, this.code)
-        .then(res => {
-          resolve(res.data)
-        })
-        .catch(err => reject(err))
-    })
+    getCode(this.$global.codeApi + this.code)
+      .then((res: any) => {
+        this.options = res.data
+      })
+      .catch(err => err)
   }
 }
 </script>

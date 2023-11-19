@@ -5,10 +5,10 @@ import request from './request'
  * @param code 字典ID
  * @returns Data
  */
-export const getCode = (url: string, code: string) => {
+export const getCode = (url: string) => {
   return new Promise((resolve, reject) => {
     request({
-      url: `${url}${code}`,
+      url,
       method: 'get'
     })
       .then(res => resolve(res))

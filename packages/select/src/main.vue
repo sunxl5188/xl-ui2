@@ -21,7 +21,7 @@ import {
   Model,
   Emit
 } from 'vue-property-decorator'
-import request from '@/utils/request'
+import { getCode } from '@/utils/api'
 
 interface optionType {
   label: string
@@ -36,12 +36,6 @@ export default class XlSelect extends Vue {
   values = ''
   labels = ''
   options: Array<any> = []
-
-  /*   @Prop({
-    type: String,
-    default: ''
-  })
-  readonly value!: string */
 
   @Prop({
     type: Object,
@@ -118,11 +112,8 @@ export default class XlSelect extends Vue {
   }
   // 获取CODE这典
   getOption() {
-    request({
-      url: `/index/code/index/code/${this.code}`,
-      method: 'get'
-    })
-      .then(res => {
+    getCode(this.$global.codeApi + this.code)
+      .then((res: any) => {
         this.options = res.data
       })
       .catch(err => err)

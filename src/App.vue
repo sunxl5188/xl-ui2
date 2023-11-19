@@ -1,9 +1,10 @@
 <template>
   <div>
-    <XlCheckBox
+    <!-- <XlCheckBox
       v-model="checkvalue"
+      isAll
       v-bind="{ code: '2', data: options, direction: 'horizontal' }"
-    />
+    /> -->
     <!-- <div v-code="{ options: '3', cache: true }">11111</div> -->
     <hr />
     {{ value }}
@@ -11,22 +12,18 @@
       v-model="value"
       v-bind="{
         code: '1',
-        cache: 'true',
         abc: '1111'
         //data: options
       }"
     ></XlSelect> -->
-    <!-- <XlVirtualSelect
-      ref="vir"
-      v-model="value"
-      :listData="listData"
-    ></XlVirtualSelect>
-    <div></div>
     <XlVirtualSelect
       ref="vir"
-      v-model="value1"
-      :listData="options"
-    ></XlVirtualSelect> -->
+      v-model="value"
+      v-bind="{
+        code: '1',
+        data: listData
+      }"
+    ></XlVirtualSelect>
   </div>
 </template>
 
@@ -51,7 +48,7 @@ export default class App extends Vue {
   checkvalue: string[] = []
   listData: option[] = []
   sourceData: object[] = []
-  value = '0592'
+  value = '0598'
   value1 = '10'
   label = ''
   columns = [

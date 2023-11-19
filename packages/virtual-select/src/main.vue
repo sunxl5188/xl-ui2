@@ -1,5 +1,14 @@
 <template>
   <div>
+    <!-- 
+    multiple是否多选
+    filterable是否可搜索
+    remote是否为远程搜索
+    allow-create是否允许用户创建新条目，需配合 filterable 使用
+    reserve-keyword多选且可搜索时，是否在选中一个选项后保留当前的搜索关键词
+    remote-method远程搜索方法
+    loading是否正在从远程获取数据
+    -->
     <el-select
       ref="list"
       v-model="values"
@@ -38,8 +47,10 @@ import {
   Model,
   Emit
 } from 'vue-property-decorator'
+import { getCode } from '@/utils/api'
+import { uuid } from '@/utils/common'
 
-interface option {
+interface optionType {
   label: string
   value: string
 }
@@ -55,13 +66,32 @@ export default class XlVirtualSelect extends Vue {
     }
   })
   readonly attribute!: object
+
   @Prop({
     default() {
       return {}
     }
   })
   readonly events!: object
-  @Prop(Array) readonly listData!: option[] //所有数据
+
+  @Prop(Array) readonly data!: optionType[] //所有数据
+
+  @Prop({
+    type: Object,
+    default() {
+      return {
+        value: 'value',
+        label: 'label'
+      }
+    }
+  })
+  readonly props!: optionType
+  // code 字典表码-----------------------------
+  @Prop({
+    type: String,
+    default: ''
+  })
+  readonly code!: string
 
   id = ''
   elwarp: any = null
@@ -70,6 +100,7 @@ export default class XlVirtualSelect extends Vue {
   loading = false
   sourceData: any[] = [] //搜索时用到所有数据
   containerHeight = '100%'
+  options: optionType[] = []
   //每列高度
   itemHeight = 34
   //可视区域高度
@@ -117,9 +148,16 @@ export default class XlVirtualSelect extends Vue {
     return Math.ceil(this.screenHeight / this.itemHeight) + 1
   }
 
-  created() {
-    this.id = 'custom-' + this.uuid()
-    this.sourceData = JSON.parse(JSON.stringify(this.listData))
+  async created() {
+    this.id = 'custom-' + uuid()
+    if (this.data) {
+      this.options = this.data
+    }
+    if (this.code) {
+      const data = await this.getOption()
+      this.options = data as []
+    }
+    this.sourceData = JSON.parse(JSON.stringify(this.options))
   }
 
   async mounted() {
@@ -166,18 +204,21 @@ export default class XlVirtualSelect extends Vue {
       scroll.addEventListener('scroll', this.scrollEvent)
     }, 10)
   }
+  // 下拉框出现/隐藏时触发
   public handleVisiblechange(boole: boolean) {
     if (boole) {
       this.$nextTick(() => {
         setTimeout(() => {
-          this.elwarp.getElementsByClassName(
+          let top = this.getStartPos() * this.itemHeight
+          let wrap = this.elwarp.getElementsByClassName(
             'el-select-dropdown__wrap'
-          )[0].scrollTop = this.getStartPos() * this.itemHeight
+          )[0]
+          wrap.scrollTop = top + 1
         }, 100)
       })
     } else {
       if (this.isSearch) {
-        this.sourceData = JSON.parse(JSON.stringify(this.listData))
+        this.sourceData = JSON.parse(JSON.stringify(this.options))
         this.isSearch = false
       }
     }
@@ -187,8 +228,7 @@ export default class XlVirtualSelect extends Vue {
     const li = this.screenHeight / this.itemHeight
     const select: any = this.$refs.list
     const arg = select.multiple ? this.values[0] : this.values
-    let index = this.listData.findIndex(o => o.value === arg) + 1
-
+    let index = this.options.findIndex(o => o.value === arg) + 1
     if (index > li) {
       start = index - li + 2
     } else if (index === li) {
@@ -200,7 +240,7 @@ export default class XlVirtualSelect extends Vue {
   }
   public handleFilterMethod(query: string): void {
     if (query) {
-      const data = this.listData.filter(o => o.label.indexOf(query) > -1)
+      const data = this.options.filter(o => o.label.indexOf(query) > -1)
       this.sourceData = data
       this.isSearch = true
     }
@@ -234,42 +274,15 @@ export default class XlVirtualSelect extends Vue {
     return data
   }
 
-  /**
-   * @param {Number} len uuid的长度
-   * @param {Boolean} firstU 将返回的首字母置为"u"
-   * @param {Nubmer} radix 生成uuid的基数(意味着返回的字符串都是这个基数),2-二进制,8-八进制,10-十进制,16-十六进制
-   */
-  private uuid = (len = 32, firstU = true, radix = 0) => {
-    const chars =
-      '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
-    const uuid = []
-    radix = radix || chars.length
-
-    if (len) {
-      // 如果指定uuid长度,只是取随机的字符,0|x为位运算,能去掉x的小数位,返回整数位
-      for (let i = 0; i < len; i++) uuid[i] = chars[0 | (Math.random() * radix)]
-    } else {
-      let r
-      // rfc4122标准要求返回的uuid中,某些位为固定的字符
-      uuid[8] = '-'
-      uuid[13] = '-'
-      uuid[18] = '-'
-      uuid[23] = '-'
-      uuid[14] = '4'
-
-      for (let i = 0; i < 36; i++) {
-        if (!uuid[i]) {
-          r = 0 | (Math.random() * 16)
-          uuid[i] = chars[i === 19 ? (r & 0x3) | 0x8 : r]
-        }
-      }
-    }
-    // 移除第一个字符,并用u替代,因为第一个字符为数值时,该guuid不能用作id或者class
-    if (firstU) {
-      uuid.shift()
-      return `u${uuid.join('')}`
-    }
-    return uuid.join('')
+  // 获取CODE这典
+  getOption() {
+    return new Promise((resolve, reject) => {
+      getCode(this.$global.codeApi + this.code)
+        .then((res: any) => {
+          resolve(res.data)
+        })
+        .catch(err => reject(err))
+    })
   }
 }
 </script>
@@ -278,9 +291,14 @@ export default class XlVirtualSelect extends Vue {
   height: 258px;
 
   .el-scrollbar {
+    height: 100%;
+    overflow-x: hidden;
+
     & .el-select-dropdown__wrap {
       &.el-scrollbar__wrap {
         position: relative;
+        overflow-x: hidden;
+        overflow-y: auto;
         .el-scrollbar__view {
           &.el-select-dropdown__list {
             position: absolute;
