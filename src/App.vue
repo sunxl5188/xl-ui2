@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="bg-red-600">
+    0000
     <!-- <XlCheckBox
       v-model="checkvalue"
       isAll
@@ -16,21 +17,30 @@
         //data: options
       }"
     ></XlSelect> -->
-    <XlVirtualSelect
+    <XlTable
+      :load="load"
+      :sourceData="sourceData"
+      :columns="columns"
+      :total="total"
+      :currentPage.sync="currentPage"
+      :pageSize.sync="pageSize"
+      selection="radio"
+      @change="handleChangePage"
+      @selection-change="handleSelect"
+    ></XlTable>
+    <!-- <XlVirtualSelect
       ref="vir"
       v-model="value"
       v-bind="{
         code: '1',
         data: listData
       }"
-    ></XlVirtualSelect>
+    ></XlVirtualSelect> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import request from './utils/request'
-import XlCheckBox from '@/checkobx/src/main.vue'
 // @ is an alias to /src
 interface sourceDataProps {
   id: number
@@ -45,6 +55,7 @@ interface option {
   components: {}
 })
 export default class App extends Vue {
+  load = false
   checkvalue: string[] = []
   listData: option[] = []
   sourceData: object[] = []
@@ -145,7 +156,9 @@ export default class App extends Vue {
     console.log(page, this.currentPage)
   }
 
-  public handleSelect(): void {}
+  public handleSelect(e: any): void {
+    console.log(e)
+  }
 
   public handleSpeach(): void {
     ;(this.$refs.speach as any).handleSpeech()

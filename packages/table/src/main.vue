@@ -1,33 +1,47 @@
 <template>
-  <div>
+  <div class="bg-gray-700">
     <el-table
       ref="myTable"
       v-loading="load"
       :data="sourceData"
       style="width: 100%"
-      @selection-change="selectionChange"
-      @sort-change="sortChange"
+      @selection-change="handleSelectionChange"
       v-bind="{
         ...{
           stripe: true,
           rowKey: 'id',
-          border: true
+          border: true,
+          'header-cell-class-name': 'bg-gray-500'
         },
-        ...tableAttribute
+        ...attribute
       }"
       v-on="{
         ...{},
-        ...tableEvents
+        ...events
       }"
     >
       <!-- 选择 -->
       <el-table-column
-        v-if="selection"
+        v-if="selection === 'check'"
         type="selection"
         reserve-selection
         width="55"
         align="center"
       />
+      <el-table-column
+        v-if="selection === 'radio'"
+        label="选择"
+        width="55"
+        align="center"
+      >
+        <template #default="{ row }">
+          <el-radio
+            v-model="selectData"
+            :label="row"
+            @change="handleSelectionChange"
+          ></el-radio>
+        </template>
+      </el-table-column>
       <template v-for="(item, index) of columns">
         <!-- 序号 -->
         <el-table-column
@@ -74,163 +88,180 @@
       </template>
     </el-table>
     <xl-pagination
-      :page.sync="page"
-      :limit.sync="limit"
+      :page="currentPage"
+      :limit="pageSize"
       :page-sizes="pageSizes"
+      :layout="layout"
       :total="total"
       :hidden="pageHidden"
-      @pagination="handleCurrentChange"
       :class="pageAlign"
+      @pagination="handleCurrentChange"
     />
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {
+  Component,
+  Emit,
+  Model,
+  Prop,
+  Vue,
+  Watch
+} from 'vue-property-decorator'
+
+interface columnType {
+  label: string
+  prop: string
+  customRender?: string
+  attribute?: object
+  events?: object
+}
+
+@Component({
   name: 'XlTable',
-  props: {
-    sourceData: {
-      type: Array,
-      default: () => []
-    },
-    columns: {
-      type: Array,
-      default() {
-        return []
-      }
-    },
-    load: {
-      type: Boolean,
-      default: false
-    },
-    selection: {
-      type: Boolean,
-      default: false
-    },
-    tableAttribute: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    tableEvents: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    // 分页
-    // 分页总条数
-    pageHidden: {
-      type: Boolean,
-      default: false
-    },
-    total: {
-      type: Number,
-      default: 0
-    },
-    currentPage: {
-      type: Number,
-      default: 1
-    },
-    pageSize: {
-      type: Number,
-      default: 10
-    },
-    pageSizes: {
-      type: Array,
-      default: () => {
-        return [10, 20, 30, 40]
-      }
-    },
-    pageAlign: {
-      type: String,
-      default: 'text-right'
+  components: {}
+})
+export default class XlTable extends Vue {
+  // prop ========================
+  @Prop({
+    type: Object,
+    default() {
+      return {}
     }
-  },
-  data() {
-    return {}
-  },
-  computed: {
-    page: {
-      get() {
-        return this.currentPage
-      },
-      set(val) {
-        this.$emit('update:currentPage', val)
-      }
-    },
-    limit: {
-      get() {
-        return this.pageSize
-      },
-      set(val) {
-        this.$emit('update:pageSize', val)
-      }
+  })
+  readonly attribute!: object
+
+  @Prop({
+    type: Object,
+    default() {
+      return {}
     }
-  },
-  methods: {
-    /**
-     * @description: 设置表格翻页的序号递增
-     * @param {*} index
-     * @return {*}
-     */
-    indexMethod(index) {
-      return index + 1 + (this.currentPage - 1) * this.pageSize // 返回表格序号
-    },
-    // 当前页改变时会触发
-    handleCurrentChange(page) {
-      this.$emit('change', page)
-    },
-    // 选择行数据时触发
-    selectionChange(row) {
-      this.$emit('selection-change', row)
-    },
-    // 选择多行的选中状态
-    toggleSelection(rows, selected = true) {
-      if (rows) {
-        rows.forEach(row => {
-          const newArr = this.sourceData.filter(o => o === row)
-          if (newArr.length) {
-            this.$refs.myTable.toggleRowSelection(newArr[0], selected)
-          }
-        })
-      } else {
-        this.$refs.myTable.clearSelection()
-      }
-    },
-    // 自定义排序，后端排序
-    sortChange({ column, prop, order }) {
-      this.$emit('sort-change', { prop, order: order || '' })
-    },
-    // 筛选
-    handleFilterMethod(value, row, column) {
-      const property = column['property']
-      return row[property].toString() === value
-    },
-    // 重置表格布局
-    doLayout() {
-      this.$refs.myTable.doLayout()
+  })
+  readonly events!: object
+
+  @Prop({
+    type: Array,
+    default() {
+      return []
     }
+  })
+  readonly sourceData!: object[]
+
+  @Prop({
+    type: Array,
+    default() {
+      return []
+    }
+  })
+  readonly columns!: columnType[]
+
+  @Prop({
+    type: Boolean,
+    default: false
+  })
+  readonly load!: boolean
+
+  @Prop({
+    type: String,
+    default: ''
+  })
+  readonly selection!: string // check:多选 radio:单选
+
+  @Prop({
+    type: Number,
+    default: 0
+  })
+  readonly total!: number // 分页总条数
+
+  @Prop({
+    type: Number,
+    default: 0
+  })
+  readonly currentPage!: number // 当前页
+
+  @Prop({
+    type: Number,
+    default: 0
+  })
+  readonly pageSize!: number // 每页大小
+
+  @Prop({
+    type: Array,
+    default() {
+      return [10, 20, 30, 40, 50, 100]
+    }
+  })
+  readonly pageSizes!: number[] // 每页显示个数选择器的选项设置
+
+  @Prop({
+    type: String,
+    default: 'sizes, prev, pager, next, jumper, ->, total'
+  })
+  readonly layout!: string // 每页显示个数选择器的选项设置
+
+  @Prop({
+    type: String,
+    default: 'right'
+  })
+  readonly pageAlign!: string // 分页对齐方式
+
+  @Prop({
+    type: Boolean,
+    default: false
+  })
+  readonly pageHidden!: boolean // 是否显示分页
+
+  // model =======================
+  @Model('change', { type: String }) readonly value!: string
+
+  // emit ========================
+
+  //选择数据时回调
+  @Emit('selection-change')
+  public handleSelectionChange(data: object | object[]): object | object[] {
+    return data
+  }
+
+  //分页发生变化时
+  @Emit('change')
+  handleCurrentChange(page: object): object {
+    return page
+  }
+
+  // data=======================
+  selectData: string | object | Array<object> = ''
+
+  public handleWatch(val: string) {}
+
+  /**
+   * @description: 设置表格翻页的序号递增
+   * @param {*} index
+   * @return {*}
+   */
+  public indexMethod(index: number): number {
+    return index + 1 + (this.currentPage - 1) * this.pageSize // 返回表格序号
   }
 }
 </script>
 
-<style lang="scss" scoped>
-::v-deep(.el-loading-mask) {
-  display: flex;
-  justify-content: center;
-  & .el-loading-spinner {
-    width: auto;
+<style scoped lang="scss">
+::v-deep {
+  .el-radio {
+    & .el-radio__label {
+      width: 0;
+      display: none;
+    }
   }
 }
-.text-left {
+
+.left {
   text-align: left;
 }
-.text-center {
+.center {
   text-align: center;
 }
-.text-right {
+.right {
   text-align: right;
 }
 </style>

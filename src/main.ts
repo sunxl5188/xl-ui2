@@ -7,6 +7,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import cookies from '@/utils/cookies'
 import dayjs from '@/utils/dayjs'
 import directive from '@/directive'
+import './assets/tailwind.css'
+import './assets/main.scss'
 // main.ts 文件
 import sxlUi from './index'
 
