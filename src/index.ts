@@ -25,6 +25,7 @@ const install: any = function (Vue: any, opts = {}): void {
   }
   // 判断是否安装
   if (install.installed) return
+
   // 遍历注册全局组件
   components.forEach((component: any) => {
     console.log(component.name)

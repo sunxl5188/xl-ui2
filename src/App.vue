@@ -1,14 +1,11 @@
 <template>
-  <div class="bg-red-600">
-    0000
+  <div>
     <!-- <XlCheckBox
       v-model="checkvalue"
       isAll
       v-bind="{ code: '2', data: options, direction: 'horizontal' }"
     /> -->
     <!-- <div v-code="{ options: '3', cache: true }">11111</div> -->
-    <hr />
-    {{ value }}
     <!-- <XlSelect
       v-model="value"
       v-bind="{

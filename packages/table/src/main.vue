@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-700">
+  <div>
     <el-table
       ref="myTable"
       v-loading="load"
@@ -8,10 +8,9 @@
       @selection-change="handleSelectionChange"
       v-bind="{
         ...{
-          stripe: true,
+          stripe: false,
           rowKey: 'id',
-          border: true,
-          'header-cell-class-name': 'bg-gray-500'
+          border: true
         },
         ...attribute
       }"
@@ -101,14 +100,7 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Emit,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from 'vue-property-decorator'
+import { Component, Emit, Model, Prop, Vue } from 'vue-property-decorator'
 
 interface columnType {
   label: string
@@ -251,6 +243,11 @@ export default class XlTable extends Vue {
     & .el-radio__label {
       width: 0;
       display: none;
+    }
+  }
+  .el-table th {
+    &.el-table__cell {
+      background: var(--header-table-cell);
     }
   }
 }

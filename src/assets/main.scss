@@ -1,9 +1,15 @@
+@import './tailwind.css';
+
 html,
 body {
-  background: #000;
-  height: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
   font-size: 16px;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+:root {
+  --header-table-cell: #f8f8f8; //表格顶部背景颜色
 }
