@@ -76,9 +76,9 @@ export default class App extends Vue {
       attribute: { sortable: true }
     }
   ]
-  currentPage = 1
+  currentPage = 3
   total = 100
-  pageSize = 10
+  pageSize = 20
   tableAttribute = {
     //'default-sort': { prop: 'date', order: 'descending' }
   }
@@ -150,7 +150,7 @@ export default class App extends Vue {
   mounted() {}
 
   public handleChangePage(page: object): void {
-    console.log(page, this.currentPage)
+    console.log(page)
   }
 
   public handleSelect(e: any): void {

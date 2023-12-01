@@ -217,14 +217,17 @@ export default class XlTable extends Vue {
 
   //分页发生变化时
   @Emit('change')
-  handleCurrentChange(page: object): object {
+  public handleCurrentChange(page: {
+    currentPage: number
+    pageSize: number
+  }): object {
+    this.$emit('update:currentPage', page.currentPage)
+    this.$emit('update:pageSize', page.pageSize)
     return page
   }
 
   // data=======================
   selectData: string | object | Array<object> = ''
-
-  public handleWatch(val: string) {}
 
   /**
    * @description: 设置表格翻页的序号递增
