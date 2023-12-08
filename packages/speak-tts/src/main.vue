@@ -48,6 +48,7 @@ export default class XlSpeakTts extends Vue {
 
   //调用方法播放声音
   public handleSpeech() {
+    console.log('播报')
     speech.speak({ text: this.text })
   }
 }
