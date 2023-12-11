@@ -134,7 +134,7 @@ export default class App extends Vue {
     check: [],
     startTime: '',
     endTime: '',
-    times: []
+    times: ['2023-10-10 08:00:00', '2023-12-20 12:23:00']
   }
   formItem = [
     {
