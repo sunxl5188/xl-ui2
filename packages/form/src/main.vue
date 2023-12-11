@@ -67,6 +67,34 @@
             ...item.events
           }"
         />
+        <!--date2日期-->
+        <XlDatePicker2
+          v-else-if="item.type === 'date2'"
+          v-model="form[item.prop]"
+          :endTime.sync="form[item.prop2]"
+          v-bind="{
+            ...item.attribute,
+            ...{ prop: [item.prop, item.prop2] }
+          }"
+          v-on="{
+            ...{ labelname: handleSetLabel },
+            ...item.events
+          }"
+        />
+        <!--date3日期-->
+        <XlDatePicker3
+          v-else-if="item.type === 'date3'"
+          v-model="form[item.prop]"
+          :endTime.sync="form[item.prop2]"
+          v-bind="{
+            ...item.attribute,
+            ...{ prop: [item.prop, item.prop2] }
+          }"
+          v-on="{
+            ...{ labelname: handleSetLabel },
+            ...item.events
+          }"
+        />
         <el-input
           v-else-if="item.type === 'textarea'"
           type="textarea"
@@ -91,7 +119,13 @@
         <el-input
           v-else
           v-model="form[item.prop]"
-          v-bind="item.attribute"
+          v-bind="{
+            ...{
+              placeholder: '请输入'
+            },
+            ...item.attribute,
+            ...{ prop: item.prop }
+          }"
           v-on="item.events"
         />
       </el-form-item>
@@ -113,6 +147,7 @@ import {
 interface formItemType {
   label: string
   prop: string
+  prop2: string
   type: string
   span?: number
   data?: string[]

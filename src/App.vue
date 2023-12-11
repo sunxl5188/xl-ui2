@@ -1,40 +1,14 @@
 <template>
   <div>
-    <XlSpeakTts ref="tts" />
-    <el-button type="primary" id="btn" @click="handleTTs">播放</el-button>
-    <!-- <XlCheckBox
-      v-model="checkvalue"
-      isAll
-      v-bind="{ code: '2', data: options, direction: 'horizontal' }"
-    /> -->
-    <!-- <div v-code="{ options: '3', cache: true }">11111</div> -->
-    <!-- <XlSelect
-      v-model="value"
-      v-bind="{
-        code: '1',
-        abc: '1111'
-        //data: options
-      }"
-    ></XlSelect> -->
-    <!-- <XlTable
-      :load="load"
-      :sourceData="sourceData"
-      :columns="columns"
-      :total="total"
-      :currentPage.sync="currentPage"
-      :pageSize.sync="pageSize"
-      selection="radio"
-      @change="handleChangePage"
-      @selection-change="handleSelect"
-    ></XlTable> -->
-    <!-- <XlVirtualSelect
-      ref="vir"
-      v-model="value"
-      v-bind="{
-        code: '1',
-        data: listData
-      }"
-    ></XlVirtualSelect> -->
+    {{ formData }}
+    <XlForm
+      ref="myform"
+      v-model="formData"
+      :form-data="formData"
+      :form-item="formItem"
+      :rules="rules"
+      :form-attribute="formAttribute"
+    ></XlForm>
   </div>
 </template>
 
@@ -157,7 +131,10 @@ export default class App extends Vue {
     name: '',
     a: [],
     radio: '',
-    check: []
+    check: [],
+    startTime: '',
+    endTime: '',
+    times: []
   }
   formItem = [
     {
@@ -168,7 +145,7 @@ export default class App extends Vue {
       attribute: {
         placeholder: '请输入姓名'
       },
-      events: { input: this.handleInput }
+      events: {}
     },
     {
       label: '选择框',
@@ -204,7 +181,6 @@ export default class App extends Vue {
       prop: 'delivery',
       type: 'switch',
       span: 8,
-      placeholder: '',
       formItemAttr: {},
       attribute: {}
     },
@@ -213,7 +189,6 @@ export default class App extends Vue {
       prop: 'desc',
       type: 'textarea',
       span: 24,
-      placeholder: '',
       formItemAttr: {},
       attribute: {}
     },
@@ -222,7 +197,23 @@ export default class App extends Vue {
       prop: 'addres',
       type: 'cascader',
       span: 8,
-      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '日期',
+      prop: 'startTime',
+      prop2: 'endTime',
+      type: 'date2',
+      span: 8,
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '日期',
+      prop: 'times',
+      type: 'date3',
+      span: 8,
       formItemAttr: {},
       attribute: {}
     }
@@ -247,11 +238,7 @@ export default class App extends Vue {
     }
   }
 
-  mounted() {
-    setInterval(() => {
-      document.getElementById('btn')?.click()
-    }, 5000)
-  }
+  mounted() {}
 
   public handleChangePage(page: object): void {
     console.log(page)
@@ -263,10 +250,6 @@ export default class App extends Vue {
 
   public handleSpeach(): void {
     ;(this.$refs.speach as any).handleSpeech()
-  }
-
-  public handleTTs() {
-    ;(this.$refs.tts as any).handleSpeech()
   }
 }
 </script>
