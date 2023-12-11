@@ -1,5 +1,7 @@
 <template>
   <div>
+    <XlSpeakTts ref="tts" />
+    <el-button type="primary" id="btn" @click="handleTTs">播放</el-button>
     <!-- <XlCheckBox
       v-model="checkvalue"
       isAll
@@ -147,7 +149,11 @@ export default class App extends Vue {
     }
   }
 
-  mounted() {}
+  mounted() {
+    setInterval(() => {
+      document.getElementById('btn')?.click()
+    }, 5000)
+  }
 
   public handleChangePage(page: object): void {
     console.log(page)
@@ -159,6 +165,10 @@ export default class App extends Vue {
 
   public handleSpeach(): void {
     ;(this.$refs.speach as any).handleSpeech()
+  }
+
+  public handleTTs() {
+    ;(this.$refs.tts as any).handleSpeech()
   }
 }
 </script>
