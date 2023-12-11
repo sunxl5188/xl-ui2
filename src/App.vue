@@ -14,7 +14,7 @@
         //data: options
       }"
     ></XlSelect> -->
-    <XlTable
+    <!-- <XlTable
       :load="load"
       :sourceData="sourceData"
       :columns="columns"
@@ -24,7 +24,7 @@
       selection="radio"
       @change="handleChangePage"
       @selection-change="handleSelect"
-    ></XlTable>
+    ></XlTable> -->
     <!-- <XlVirtualSelect
       ref="vir"
       v-model="value"
