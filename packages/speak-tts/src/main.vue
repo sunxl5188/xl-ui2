@@ -28,6 +28,7 @@ export default class XlSpeakTts extends Vue {
           rate: 1, // 语速
           pitch: 1, // 音调
           splitSentences: true, // 在句子结束时暂停
+          voice: 'Microsoft Yaoyao - Chinese (Simplified, PRC)', //支持Microsoft Huihui - Chinese (Simplified, PRC),Microsoft Kangkang - Chinese (Simplified, PRC),Microsoft Yaoyao - Chinese (Simplified, PRC)
           listeners: {
             // 事件
             onvoiceschanged: (voices: object) => {
@@ -48,7 +49,15 @@ export default class XlSpeakTts extends Vue {
 
   //调用方法播放声音
   public handleSpeech() {
-    speech.speak({ text: this.text })
+    console.log('开始播报')
+    speech
+      .speak({ text: this.text })
+      .then(() => {
+        console.log('播报成功 !')
+      })
+      .catch((e: any) => {
+        console.error('An error occurred :', e)
+      })
   }
 }
 </script>

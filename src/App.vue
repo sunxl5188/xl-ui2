@@ -1,15 +1,7 @@
 <template>
   <div>
-    <!-- <XlCascader v-model="labelArr" @labelname="handleChangeCasCader" /> -->
-    <XlForm
-      v-model="formData"
-      :formData="formData"
-      :formItem="formItem"
-      :formAttribute="formAttribute"
-      :rules="rules"
-      @labelname="handleLabelName"
-    ></XlForm>
-
+    <XlSpeakTts ref="tts" />
+    <el-button type="primary" id="btn" @click="handleTTs">播放</el-button>
     <!-- <XlCheckBox
       v-model="checkvalue"
       isAll
@@ -255,7 +247,11 @@ export default class App extends Vue {
     }
   }
 
-  mounted() {}
+  mounted() {
+    setInterval(() => {
+      document.getElementById('btn')?.click()
+    }, 5000)
+  }
 
   public handleChangePage(page: object): void {
     console.log(page)
@@ -269,16 +265,8 @@ export default class App extends Vue {
     ;(this.$refs.speach as any).handleSpeech()
   }
 
-  public handleInput(e: string) {
-    console.log(e)
-  }
-
-  public handleLabelName(e: any) {
-    this.label = e
-  }
-
-  public handleChangeCasCader(e: string) {
-    console.log(e)
+  public handleTTs() {
+    ;(this.$refs.tts as any).handleSpeech()
   }
 }
 </script>
