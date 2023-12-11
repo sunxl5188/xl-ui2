@@ -1,6 +1,19 @@
 <template>
   <div>
-    <el-select v-model="values" placeholder="请选择" @change="handleChange">
+    <el-select
+      v-model="values"
+      v-bind="{
+        ...{
+          clearable: true,
+          filterable: true,
+          placeholder: '请选择',
+          'collapse-tags': true
+        },
+        ...attribute
+      }"
+      v-on="events"
+      @change="handleChange"
+    >
       <el-option
         v-for="item in options"
         :key="item.value"
@@ -13,14 +26,7 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Vue,
-  Prop,
-  Watch,
-  Model,
-  Emit
-} from 'vue-property-decorator'
+import { Component, Vue, Prop, Model, Emit } from 'vue-property-decorator'
 import { getCode } from '@/utils/api'
 
 interface optionType {
@@ -33,10 +39,11 @@ interface optionType {
   components: {}
 })
 export default class XlSelect extends Vue {
-  values = ''
+  values: string | [] = ''
   labels = ''
   options: Array<any> = []
 
+  //绑定属性
   @Prop({
     type: Object,
     default() {
@@ -44,7 +51,16 @@ export default class XlSelect extends Vue {
     }
   })
   readonly attribute!: object
+  //绑定事件
+  @Prop({
+    type: Object,
+    default() {
+      return {}
+    }
+  })
+  readonly events!: object
 
+  //字段
   @Prop({
     type: Object,
     default() {
@@ -62,15 +78,6 @@ export default class XlSelect extends Vue {
   })
   readonly code!: string
 
-  //code的附加参数
-  @Prop({
-    type: Object,
-    default() {
-      return {}
-    }
-  })
-  readonly params!: object
-
   // data数据
   @Prop({
     type: Array,
@@ -80,26 +87,40 @@ export default class XlSelect extends Vue {
   })
   readonly data!: []
 
-  @Model('change', { type: String }) readonly value!: string
+  //回调
+  @Model('change', { type: [String, Array] }) readonly value!: string | string[]
 
   @Emit('change')
-  public handleChange(): string | string[] {
+  public handleChange(e: string | string[]): string | [] {
+    let data
+    if (e) {
+      if (Object.prototype.toString.call(e) === '[object Array]') {
+        data = this.options.filter((o: optionType) => {
+          return e.includes(o[this.props.value])
+        })
+        if (data.length) {
+          let labArr = data.map(item => item[this.props.label])
+          this.labels = labArr.join(',')
+        }
+      } else {
+        data = this.options.filter((o: optionType) => {
+          return o[this.props.value] === e
+        })
+        if (data.length) {
+          this.labels = data[0][this.props.label]
+        }
+      }
+    } else {
+      this.labels = ''
+    }
+
+    this.handleLabelName()
     return this.values
   }
 
-  //监听value值
-  @Watch('value', { immediate: true })
-  handleValueChange(val: string) {
-    this.values = val
-  }
-
-  @Watch('values', { immediate: true })
-  handleValuesChange(val: string) {
-    if (val) {
-      const data = this.options.filter(o => val.includes(o[this.props.value]))
-      const label = data.map(item => item[this.props.label])
-      this.labels = label.join(',')
-    }
+  @Emit('labelname')
+  public handleLabelName() {
+    return { prop: this.$attrs.prop, data: this.labels }
   }
 
   // ---------------------

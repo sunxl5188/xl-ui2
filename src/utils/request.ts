@@ -13,7 +13,7 @@ const createAxios: CreateAxiosDefaults = {
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
   },
-  timeout: 5000,
+  timeout: 1000 * 60,
   withCredentials: false, // 表明跨域请求是否需要证明
   responseType: 'json', // 'arraybuffer','blob','document','json','text',stream'
   responseEncoding: 'utf8'

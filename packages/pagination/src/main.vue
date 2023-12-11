@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { scrollTo } from '../../../src/utils/scroll-to'
+import { scrollTo } from '../../../src/utils/scrollTo'
 
 @Component({
   name: 'XlPagination',

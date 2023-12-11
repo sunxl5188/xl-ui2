@@ -1,5 +1,15 @@
 <template>
   <div>
+    <!-- <XlCascader v-model="labelArr" @labelname="handleChangeCasCader" /> -->
+    <XlForm
+      v-model="formData"
+      :formData="formData"
+      :formItem="formItem"
+      :formAttribute="formAttribute"
+      :rules="rules"
+      @labelname="handleLabelName"
+    ></XlForm>
+
     <!-- <XlCheckBox
       v-model="checkvalue"
       isAll
@@ -14,7 +24,7 @@
         //data: options
       }"
     ></XlSelect> -->
-    <XlTable
+    <!-- <XlTable
       :load="load"
       :sourceData="sourceData"
       :columns="columns"
@@ -24,7 +34,7 @@
       selection="radio"
       @change="handleChangePage"
       @selection-change="handleSelect"
-    ></XlTable>
+    ></XlTable> -->
     <!-- <XlVirtualSelect
       ref="vir"
       v-model="value"
@@ -38,6 +48,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+
 // @ is an alias to /src
 interface sourceDataProps {
   id: number
@@ -59,6 +70,7 @@ export default class App extends Vue {
   value = '0598'
   value1 = '10'
   label = ''
+  labelArr = ''
   columns = [
     {
       label: '标题',
@@ -76,7 +88,7 @@ export default class App extends Vue {
       attribute: { sortable: true }
     }
   ]
-  currentPage = 3
+  currentPage = 1
   total = 100
   pageSize = 20
   tableAttribute = {
@@ -130,8 +142,104 @@ export default class App extends Vue {
     }
   ]
 
+  checkArr = [
+    {
+      label: '备选项1',
+      value: '1'
+    },
+    {
+      label: '备选项2',
+      value: '2'
+    },
+    {
+      label: '备选项3',
+      value: '3'
+    },
+    {
+      label: '备选项4',
+      value: '4'
+    }
+  ]
+
+  formData = {
+    name: '',
+    a: [],
+    radio: '',
+    check: []
+  }
+  formItem = [
+    {
+      label: '姓名',
+      prop: 'name',
+      span: 8,
+      formItemAttr: {},
+      attribute: {
+        placeholder: '请输入姓名'
+      },
+      events: { input: this.handleInput }
+    },
+    {
+      label: '选择框',
+      prop: 'a',
+      type: 'select',
+      span: 8,
+      formItemAttr: {},
+      attribute: {
+        placeholder: '请选择产品',
+        code: '2',
+        multiple: true
+      },
+      events: {}
+    },
+    {
+      label: '单选',
+      prop: 'radio',
+      type: 'radio',
+      span: 8,
+      formItemAttr: {},
+      attribute: { data: this.checkArr, code: '3' }
+    },
+    {
+      label: '多选',
+      prop: 'check',
+      type: 'check',
+      span: 8,
+      formItemAttr: {},
+      attribute: { code: '1' }
+    },
+    {
+      label: '即时配送',
+      prop: 'delivery',
+      type: 'switch',
+      span: 8,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '活动形式',
+      prop: 'desc',
+      type: 'textarea',
+      span: 24,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '地区',
+      prop: 'addres',
+      type: 'cascader',
+      span: 8,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    }
+  ]
+  formAttribute = {}
+  rules = {}
+
   private created() {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       this.sourceData.push({
         id: i,
         date: (this as any).$dayjs().add(i, 'day').format('YYYY-MM-DD'),
@@ -159,6 +267,18 @@ export default class App extends Vue {
 
   public handleSpeach(): void {
     ;(this.$refs.speach as any).handleSpeech()
+  }
+
+  public handleInput(e: string) {
+    console.log(e)
+  }
+
+  public handleLabelName(e: any) {
+    this.label = e
+  }
+
+  public handleChangeCasCader(e: string) {
+    console.log(e)
   }
 }
 </script>

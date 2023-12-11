@@ -40,7 +40,7 @@ interface optionType {
 export default class XlCheckBox extends Vue {
   //选中值
   checkList: Array<string | number> = []
-  checkLable: Array<string | number> = []
+  checkLable = ''
   optionVal: Array<string | number> = []
 
   isIndeterminate = false
@@ -85,7 +85,7 @@ export default class XlCheckBox extends Vue {
   readonly isAll!: boolean
 
   //回调选中的值
-  @Model('change', { type: Array }) readonly value!: (string | number)[]
+  @Model('change', { type: [Array, String] }) readonly value!: [] | string
 
   @Emit('change')
   public handleChange(value: Array<string | number>): (string | number)[] {
@@ -93,17 +93,23 @@ export default class XlCheckBox extends Vue {
       return this.checkList.includes(item[this.props.value])
     })
 
-    this.checkLable = data.map(item => {
+    let labArr = data.map(item => {
       return item[this.props.label]
     })
+    this.checkLable = labArr.join(',')
 
     let checkedCount = value.length
 
     this.checkAll = checkedCount === this.options.length
     this.isIndeterminate =
       checkedCount > 0 && checkedCount < this.options.length
-
+    this.handleLabelName()
     return this.checkList
+  }
+
+  @Emit('labelname')
+  public handleLabelName() {
+    return { prop: this.$attrs.prop, data: this.checkLable }
   }
 
   // ---------------------
@@ -124,7 +130,7 @@ export default class XlCheckBox extends Vue {
   }
 
   // 获取CODE这典
-  getOption() {
+  public getOption() {
     getCode(this.$global.codeApi + this.code)
       .then((res: any) => {
         this.options = res.data
