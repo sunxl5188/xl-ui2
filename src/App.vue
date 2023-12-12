@@ -8,7 +8,13 @@
       :form-item="formItem"
       :rules="rules"
       :form-attribute="formAttribute"
-    ></XlForm>
+    >
+      <template #custom="{ row, form }">
+        <el-form-item label="自定义">
+          <el-input v-model="form[row.prop]" />
+        </el-form-item>
+      </template>
+    </XlForm>
   </div>
 </template>
 
@@ -120,10 +126,6 @@ export default class App extends Vue {
     {
       label: '备选项3',
       value: '3'
-    },
-    {
-      label: '备选项4',
-      value: '4'
     }
   ]
 
@@ -174,21 +176,13 @@ export default class App extends Vue {
       type: 'check',
       span: 8,
       formItemAttr: {},
-      attribute: { code: '1' }
+      attribute: { code: '3' }
     },
     {
       label: '即时配送',
       prop: 'delivery',
       type: 'switch',
       span: 8,
-      formItemAttr: {},
-      attribute: {}
-    },
-    {
-      label: '活动形式',
-      prop: 'desc',
-      type: 'textarea',
-      span: 24,
       formItemAttr: {},
       attribute: {}
     },
@@ -214,6 +208,23 @@ export default class App extends Vue {
       prop: 'times',
       type: 'date3',
       span: 8,
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '活动形式',
+      prop: 'desc',
+      type: 'textarea',
+      span: 24,
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '自定义',
+      prop: 'custom',
+      slotname: 'custom',
+      span: 24,
+      placeholder: '',
       formItemAttr: {},
       attribute: {}
     }

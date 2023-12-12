@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-0">
     <el-checkbox
       v-if="isAll"
       :indeterminate="isIndeterminate"
