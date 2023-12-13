@@ -1,6 +1,7 @@
 <template>
   <div>
-    {{ formData }}
+    <XlTreeSelect />
+    <!-- {{ formData }}
     <XlForm
       ref="myform"
       v-model="formData"
@@ -14,7 +15,7 @@
           <el-input v-model="form[row.prop]" />
         </el-form-item>
       </template>
-    </XlForm>
+    </XlForm> -->
   </div>
 </template>
 
