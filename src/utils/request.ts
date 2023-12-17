@@ -35,6 +35,7 @@ const removePending = (config: AxiosRequestConfig) => {
       const item: number = +key
       const list: pendingType = pending[key]
       // 当前请求在数组中存在时执行函数体
+
       if (
         list.url === config.url &&
         list.method === config.method &&
@@ -60,13 +61,15 @@ request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     removePending(config)
     config.cancelToken = new CancelToken(c => {
-      pending.push({
-        url: config.url,
-        method: config.method,
-        params: config.params,
-        data: config.data,
-        cancel: c
-      })
+      if ((config.url as any).indexOf('/code') < 0) {
+        pending.push({
+          url: config.url,
+          method: config.method,
+          params: config.params,
+          data: config.data,
+          cancel: c
+        })
+      }
     })
     // 是否需要设置 token
     const isToken = (config.headers || {}).isToken === false
@@ -116,7 +119,7 @@ request.interceptors.response.use(
     return Promise.reject(response.data)
   },
   error => {
-    console.log('err' + error)
+    //console.log('err' + JSON.stringify(error))
     let messages = ''
     const { message, response } = error
     const msg = response && response.data ? response.data.msg : response
@@ -130,7 +133,11 @@ request.interceptors.response.use(
     } else if (message.includes('frequently')) {
       messages = '操作太频繁，请稍后再试'
     }
-    Message({ message: msg || messages, type: 'error', duration: 5 * 1000 })
+    if (!message.includes('frequently')) {
+      Message({ message: msg || messages, type: 'error', duration: 5 * 1000 })
+    } else {
+      console.warn(messages)
+    }
     return Promise.reject(error)
   }
 )

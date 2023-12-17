@@ -72,13 +72,13 @@ export default class XlRadio extends Vue {
     if (data.length) {
       this.checkLable = data[0][this.props.label]
     }
-    this.handleLabelName()
+    this.$attrs.labelname && this.handleLabelName()
     return e
   }
 
   @Emit('labelname')
   public handleLabelName() {
-    return { prop: this.$attrs.prop, data: this.checkLable }
+    return { prop: this.$attrs.labelname, data: this.checkLable }
   }
 
   // ---------------------

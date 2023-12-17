@@ -190,7 +190,6 @@ export default class HeaderSearch extends Vue {
   public handleSearch() {
     ;(this.$refs.myform as any).validate((valid: boolean) => {
       console.log(valid)
-
       if (valid) {
         console.log(111)
       }

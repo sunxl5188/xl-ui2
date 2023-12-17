@@ -1,4 +1,5 @@
 import request from './request'
+import cache from './cache'
 
 /**
  * 获取字典
@@ -7,11 +8,19 @@ import request from './request'
  */
 export const getCode = (url: string) => {
   return new Promise((resolve, reject) => {
-    request({
-      url,
-      method: 'get'
-    })
-      .then(res => resolve(res))
-      .catch(err => reject(err))
+    if (cache.session.get(url)) {
+      resolve(cache.session.get(url))
+    } else {
+      request({
+        url,
+        method: 'get'
+      })
+        .then((res: any) => {
+          resolve(res)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    }
   })
 }

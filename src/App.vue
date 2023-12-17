@@ -6,10 +6,10 @@
     <XlForm
       ref="myform"
       v-model="formData"
-      :form-data="formData"
       :form-item="formItem"
       :rules="rules"
       :form-attribute="formAttribute"
+      @change="handleSubmit"
     >
       <template #custom="{ row, form }">
         <el-form-item label="自定义">
@@ -17,6 +17,7 @@
         </el-form-item>
       </template>
     </XlForm>
+    <el-button type="primary" @click="handleSave">提交</el-button>
   </div>
 </template>
 
@@ -355,7 +356,8 @@ export default class App extends Vue {
       attribute: {
         placeholder: '请选择产品',
         code: '2',
-        multiple: true
+        multiple: true,
+        labelname: 'aName'
       },
       events: {}
     },
@@ -365,7 +367,7 @@ export default class App extends Vue {
       type: 'radio',
       span: 8,
       formItemAttr: {},
-      attribute: { data: this.checkArr, code: '3' }
+      attribute: { code: '3', labelname: 'bName' }
     },
     {
       label: '多选',
@@ -373,7 +375,7 @@ export default class App extends Vue {
       type: 'check',
       span: 8,
       formItemAttr: {},
-      attribute: { code: '3' }
+      attribute: { code: '3', labelname: 'bbName' }
     },
     {
       label: '即时配送',
@@ -427,7 +429,7 @@ export default class App extends Vue {
   ]
   formAttribute = {}
   rules = {
-    gdbh: [{ required: true, message: '请输入' }]
+    name: [{ required: true, message: '请输入' }]
   }
 
   private created() {
@@ -459,6 +461,13 @@ export default class App extends Vue {
 
   public handleSpeach(): void {
     ;(this.$refs.speach as any).handleSpeech()
+  }
+  public handleSave(): void {
+    ;(this.$refs.myform as any).handleSubmit()
+  }
+  public handleSubmit(data: any, label: any): void {
+    console.log(data)
+    console.log(label)
   }
 }
 </script>

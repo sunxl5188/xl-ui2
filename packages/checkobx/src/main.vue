@@ -103,13 +103,13 @@ export default class XlCheckBox extends Vue {
     this.checkAll = checkedCount === this.options.length
     this.isIndeterminate =
       checkedCount > 0 && checkedCount < this.options.length
-    this.handleLabelName()
+    this.$attrs.labelname && this.handleLabelName()
     return this.checkList
   }
 
   @Emit('labelname')
   public handleLabelName() {
-    return { prop: this.$attrs.prop, data: this.checkLable }
+    return { prop: this.$attrs.labelname, data: this.checkLable }
   }
 
   // ---------------------

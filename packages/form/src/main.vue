@@ -1,7 +1,9 @@
 <template>
   <div>
     <el-form
+      ref="myform"
       :model="form"
+      :rules="rules"
       v-bind="{
         ...{
           'label-width': '120px',
@@ -56,15 +58,6 @@ import { formItemType } from '@/utils/interface'
 })
 export default class XlForm extends Vue {
   // prop ========================
-
-  @Prop({
-    type: Object,
-    default() {
-      return {}
-    }
-  })
-  readonly formData!: object
-
   @Prop({
     type: Array,
     default() {
@@ -94,8 +87,8 @@ export default class XlForm extends Vue {
   label = {}
 
   // model =======================
-  @Model('change', { type: Object }) readonly value!: object
-  @Emit('change')
+  @Model('input', { type: Object }) readonly value!: object
+  @Emit('input')
   public handleChange(data: object) {
     this.handleLabelName()
     return data
@@ -114,7 +107,7 @@ export default class XlForm extends Vue {
 
   //=========================
   mounted() {
-    this.form = JSON.parse(JSON.stringify(this.formData))
+    this.form = JSON.parse(JSON.stringify(this.value))
   }
 
   public handleSetLabel(data: { prop: string; data: string | [] }) {
@@ -130,6 +123,15 @@ export default class XlForm extends Vue {
       return index <= i
     })
     return len % 24 === 0
+  }
+
+  //提交数据
+  public handleSubmit() {
+    ;(this.$refs.myform as any).validate((valid: boolean) => {
+      if (valid) {
+        this.$emit('change', this.form, JSON.parse(JSON.stringify(this.label)))
+      }
+    })
   }
 }
 </script>

@@ -19,10 +19,8 @@
           ...item.attribute,
           ...{ prop: item.prop }
         }"
-        :events="{
-          ...{ labelname: handleSetLabel },
-          ...item.events
-        }"
+        :events="item.events"
+        v-on="{ labelname: handleSetLabel }"
       />
     </template>
     <template v-else-if="item.type === 'check'">

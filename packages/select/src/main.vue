@@ -99,13 +99,16 @@ export default class XlSelect extends Vue {
       this.labels = ''
     }
 
-    this.handleLabelName()
+    this.attribute.labelname && this.handleLabelName()
     return this.values
   }
 
   @Emit('labelname')
   public handleLabelName() {
-    return { prop: this.$attrs.prop, data: this.labels }
+    return {
+      prop: this.attribute.labelname,
+      data: this.labels
+    }
   }
 
   // ---------------------
