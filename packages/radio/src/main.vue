@@ -55,7 +55,7 @@ export default class XlRadio extends Vue {
   checkValue = ''
   checkLable = ''
   //所有数据
-  options: Array<optionType> = []
+  options: Array<any> = []
 
   // model =======================
   // emit ========================
@@ -67,7 +67,7 @@ export default class XlRadio extends Vue {
   public handleChange(e: string): string {
     const data = this._.filter(
       this.options,
-      (o: optionType) => o[this.props.value] === e
+      (o: any) => o[this.props['value']] === e
     )
     if (data.length) {
       this.checkLable = data[0][this.props.label]

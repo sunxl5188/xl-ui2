@@ -13,3 +13,13 @@ body {
 :root {
   --header-table-cell: #f8f8f8; //表格顶部背景颜色
 }
+
+.clearfix {
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+  display: block;
+  float: none;
+}

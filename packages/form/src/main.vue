@@ -16,138 +16,14 @@
       <el-row :gutter="0">
         <template v-for="(item, index) in formItem">
           <el-col :key="index" :span="item.span || 6">
-            <slot
-              v-if="item.slotname"
-              :name="item.slotname"
-              :row="item"
-              :form="form"
-            >
-            </slot>
-            <el-form-item v-else :label="item.label" :prop="item.prop">
-              <XlSelect
-                v-if="item.type === 'select'"
-                v-model="form[item.prop]"
-                :attribute="{ ...item.attribute, ...{ prop: item.prop } }"
-                v-bind="{ ...item.attribute, ...{ prop: item.prop } }"
-                :events="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-                v-on="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-              />
-              <XlCheckBox
-                v-else-if="item.type === 'check'"
-                v-model="form[item.prop]"
-                v-bind="{ ...item.attribute, ...{ prop: item.prop } }"
-                v-on="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-              />
-              <XlRadio
-                v-else-if="item.type === 'radio'"
-                v-model="form[item.prop]"
-                v-bind="{ ...item.attribute, ...{ prop: item.prop } }"
-                v-on="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-              />
-              <XlCascader
-                v-else-if="item.type === 'cascader'"
-                v-model="form[item.prop]"
-                v-bind="{
-                  ...{
-                    placeholder: '请输入',
-                    clearable: true
-                  },
-                  ...item.attribute,
-                  ...{ prop: item.prop }
-                }"
-                v-on="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-              />
-              <!--date2日期-->
-              <XlDatePicker2
-                v-else-if="item.type === 'date2'"
-                v-model="form[item.prop]"
-                :endTime.sync="form[item.prop2]"
-                v-bind="{
-                  ...item.attribute,
-                  ...{ prop: [item.prop, item.prop2] }
-                }"
-                v-on="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-              />
-              <!--date3日期-->
-              <XlDatePicker3
-                v-else-if="item.type === 'date3'"
-                v-model="form[item.prop]"
-                :endTime.sync="form[item.prop2]"
-                v-bind="{
-                  ...item.attribute,
-                  ...{ prop: [item.prop, item.prop2] }
-                }"
-                v-on="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-              />
-              <el-switch
-                v-else-if="item.type === 'switch'"
-                v-model="form[item.prop]"
-                v-bind="{
-                  ...{ 'active-value': 1, 'inactive-value': 0 },
-                  ...item.attribute
-                }"
-                v-on="item.events"
-              >
-              </el-switch>
-              <el-input
-                v-else-if="item.type === 'textarea'"
-                type="textarea"
-                v-model="form[item.prop]"
-                v-bind="{
-                  ...{
-                    placeholder: '请输入',
-                    maxlength: 1000,
-                    'show-word-limit': true,
-                    rows: 4,
-                    resize: 'none',
-                    clearable: true
-                  },
-                  ...item.attribute,
-                  ...{ prop: item.prop }
-                }"
-                v-on="{
-                  ...{ labelname: handleSetLabel },
-                  ...item.events
-                }"
-              />
-              <el-input
-                v-else
-                v-model="form[item.prop]"
-                v-bind="{
-                  ...{
-                    placeholder: '请输入',
-                    clearable: true
-                  },
-                  ...item.attribute,
-                  ...{ prop: item.prop }
-                }"
-                v-on="item.events"
-              />
-            </el-form-item>
+            <XlFormItem
+              v-model="form[item['prop']]"
+              :item="item"
+              @labelname="handleSetLabel"
+            />
           </el-col>
           <template v-if="cloumnsNum(index)">
-            <div :key="index + 'div'" class="clear-both"></div>
+            <div :key="index + 'div'" class="clearfix"></div>
           </template>
         </template>
       </el-row>
@@ -163,7 +39,6 @@
  *  </el-form-item>
  * </template>
  **/
-import XlCascader from '@/cascader'
 import {
   Component,
   Emit,
@@ -172,24 +47,12 @@ import {
   Vue,
   Watch
 } from 'vue-property-decorator'
-
-interface formItemType {
-  label: string
-  prop: string
-  prop2: string
-  type: string
-  slotname: string
-  span?: number
-  data?: string[]
-  code?: string
-  attribute?: object
-  events?: object
-  formItemAttr?: object
-}
+import XlFormItem from '../../form-item/src/main.vue'
+import { formItemType } from '@/utils/interface'
 
 @Component({
   name: 'XlForm',
-  components: {}
+  components: { XlFormItem }
 })
 export default class XlForm extends Vue {
   // prop ========================
@@ -227,7 +90,7 @@ export default class XlForm extends Vue {
   readonly rules!: object
 
   // data ==================================
-  form = {}
+  form: any = {}
   label = {}
 
   // model =======================
@@ -271,22 +134,4 @@ export default class XlForm extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
-.clear-both {
-  width: 100%;
-  height: 0;
-  overflow: hidden;
-  font-size: 0;
-  line-height: 0;
-  display: block;
-}
-
-::v-deep {
-  .el-form-item__content {
-    .el-cascader,
-    .el-select {
-      width: 100%;
-    }
-  }
-}
-</style>
+<style scoped lang="scss"></style>

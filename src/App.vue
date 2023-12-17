@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <XlTreeSelect />
-    <!-- {{ formData }}
+  <div class="p-10">
+    <!-- <XlTreeSelect /> -->
+    <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
+    {{ formData }}
     <XlForm
       ref="myform"
       v-model="formData"
@@ -15,7 +16,7 @@
           <el-input v-model="form[row.prop]" />
         </el-form-item>
       </template>
-    </XlForm> -->
+    </XlForm>
   </div>
 </template>
 
@@ -132,13 +133,208 @@ export default class App extends Vue {
 
   formData = {
     name: '',
-    a: [],
+    a: '',
     radio: '',
-    check: [],
-    startTime: '',
+    check: '',
+    startTime: [],
     endTime: '',
-    times: ['2023-10-10 08:00:00', '2023-12-20 12:23:00']
+    times: '',
+    delivery: ''
   }
+  formData1 = {
+    gdbh: '',
+    ssxq: '',
+    gjsjArr: []
+  }
+  formItem1 = [
+    {
+      label: '国网工单编号',
+      prop: 'gdbh',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '所属辖区',
+      prop: 'ssxq',
+      type: 'select',
+      span: 6,
+      formItemAttr: {},
+      attribute: {
+        data: [
+          {
+            label: '是',
+            value: '1'
+          },
+          {
+            label: '否',
+            value: '0'
+          }
+        ]
+      }
+    },
+    {
+      label: '故障地址',
+      prop: 'gzaddr',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '接单单位',
+      prop: 'jddw',
+      type: 'select',
+      span: 6,
+      formItemAttr: {},
+      attribute: { code: '1' },
+      events: {}
+    },
+    {
+      label: '接单班组',
+      prop: 'jdbz',
+      type: 'check',
+      span: 6,
+      formItemAttr: {},
+      attribute: { code: '5' }
+    },
+    {
+      label: '抢修单状态',
+      prop: 'qxdzt',
+      type: 'radio',
+      span: 6,
+      formItemAttr: {},
+      attribute: { code: '4' }
+    },
+    {
+      label: '故障范围',
+      prop: 'gzfw',
+      type: 'date',
+      span: 6,
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '台区编号',
+      prop: 'tqbh',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '台区名称',
+      prop: 'tqmc',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '来源',
+      prop: 'ly',
+      type: 'select',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: { code: '8' }
+    },
+    {
+      label: '是否启用先复',
+      prop: 'xfdhqx',
+      type: 'select',
+      span: 6,
+
+      formItemAttr: { class: 'label-word-wrap' },
+      attribute: { props: { label: 'label', value: 'value' } }
+    },
+    {
+      label: '联系电话',
+      prop: 'lxdh',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '自动派工',
+      prop: 'zdpg',
+      type: 'select',
+      span: 6,
+
+      placeholder: '',
+      formItemAttr: {},
+      attribute: { props: { label: 'label', value: 'value' } }
+    },
+    {
+      label: '终端接单状态',
+      prop: 'isAppTakeOrder',
+      type: 'select',
+      span: 6,
+
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '操作人',
+      prop: 'clr',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '接单终端类型',
+      prop: 'zdlx',
+      type: 'select',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: { code: '28' }
+    },
+    {
+      label: '所属馈线',
+      prop: 'kxmc',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '抢修超时工单',
+      prop: 'qxcs',
+      type: 'select',
+      span: 6,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '到岗超时工单',
+      prop: 'dgcs',
+      type: 'select',
+      span: 6,
+
+      attribute: { props: { label: 'label', value: 'value' } },
+      placeholder: '',
+      formItemAttr: {}
+    },
+    {
+      label: '挂机时间',
+      prop: 'gjsjArr',
+      type: 'date2',
+      span: 10,
+      placeholder: '',
+      formItemAttr: {},
+      attribute: {
+        type: 'datetime',
+        'default-time': ['09:00:00', '08:00:00'],
+        'value-format': 'yyyyMMddHHmmss'
+      }
+    }
+  ]
   formItem = [
     {
       label: '姓名',
@@ -198,7 +394,6 @@ export default class App extends Vue {
     {
       label: '日期',
       prop: 'startTime',
-      prop2: 'endTime',
       type: 'date2',
       span: 8,
       formItemAttr: {},
@@ -207,7 +402,7 @@ export default class App extends Vue {
     {
       label: '日期',
       prop: 'times',
-      type: 'date3',
+      type: 'date',
       span: 8,
       formItemAttr: {},
       attribute: {}
@@ -231,7 +426,9 @@ export default class App extends Vue {
     }
   ]
   formAttribute = {}
-  rules = {}
+  rules = {
+    gdbh: [{ required: true, message: '请输入' }]
+  }
 
   private created() {
     for (let i = 0; i < 20; i++) {

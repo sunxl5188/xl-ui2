@@ -50,7 +50,7 @@ export default class XlSelect extends Vue {
       return {}
     }
   })
-  readonly attribute!: object
+  readonly attribute!: any
   //绑定事件
   @Prop({
     type: Object,
@@ -71,21 +71,6 @@ export default class XlSelect extends Vue {
     }
   })
   readonly props!: optionType
-  // code 字典表码-----------------------------
-  @Prop({
-    type: String,
-    default: ''
-  })
-  readonly code!: string
-
-  // data数据
-  @Prop({
-    type: Array,
-    default() {
-      return []
-    }
-  })
-  readonly data!: []
 
   //回调
   @Model('change', { type: [String, Array] }) readonly value!: string | string[]
@@ -95,16 +80,16 @@ export default class XlSelect extends Vue {
     let data
     if (e) {
       if (Object.prototype.toString.call(e) === '[object Array]') {
-        data = this.options.filter((o: optionType) => {
-          return e.includes(o[this.props.value])
+        data = this.options.filter((o: any) => {
+          return e.includes(o[this.props['value']])
         })
         if (data.length) {
           let labArr = data.map(item => item[this.props.label])
           this.labels = labArr.join(',')
         }
       } else {
-        data = this.options.filter((o: optionType) => {
-          return o[this.props.value] === e
+        data = this.options.filter((o: any) => {
+          return o[this.props['value']] === e
         })
         if (data.length) {
           this.labels = data[0][this.props.label]
@@ -125,15 +110,15 @@ export default class XlSelect extends Vue {
 
   // ---------------------
   mounted() {
-    if (this.code) {
+    if (this.attribute.code) {
       this.getOption()
-    } else if (this.data) {
-      this.options = this.data
+    } else if (this.attribute.data) {
+      this.options = this.attribute.data
     }
   }
   // 获取CODE这典
   getOption() {
-    getCode(this.$global.codeApi + this.code)
+    getCode(this.$global.codeApi + this.attribute.code)
       .then((res: any) => {
         this.options = res.data
       })

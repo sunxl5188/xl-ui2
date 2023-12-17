@@ -248,7 +248,10 @@ export default {
           }
         }
       ],
-      collapse: false
+      collapse: false,
+      formData: {},
+      formAttribute: {},
+      rules: {}
     }
   },
   watch: {},

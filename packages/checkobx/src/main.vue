@@ -15,10 +15,10 @@
       <el-checkbox
         v-for="(item, index) in options"
         :key="index"
-        :label="item[props.value]"
+        :label="item[props['value']]"
         v-bind="$attrs"
       >
-        {{ item[props.label] }}
+        {{ item[props['label']] }}
       </el-checkbox>
     </el-checkbox-group>
   </div>
@@ -47,7 +47,7 @@ export default class XlCheckBox extends Vue {
   checkAll = false
 
   //所有数据
-  options: Array<optionType> = []
+  options: Array<any> = []
 
   //字段参数
   @Prop({
@@ -89,11 +89,11 @@ export default class XlCheckBox extends Vue {
 
   @Emit('change')
   public handleChange(value: Array<string | number>): (string | number)[] {
-    const data = this.options.filter((item: optionType) => {
-      return this.checkList.includes(item[this.props.value])
+    const data = this.options.filter((item: any) => {
+      return this.checkList.includes(item[this.props['value']])
     })
 
-    let labArr = data.map(item => {
+    let labArr = data.map((item: any) => {
       return item[this.props.label]
     })
     this.checkLable = labArr.join(',')
@@ -120,7 +120,7 @@ export default class XlCheckBox extends Vue {
     if (this.code) {
       this.getOption()
     }
-    this.optionVal = this.options.map((o: optionType) => o[this.props.value])
+    this.optionVal = this.options.map((o: any) => o[this.props['value']])
   }
 
   //全选

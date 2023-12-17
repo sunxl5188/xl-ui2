@@ -15,5 +15,6 @@ declare module 'vue/types/vue' {
   interface Vue {
     $global: any
     _: any
+    $dayjs: any
   }
 }

@@ -1,13 +1,13 @@
 <template>
   <div class="w-full flex justify-start items-center">
     <el-date-picker
-      v-model="values[0]"
+      v-model="value1"
       v-bind="{ ...attribute, ...attributes }"
       @change="handleChange"
     />
     <span class="px-2 text-gray-400">{{ rangeSeparator }}</span>
     <el-date-picker
-      v-model="values[1]"
+      v-model="value2"
       v-bind="{ ...attribute, ...attributes }"
       @change="handleChange"
     />
@@ -31,37 +31,26 @@ export default class XlDatePicker2 extends Vue {
   })
   readonly attribute!: object
 
-  @Prop({
-    type: Array,
-    default: ''
-  })
-  readonly prop!: string
-
-  @Prop({
-    type: String,
-    default: ''
-  })
-  readonly endTime!: string
   // model =======================
-  @Model('change', { type: String }) readonly value!: string
+  @Model('change', { type: [String, Array] }) readonly value!: string | string[]
 
   // emit ========================
 
   @Emit('change')
-  public handleChange(): string {
-    this.$emit(`update:${this.prop[1]}`, this.values[1] || '')
-    return this.values[0] || ''
+  public handleChange(): string | string[] {
+    return [this.value1, this.value2]
   }
 
   //data ====================
-  values: string[] = []
+  value1 = ''
+  value2 = ''
 
   attributes = {
     type: 'datetime',
     clearable: true,
     placeholder: '请选择日期',
     'value-format': 'yyyy-MM-dd HH:mm:ss',
-    'default-time': '08:00:00',
+    'default-time': this.$dayjs().format('HH:mm:ss'),
     'range-separator': '-'
   }
 
@@ -73,7 +62,10 @@ export default class XlDatePicker2 extends Vue {
 
   mounted() {
     this.$nextTick(() => {
-      this.values = [this.value || '', this.endTime || '']
+      if (Object.prototype.toString.call(this.value) === '[object Array]') {
+        this.value1 = this.value[0]
+        this.value2 = this.value[1]
+      }
     })
   }
 }
