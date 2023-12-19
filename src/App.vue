@@ -1,8 +1,9 @@
 <template>
   <div class="p-10">
+    <MyTreeSelect :data="data" />
     <!-- <XlTreeSelect /> -->
     <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
-    {{ formData }}
+    <!-- {{ formData }}
     <XlForm
       ref="myform"
       v-model="formData"
@@ -17,7 +18,7 @@
         </el-form-item>
       </template>
     </XlForm>
-    <el-button type="primary" @click="handleSave">提交</el-button>
+    <el-button type="primary" @click="handleSave">提交</el-button> -->
   </div>
 </template>
 
@@ -69,6 +70,80 @@ export default class App extends Vue {
   tableAttribute = {
     //'default-sort': { prop: 'date', order: 'descending' }
   }
+  attribute = { code: '28' }
+  data = [
+    {
+      id: '1',
+      label: '一级 1',
+      isNew: true,
+      children: [
+        {
+          id: '11',
+          label: '二级 1-1',
+          isNew: true,
+          children: [
+            {
+              id: '111',
+              label: '三级 1-1-1',
+              isNew: true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: '2',
+      label: '一级 2',
+      children: [
+        {
+          id: '22',
+          label: '二级 2-1',
+          children: [
+            {
+              id: '2221',
+              label: '三级 2-1-1'
+            }
+          ]
+        },
+        {
+          id: '222',
+          label: '二级 2-2',
+          children: [
+            {
+              id: '2222',
+              label: '三级 2-2-1'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: '3',
+      label: '一级 3',
+      children: [
+        {
+          id: '33',
+          label: '二级 3-1',
+          children: [
+            {
+              id: '333',
+              label: '三级 3-1-1'
+            }
+          ]
+        },
+        {
+          id: '3334',
+          label: '二级 3-2',
+          children: [
+            {
+              id: '3335',
+              label: '三级 3-2-1'
+            }
+          ]
+        }
+      ]
+    }
+  ]
 
   options = [
     {
