@@ -1,6 +1,8 @@
 <template>
   <div class="p-10">
-    <MyTreeSelect :data="data" />
+    <MyTreeSelect v-model="value" :data="data" v-bind="attribute">
+      <template #value-label="node">{{ node }}</template>
+    </MyTreeSelect>
     <!-- <XlTreeSelect /> -->
     <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
     <!-- {{ formData }}
@@ -43,7 +45,7 @@ export default class App extends Vue {
   checkvalue: string[] = []
   listData: option[] = []
   sourceData: object[] = []
-  value = '0598'
+  value = '111'
   value1 = '10'
   label = ''
   labelArr = ''
@@ -70,7 +72,7 @@ export default class App extends Vue {
   tableAttribute = {
     //'default-sort': { prop: 'date', order: 'descending' }
   }
-  attribute = { code: '28' }
+  attribute = { code: '28', slotname: 'value-label' }
   data = [
     {
       id: '1',

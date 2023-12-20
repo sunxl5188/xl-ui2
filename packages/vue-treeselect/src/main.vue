@@ -1,16 +1,19 @@
 <template>
   <div>
-    <div>选中的值：{{ value }}</div>
-    <div>选中的名称: {{ label }}</div>
     <Treeselect
       ref="mytree"
-      v-model="value"
+      v-model="values"
       :options="data"
       v-bind="{ ...defAttribute, ...attribute }"
       v-on="{
         select: handleSelect
       }"
-    />
+      :class="size"
+    >
+      <div slot="value-label" slot-scope="{ node }">
+        <slot name="value-label" :node="node.raw"></slot>
+      </div>
+    </Treeselect>
   </div>
 </template>
 <script>
@@ -63,11 +66,19 @@ export default {
       default() {
         return {}
       }
+    },
+    value: {
+      type: [String, Number, Array],
+      default: ''
     }
+  },
+  model: {
+    prop: 'value',
+    event: 'change'
   },
   data() {
     return {
-      value: null,
+      values: null,
       label: '',
       defAttribute: {
         name: 'MyTreeSelect',
@@ -129,17 +140,29 @@ export default {
         valueConsistsOf: 'BRANCH_PRIORITY', //在多选模式下，值数组中应包括哪种节点,"ALL", "BRANCH_PRIORITY", "LEAF_PRIORITY" or "ALL_WITH_INDETERMINATE"
         valueFormat: 'id', //值道具的格式。请注意，当设置为“object”时，在值中的每个节点对象中只需要id和label属性。可接受的值：“id”或“object”
         zIndex: 999
-      }
+      },
+      size: 'medium'
     }
   },
-  watch: {},
+  watch: {
+    value: {
+      handler: function (val) {
+        this.values = val
+      },
+      immediate: true
+    }
+  },
   created() {},
-  mounted() {},
+  mounted() {
+    this.size = this.$ELEMENT.size
+  },
   methods: {
-    handleSelect(e) {
+    handleSelect() {
       const data = this.$refs.mytree.selectedNodes
       const label = data.map(item => item.label)
       this.label = label
+      this.$emit('change', this.values)
+      this.$emit('labelname', this.label)
     }
   }
 }
