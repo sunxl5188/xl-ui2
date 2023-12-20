@@ -23,6 +23,16 @@
         v-on="{ labelname: handleSetLabel }"
       />
     </template>
+    <template v-else-if="item.type === 'tree'">
+      <MyTreeSelect
+        v-model="values"
+        :attribute="{ ...item.attribute, ...{ prop: item.prop } }"
+        v-on="{
+          ...{ labelname: handleSetLabel },
+          ...item.events
+        }"
+      />
+    </template>
     <template v-else-if="item.type === 'check'">
       <XlCheckBox
         v-model="values"
@@ -179,7 +189,7 @@ export default class XlFormItem extends Vue {
 
   // data ==========================
   values = ''
-  label = ''
+  labels = ''
 
   // watch============
   @Watch('values', { immediate: true, deep: true })

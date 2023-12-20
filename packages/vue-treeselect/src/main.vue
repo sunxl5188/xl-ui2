@@ -1,17 +1,46 @@
 <template>
-  <div>
+  <div style="line-height: normal">
     <Treeselect
       ref="mytree"
       v-model="values"
-      :options="data"
+      :options="attribute.data"
       v-bind="{ ...defAttribute, ...attribute }"
       v-on="{
-        select: handleSelect
+        input: handleInput
       }"
       :class="size"
     >
       <div slot="value-label" slot-scope="{ node }">
-        <slot name="value-label" :node="node.raw"></slot>
+        <slot name="value-label" :node="node.raw">{{ node.raw.label }}</slot>
+      </div>
+      <div
+        slot="option-label"
+        slot-scope="{
+          node,
+          shouldShowCount,
+          count,
+          labelClassName,
+          countClassName
+        }"
+      >
+        <slot
+          name="option-label"
+          v-bind="{
+            node,
+            shouldShowCount,
+            count,
+            labelClassName,
+            countClassName
+          }"
+        >
+          {{ node.label }}
+        </slot>
+      </div>
+      <div slot="before-list">
+        <slot name="before-list"></slot>
+      </div>
+      <div slot="after-list">
+        <slot name="after-list"></slot>
       </div>
     </Treeselect>
   </div>
@@ -79,7 +108,7 @@ export default {
   data() {
     return {
       values: null,
-      label: '',
+      labels: '',
       defAttribute: {
         name: 'MyTreeSelect',
         allowClearingDisabled: false, //即使有禁用的选定节点，是否允许重置值
@@ -135,7 +164,7 @@ export default {
         showCount: false, //是否在每个分支节点的标签旁边显示子计数
         showCountOf: 'ALL_CHILDREN', //与showCount一起使用，指定应显示的计数类型。"ALL_CHILDREN", "ALL_DESCENDANTS", "LEAF_CHILDREN" or "LEAF_DESCENDANTS"
         showCountOnSearch: undefined, //搜索时是否显示子项计数。未指定时回退到showCount的值
-        sortValueBy: 'ORDER_SELECTED', //所选选项应按哪个顺序显示在触发器中并按值数组排序。仅在以下情况下使用：multiple=“true”,"ORDER_SELECTED", "LEVEL" or "INDEX"
+        sortValueBy: 'LEVEL', //所选选项应按哪个顺序显示在触发器中并按值数组排序。仅在以下情况下使用：multiple=“true”,"ORDER_SELECTED", "LEVEL" or "INDEX"
         tabIndex: 0, //控件的选项卡索引
         valueConsistsOf: 'BRANCH_PRIORITY', //在多选模式下，值数组中应包括哪种节点,"ALL", "BRANCH_PRIORITY", "LEAF_PRIORITY" or "ALL_WITH_INDETERMINATE"
         valueFormat: 'id', //值道具的格式。请注意，当设置为“object”时，在值中的每个节点对象中只需要id和label属性。可接受的值：“id”或“object”
@@ -147,22 +176,24 @@ export default {
   watch: {
     value: {
       handler: function (val) {
-        this.values = val
+        this.values = val || null
       },
       immediate: true
     }
   },
-  created() {},
   mounted() {
     this.size = this.$ELEMENT.size
   },
   methods: {
-    handleSelect() {
+    handleInput() {
       const data = this.$refs.mytree.selectedNodes
-      const label = data.map(item => item.label)
-      this.label = label
+      const labels = data.map(item => item.label)
+      this.labels = labels
       this.$emit('change', this.values)
-      this.$emit('labelname', this.label)
+      this.$emit('labelname', {
+        prop: this.attribute.prop,
+        data: this.labels.join(',')
+      })
     }
   }
 }

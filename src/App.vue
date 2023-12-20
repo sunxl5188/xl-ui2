@@ -1,11 +1,13 @@
 <template>
   <div class="p-10">
-    <MyTreeSelect v-model="value" :data="data" v-bind="attribute">
-      <template #value-label="node">{{ node }}</template>
-    </MyTreeSelect>
+    <!-- <MyTreeSelect
+      v-model="value"
+      :data="data"
+      v-bind="attribute"
+    ></MyTreeSelect> -->
     <!-- <XlTreeSelect /> -->
     <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
-    <!-- {{ formData }}
+    {{ formData }}
     <XlForm
       ref="myform"
       v-model="formData"
@@ -20,7 +22,7 @@
         </el-form-item>
       </template>
     </XlForm>
-    <el-button type="primary" @click="handleSave">提交</el-button> -->
+    <el-button type="primary" @click="handleSave">提交</el-button>
   </div>
 </template>
 
@@ -45,7 +47,7 @@ export default class App extends Vue {
   checkvalue: string[] = []
   listData: option[] = []
   sourceData: object[] = []
-  value = '111'
+  value = null
   value1 = '10'
   label = ''
   labelArr = ''
@@ -217,7 +219,8 @@ export default class App extends Vue {
     startTime: [],
     endTime: '',
     times: '',
-    delivery: ''
+    delivery: '',
+    trees: null
   }
   formData1 = {
     gdbh: '',
@@ -432,7 +435,7 @@ export default class App extends Vue {
       formItemAttr: {},
       attribute: {
         placeholder: '请选择产品',
-        code: '2',
+        data: this.checkArr,
         multiple: true,
         labelname: 'aName'
       },
@@ -502,6 +505,17 @@ export default class App extends Vue {
       placeholder: '',
       formItemAttr: {},
       attribute: {}
+    },
+    {
+      label: '树',
+      prop: 'trees',
+      type: 'tree',
+      span: 24,
+      formItemAttr: {},
+      attribute: {
+        data: this.data,
+        multiple: true
+      }
     }
   ]
   formAttribute = {}
