@@ -7,11 +7,7 @@
       @change="handleCheckAllChange"
       >全选</el-checkbox
     >
-    <el-checkbox-group
-      v-model="checkList"
-      :class="$attrs?.direction"
-      @change="handleChange"
-    >
+    <el-checkbox-group v-model="checkList" @change="handleChange">
       <el-checkbox
         v-for="(item, index) in options"
         :key="index"
@@ -140,14 +136,4 @@ export default class XlCheckBox extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
-::v-deep {
-  .el-checkbox-group {
-    &.vertical {
-      & .el-checkbox {
-        display: block;
-      }
-    }
-  }
-}
-</style>
+<style scoped lang="scss"></style>

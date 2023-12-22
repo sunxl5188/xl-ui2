@@ -8,6 +8,7 @@ import typescript from 'rollup-plugin-typescript2'
 import commonjs from '@rollup/plugin-commonjs'
 import replace from 'rollup-plugin-replace'
 import postcss from 'rollup-plugin-postcss'
+import json from '@rollup/plugin-json'
 
 export default {
   input: 'src/index.ts',
@@ -48,6 +49,8 @@ export default {
     terser(),
     postcss({
       plugins: []
-    })
-  ]
+    }),
+    json()
+  ],
+  mode: 'production'
 }
