@@ -1,6 +1,6 @@
 {
   "name": "xl-ui2",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "基于Element-UI二次封装",
   "author": "sunxl",
   "main": "./lib/xl-ui.umd.js",

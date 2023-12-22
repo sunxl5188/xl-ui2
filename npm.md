@@ -12,7 +12,7 @@ npm login
 更新
 发布 4. 里面的内容
 更改 package.json 里的 version
-更新 npm pushlish
+更新 npm pushlish .    注意要加个点
 删除
 npm unpublish <包名> --force
 ```
