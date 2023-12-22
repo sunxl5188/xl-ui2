@@ -15,13 +15,13 @@ export default {
   external: ['vue', 'lodash-es'],
   output: [
     {
-      file: 'lib/sxl-ui.esm.js',
+      file: 'lib/xl-ui.esm.js',
       format: 'esm'
     },
     {
-      file: 'lib/sxl-ui.umd.js',
+      file: 'lib/xl-ui.umd.js',
       format: 'umd',
-      name: 'sxl-ui',
+      name: 'xl-ui2',
       globals: {
         vue: 'Vue',
         'lodash-es': 'lodashEs'
