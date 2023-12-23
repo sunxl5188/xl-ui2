@@ -81,7 +81,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     }
  */
 export default {
-  name: 'MyTreeSelect',
+  name: 'XlTreeSelect',
   components: { Treeselect },
   props: {
     data: {
@@ -182,7 +182,7 @@ export default {
     }
   },
   mounted() {
-    this.size = this.$ELEMENT.size
+    this.size = (this.$ELEMENT && this.$ELEMENT.size) || 'medium'
   },
   methods: {
     handleInput() {

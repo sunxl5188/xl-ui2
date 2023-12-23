@@ -13,6 +13,7 @@ require('./assets/main.scss')
 import sxlUi from './index'
 Vue.use(directive)
 Vue.use(sxlUi, { size: 'small' })
+console.log(sxlUi)
 
 Vue.config.productionTip = false
 Vue.prototype.$cookies = cookies

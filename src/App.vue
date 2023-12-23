@@ -1,10 +1,6 @@
 <template>
   <div class="p-10">
-    <!-- <MyTreeSelect
-      v-model="value"
-      :data="data"
-      v-bind="attribute"
-    ></MyTreeSelect> -->
+    <XlTreeSelect v-model="value" :attribute="attribute"></XlTreeSelect>
     <!-- <XlTreeSelect /> -->
     <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
     {{ formData }}
@@ -74,7 +70,6 @@ export default class App extends Vue {
   tableAttribute = {
     //'default-sort': { prop: 'date', order: 'descending' }
   }
-  attribute = { code: '28', slotname: 'value-label' }
   data = [
     {
       id: '1',
@@ -148,6 +143,8 @@ export default class App extends Vue {
       ]
     }
   ]
+
+  attribute = { data: this.data }
 
   options = [
     {

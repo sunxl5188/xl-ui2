@@ -1,32 +1,30 @@
-import table from '../packages/table'
-import pagination from '../packages/pagination'
+import XlTable from '../packages/table'
+import XlPagination from '../packages/pagination'
 import virtualSelect from '../packages/virtual-select'
-import select from '../packages/select'
-import checkbox from '../packages/checkobx'
-import speakTts from '../packages/speak-tts'
+import XlSelect from '../packages/select'
+import XlCheckBox from '../packages/checkobx'
+import SpeakTts from '../packages/speak-tts'
 import XlForm from '../packages/form'
 import XlRadio from '../packages/radio'
 import XlCascader from '../packages/cascader'
-import XlDatePicker2 from '../packages/datepicker2'
-import XlTreeSelect from '../packages/treeselect'
+import XlDatePicker from '../packages/datepicker'
 import HeaderSearch from '../packages/headersearch'
-import MyTreeSelect from '../packages/vue-treeselect'
+import XlTreeSelect from '../packages/vue-treeselect'
 
 // 存储组件列表
 const components = [
-  table,
-  pagination,
+  XlTable,
+  XlPagination,
   virtualSelect,
-  select,
-  checkbox,
-  speakTts,
+  XlSelect,
+  XlCheckBox,
+  SpeakTts,
   XlForm,
   XlRadio,
   XlCascader,
-  XlDatePicker2,
-  XlTreeSelect,
+  XlDatePicker,
   HeaderSearch,
-  MyTreeSelect
+  XlTreeSelect
 ]
 
 // 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册
@@ -56,17 +54,16 @@ export default {
   version: '0.1.0',
   install,
   // 以下是单个导出的组件
-  table,
-  pagination,
+  XlTable,
+  XlPagination,
   virtualSelect,
-  select,
-  checkbox,
-  speakTts,
+  XlSelect,
+  XlCheckBox,
+  SpeakTts,
   XlForm,
   XlRadio,
   XlCascader,
-  XlDatePicker2,
-  XlTreeSelect,
+  XlDatePicker,
   HeaderSearch,
-  MyTreeSelect
+  XlTreeSelect
 }

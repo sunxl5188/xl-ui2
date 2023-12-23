@@ -2,6 +2,7 @@
 import { terser } from 'rollup-plugin-terser'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import vue from 'rollup-plugin-vue'
+import css from 'rollup-plugin-css-only'
 import scss from 'rollup-plugin-scss'
 import babel from 'rollup-plugin-babel'
 import typescript from 'rollup-plugin-typescript2'
@@ -9,13 +10,17 @@ import commonjs from '@rollup/plugin-commonjs'
 import replace from 'rollup-plugin-replace'
 import postcss from 'rollup-plugin-postcss'
 import json from '@rollup/plugin-json'
+import autoprefixer from 'autoprefixer'
+import cssnano from 'cssnano'
+import CleanCSS from 'clean-css' // 压缩css
+import { writeFileSync } from 'fs' // 写文件
 
 export default {
   input: 'src/index.ts',
-  external: ['vue', 'lodash-es'],
+  external: ['vue', 'lodash-es', 'lodash'],
   output: [
     {
-      file: 'lib/xl-ui.esm.js',
+      file: 'lib/index.esm.js',
       format: 'esm'
     },
     {
@@ -30,6 +35,7 @@ export default {
   ],
   plugins: [
     nodeResolve({
+      browser: true,
       extensions: ['.js', '.ts']
     }),
     commonjs(),
@@ -46,11 +52,19 @@ export default {
       //externalHelpers: true
     }),
     scss(),
-    terser(),
+    //terser(),
     postcss({
-      plugins: []
+      //plugins: [autoprefixer(), cssnano()],
+      extract: '../dist/index.css'
     }),
     json()
+    /* css({
+      output(style) {
+        // 压缩 css 写入 dist/base-ui.css
+        //writeFileSync('dist/xl-ui.css', new CleanCSS().minify(style).styles)
+      }
+    }) */
   ],
-  mode: 'production'
+  // 用来指定代码执行环境的参数，解决this执行undefined问题
+  context: 'window'
 }

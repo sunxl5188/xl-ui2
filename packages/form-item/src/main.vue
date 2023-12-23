@@ -24,7 +24,7 @@
       />
     </template>
     <template v-else-if="item.type === 'tree'">
-      <MyTreeSelect
+      <XlTreeSelect
         v-model="values"
         :attribute="{ ...item.attribute, ...{ prop: item.prop } }"
         v-on="{
