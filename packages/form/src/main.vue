@@ -72,6 +72,14 @@ export default class XlForm extends Vue {
       return {}
     }
   })
+  readonly formData!: object
+
+  @Prop({
+    type: Object,
+    default() {
+      return {}
+    }
+  })
   readonly formAttribute!: object
 
   @Prop({
@@ -107,7 +115,7 @@ export default class XlForm extends Vue {
 
   //=========================
   mounted() {
-    this.form = JSON.parse(JSON.stringify(this.value))
+    this.form = JSON.parse(JSON.stringify(this.value || this.formData))
   }
 
   public handleSetLabel(data: { prop: string; data: string | [] }) {
