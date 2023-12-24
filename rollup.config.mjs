@@ -50,7 +50,9 @@ export default {
       //plugins: ['external-helpers'],
       //externalHelpers: true
     }),
-    //terser(),
+    terser({
+      output: { comments: false }
+    }),
     postcss({
       plugins: [autoprefixer(), discardComments(), cssnano()],
       extract: 'index.css',
