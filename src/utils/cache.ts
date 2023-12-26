@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { encryptData, decryptData } from './cryptojs'
 const prefix = process.env.VUE_APP_CACHEPREFIX
 
 /**
@@ -57,14 +58,16 @@ const getExpireTimes = (expireTimes: any) => {
   return _expires
 }
 
+type valueType = string | object | string[]
+
 const sessionCache = {
-  set(key: string, value: string, expire: number | string = 0) {
+  set(key: string, value: valueType, expire: number | string = 0) {
     if (!sessionStorage) {
       return
     }
     if (key != null && value != null) {
       const data = {
-        value: value,
+        value: encryptData(value, prefix + key),
         expire: expire === 0 ? expire : getExpireTimes(expire)
       }
       sessionStorage.setItem(prefix + key, JSON.stringify(data))
@@ -90,9 +93,9 @@ const sessionCache = {
         value = data.value
       }
     }
-    return value
+    return decryptData(value, prefix + key)
   },
-  setJSON(key: string, jsonValue: string, expire: number | string = 0) {
+  setJSON(key: string, jsonValue: valueType, expire: number | string = 0) {
     if (jsonValue != null) {
       this.set(key, jsonValue, expire)
     }
@@ -110,13 +113,13 @@ const sessionCache = {
   }
 }
 const localCache = {
-  set(key: string, value: string, expire: number | string = 0) {
+  set(key: string, value: valueType, expire: number | string = 0) {
     if (!localStorage) {
       return
     }
     if (key != null && value != null) {
       const data = {
-        value: value,
+        value: encryptData(value, prefix + key),
         expire: expire === 0 ? expire : getExpireTimes(expire)
       }
       localStorage.setItem(prefix + key, JSON.stringify(data))
@@ -142,9 +145,9 @@ const localCache = {
         value = data.value
       }
     }
-    return value
+    return decryptData(value, prefix + key)
   },
-  setJSON(key: string, jsonValue: string, expire: number | string = 0) {
+  setJSON(key: string, jsonValue: valueType, expire: number | string = 0) {
     if (jsonValue != null) {
       this.set(key, jsonValue, expire)
     }

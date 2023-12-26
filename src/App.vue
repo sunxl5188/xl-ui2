@@ -1,10 +1,10 @@
 <template>
   <div class="p-10">
-    <XlTreeSelect v-model="value" :attribute="attribute"></XlTreeSelect>
+    <!--<XlTreeSelect v-model="value" :attribute="attribute"></XlTreeSelect>-->
     <!-- <XlTreeSelect /> -->
     <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
     {{ formData }}
-    <XlForm
+    <!-- <XlForm
       ref="myform"
       v-model="formData"
       :form-item="formItem"
@@ -18,12 +18,13 @@
         </el-form-item>
       </template>
     </XlForm>
-    <el-button type="primary" @click="handleSave">提交</el-button>
+    <el-button type="primary" @click="handleSave">提交</el-button> -->
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import cache from '@/utils/cache'
 
 // @ is an alias to /src
 interface sourceDataProps {
