@@ -25,6 +25,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import cache from '@/utils/cache'
+import { encryptData, decryptData, encrypt, decrypt } from '@/utils/cryptojs'
 
 // @ is an alias to /src
 interface sourceDataProps {
@@ -538,7 +539,20 @@ export default class App extends Vue {
     }
   }
 
-  mounted() {}
+  mounted() {
+    let a = encrypt(this.rules)
+    console.log(a)
+    let b = decrypt(a)
+    console.log(b)
+    let aa = encrypt('111111')
+    console.log(aa)
+    let bb = decrypt(aa)
+    console.log(bb)
+    let c = encryptData(this.rules, 'aa')
+    console.log(c)
+    let d = decryptData(c, 'aa')
+    console.log(d)
+  }
 
   public handleChangePage(page: object): void {
     console.log(page)
