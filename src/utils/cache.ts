@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import { encryptData, decryptData } from './cryptojs'
-const prefix = process.env.VUE_APP_CACHEPREFIX
 
 /**
  * 设置缓存时间,返回时间戳
@@ -60,118 +59,133 @@ const getExpireTimes = (expireTimes: any) => {
 
 type valueType = string | object | string[]
 
-const sessionCache = {
-  set(key: string, value: valueType, expire: number | string = 0) {
-    if (!sessionStorage) {
-      return
-    }
-    if (key != null && value != null) {
-      const data = {
-        value: encryptData(value, prefix + key),
-        expire: expire === 0 ? expire : getExpireTimes(expire)
-      }
-      sessionStorage.setItem(prefix + key, JSON.stringify(data))
-    }
-  },
-  get(key: string) {
-    if (!sessionStorage) {
-      return null
-    }
-    if (key == null) {
-      return null
-    }
-    let value = null
-    let data: any = sessionStorage.getItem(prefix + key)
-    if (data !== null) {
-      data = JSON.parse(data)
-      if (data.expire === 0) {
-        value = data.value
-      } else if (data.expire < Date.now()) {
-        value = null
-        this.remove(key)
-      } else {
-        value = data.value
-      }
-    }
-    return decryptData(value, prefix + key)
-  },
-  setJSON(key: string, jsonValue: valueType, expire: number | string = 0) {
-    if (jsonValue != null) {
-      this.set(key, jsonValue, expire)
-    }
-  },
-  getJSON(key: string) {
-    const value = this.get(key)
-    if (value != null) {
-      return value
-    } else {
-      return null
-    }
-  },
-  remove(key: string) {
-    sessionStorage.removeItem(prefix + key)
+const expireTime = (option: any, expire: number | string): number => {
+  let _expire = 0
+  if (expire) {
+    _expire = getExpireTimes(expire)
+  } else if (option && option.expire) {
+    _expire = getExpireTimes(option.expire)
   }
-}
-const localCache = {
-  set(key: string, value: valueType, expire: number | string = 0) {
-    if (!localStorage) {
-      return
-    }
-    if (key != null && value != null) {
-      const data = {
-        value: encryptData(value, prefix + key),
-        expire: expire === 0 ? expire : getExpireTimes(expire)
-      }
-      localStorage.setItem(prefix + key, JSON.stringify(data))
-    }
-  },
-  get(key: string) {
-    if (!localStorage) {
-      return null
-    }
-    if (key == null) {
-      return null
-    }
-    let value = null
-    let data: any = localStorage.getItem(prefix + key)
-    if (data !== null) {
-      data = JSON.parse(data)
-      if (data.expire === 0) {
-        value = data.value
-      } else if (data.expire < Date.now()) {
-        value = null
-        this.remove(key)
-      } else {
-        value = data.value
-      }
-    }
-    return decryptData(value, prefix + key)
-  },
-  setJSON(key: string, jsonValue: valueType, expire: number | string = 0) {
-    if (jsonValue != null) {
-      this.set(key, jsonValue, expire)
-    }
-  },
-  getJSON(key: string) {
-    const value = this.get(key)
-    if (value != null) {
-      return value
-    } else {
-      return null
-    }
-  },
-  remove(key: string) {
-    localStorage.removeItem(prefix + key)
-  }
+  return _expire
 }
 
 export default {
-  /**
-   * 会话级缓存
-   */
-  session: sessionCache,
-  /**
-   * 本地缓存
-   */
-  local: localCache
+  install(Vue: any, option: any) {
+    let prefix = ''
+    let isEncrypt = false
+    if (option && option.prefix) {
+      prefix = option.prefix
+    } else {
+      prefix = process.env.VUE_APP_CACHEPREFIX || 'sxl-'
+    }
+    if (option && option.isEncrypt) {
+      isEncrypt = option.isEncrypt
+    }
+
+    Vue.prototype.local = {
+      set(key: string, value: valueType, expire: number | string) {
+        if (!localStorage) {
+          return
+        }
+        if (key != null && value != null) {
+          const data = {
+            value: isEncrypt ? encryptData(value) : value,
+            expire: expireTime(option, expire)
+          }
+          localStorage.setItem(prefix + key, JSON.stringify(data))
+        }
+      },
+      get(key: string) {
+        if (!localStorage) {
+          return null
+        }
+        if (key == null) {
+          return null
+        }
+        let value = null
+        let data: any = localStorage.getItem(prefix + key)
+        if (data !== null) {
+          data = JSON.parse(data)
+          if (data.expire === 0) {
+            value = data.value
+          } else if (data.expire < Date.now()) {
+            value = null
+            this.remove(key)
+          } else {
+            value = data.value
+          }
+        }
+        return isEncrypt ? decryptData(value) : value
+      },
+      setJSON(key: string, jsonValue: valueType, expire: number | string) {
+        if (jsonValue != null) {
+          this.set(key, jsonValue, option.expire || expire)
+        }
+      },
+      getJSON(key: string) {
+        const value = this.get(key)
+        if (value != null) {
+          return value
+        } else {
+          return null
+        }
+      },
+      remove(key: string) {
+        localStorage.removeItem(prefix + key)
+      }
+    }
+
+    Vue.prototype.session = {
+      set(key: string, value: valueType, expire: number | string) {
+        if (!sessionStorage) {
+          return
+        }
+        if (key != null && value != null) {
+          const data = {
+            value: isEncrypt ? encryptData(value) : value,
+            expire: expireTime(option, expire)
+          }
+          sessionStorage.setItem(prefix + key, JSON.stringify(data))
+        }
+      },
+      get(key: string) {
+        if (!sessionStorage) {
+          return null
+        }
+        if (key == null) {
+          return null
+        }
+        let value = null
+        let data: any = sessionStorage.getItem(prefix + key)
+        if (data !== null) {
+          data = JSON.parse(data)
+          if (data.expire === 0) {
+            value = data.value
+          } else if (data.expire < Date.now()) {
+            value = null
+            this.remove(key)
+          } else {
+            value = data.value
+          }
+        }
+        return isEncrypt ? decryptData(value) : value
+      },
+      setJSON(key: string, jsonValue: valueType, expire: number | string) {
+        if (jsonValue != null) {
+          this.set(key, jsonValue, expire)
+        }
+      },
+      getJSON(key: string) {
+        const value = this.get(key)
+        if (value != null) {
+          return value
+        } else {
+          return null
+        }
+      },
+      remove(key: string) {
+        sessionStorage.removeItem(prefix + key)
+      }
+    }
+  }
 }

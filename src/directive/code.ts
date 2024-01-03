@@ -1,6 +1,11 @@
 import request from '@/utils/request'
 import CACHE from '@/utils/cache'
 
+interface arrType {
+  label: string
+  value: string
+}
+
 export default {
   async bind(el: any, binding: any, vnode: any) {
     const { cache } = binding.value
@@ -21,8 +26,8 @@ export default {
         CACHE.local.setJSON(code, data, '1d')
       }
 
-      const datas = CACHE.local.getJSON(code)
-      const arr = datas.filter((item: any) => item.value === val)
+      const datas = (CACHE.local.getJSON(code) || []) as []
+      const arr: arrType[] = datas.filter((item: any) => item.value === val)
       if (arr.length) {
         el.innerHTML = arr[0].label
       }
@@ -31,7 +36,7 @@ export default {
         url,
         method: 'get'
       })
-      const arr = data.filter((item: any) => item.value === val)
+      const arr: arrType[] = data.filter((item: any) => item.value === val)
       if (arr.length) {
         el.innerHTML = arr[0].label
       }

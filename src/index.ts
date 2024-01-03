@@ -11,6 +11,8 @@ import XlDatePicker from '../packages/datepicker'
 import HeaderSearch from '../packages/headersearch'
 import XlTreeSelect from '../packages/vue-treeselect'
 
+import cache from './utils/cache'
+
 // 存储组件列表
 const components = [
   XlTable,
@@ -28,7 +30,7 @@ const components = [
 ]
 
 // 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册
-const install: any = function (Vue: any, opts = {}): void {
+const install: any = function (Vue: any, opts: any = {}): void {
   Vue.prototype.$global = {
     ...{
       codeApi: '/index/system/index/code/'
@@ -40,9 +42,16 @@ const install: any = function (Vue: any, opts = {}): void {
 
   // 遍历注册全局组件
   components.forEach((component: any) => {
-    console.log(component.name)
-
+    //console.log(component.name)
     Vue.component(component.name, component)
+  })
+  Vue.use(cache, {
+    ...{
+      prefix: 'sxl-', //存储前缀
+      expire: '1d', //过期时间，默认为一天
+      isEncrypt: true //支持加密、解密数据处理
+    },
+    ...opts.storage
   })
 }
 // 判断是否是直接引入文件

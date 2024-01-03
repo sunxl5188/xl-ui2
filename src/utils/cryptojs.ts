@@ -1,32 +1,17 @@
 import CryptoJS from 'crypto-js'
 type valueType = string | object | string[]
 
-const SECRET_KEY = CryptoJS.enc.Utf8.parse('3333e6e143439161') //十六位十六进制数作为密钥
-const SECRET_IV = CryptoJS.enc.Utf8.parse('e3bbe7e3ba84431a') //十六位十六进制数作为密钥偏移量
-console.log(SECRET_KEY)
+const key = CryptoJS.MD5('3333e6e143439161').toString()
+const vi = CryptoJS.MD5('e3bbe7e3ba84431a').toString()
+const SECRET_KEY = CryptoJS.enc.Utf8.parse(key) //十六位十六进制数作为密钥
+const SECRET_IV = CryptoJS.enc.Utf8.parse(vi) //十六位十六进制数作为密钥偏移量
 
-export const encryptData = (data: valueType, key: string) => {
-  // 将数据转换为字符串
-  const dataStr = JSON.stringify(data)
-  // 使用AES算法进行加密
-  const encryptedData = CryptoJS.AES.encrypt(dataStr, key).toString()
-  // 返回加密后的数据
-  return encryptedData
-}
-
-export const decryptData = (encryptedData: string, key: string) => {
-  // 使用AES算法进行解密
-  const decryptedData = CryptoJS.AES.decrypt(encryptedData, key).toString(
-    CryptoJS.enc.Utf8
-  )
-  // 将解密后的字符串转换为对象
-  const data = JSON.parse(decryptedData)
-  // 返回解密后的数据
-  return data
-}
-
-export const encrypt = (data: object | string): string => {
-  //加密
+/**
+ * AES加密
+ * @param data 加密数据
+ * @returns 返回加密数据
+ */
+export const encryptData = (data: valueType): string => {
   if (typeof data === 'object') {
     try {
       data = JSON.stringify(data)
@@ -43,7 +28,12 @@ export const encrypt = (data: object | string): string => {
   return encrypted.ciphertext.toString()
 }
 
-export const decrypt = (data: string) => {
+/**
+ * AES解密
+ * @param data 解密数据
+ * @returns 返回解密结果
+ */
+export const decryptData = (data: string): valueType => {
   //解密
   const encryptedHexStr = CryptoJS.enc.Hex.parse(data)
   const str = CryptoJS.enc.Base64.stringify(encryptedHexStr)

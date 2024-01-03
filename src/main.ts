@@ -8,12 +8,12 @@ import cookies from '@/utils/cookies'
 import dayjs from '@/utils/dayjs'
 import _ from '@/utils/lodash'
 import directive from '@/directive'
-require('./assets/main.scss')
+import '@/assets/main.scss'
+
 // main.ts 文件
 import sxlUi from './index'
 Vue.use(directive)
 Vue.use(sxlUi, { size: 'small' })
-console.log(sxlUi)
 
 Vue.config.productionTip = false
 Vue.prototype.$cookies = cookies
