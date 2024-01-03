@@ -73,6 +73,8 @@ export default {
   install(Vue: any, option: any) {
     let prefix = ''
     let isEncrypt = false
+    const SECRET_KEY = option && option.isEncrypt ? option.isEncrypt : '123456'
+    const SECRET_IV = option && option.SECRET_IV ? option.SECRET_IV : '123456'
     if (option && option.prefix) {
       prefix = option.prefix
     } else {
@@ -89,7 +91,9 @@ export default {
         }
         if (key != null && value != null) {
           const data = {
-            value: isEncrypt ? encryptData(value) : value,
+            value: isEncrypt
+              ? encryptData(value, SECRET_KEY, SECRET_IV)
+              : value,
             expire: expireTime(option, expire)
           }
           localStorage.setItem(prefix + key, JSON.stringify(data))
@@ -115,7 +119,7 @@ export default {
             value = data.value
           }
         }
-        return isEncrypt ? decryptData(value) : value
+        return isEncrypt ? decryptData(value, SECRET_KEY, SECRET_IV) : value
       },
       setJSON(key: string, jsonValue: valueType, expire: number | string) {
         if (jsonValue != null) {
@@ -142,7 +146,9 @@ export default {
         }
         if (key != null && value != null) {
           const data = {
-            value: isEncrypt ? encryptData(value) : value,
+            value: isEncrypt
+              ? encryptData(value, SECRET_KEY, SECRET_IV)
+              : value,
             expire: expireTime(option, expire)
           }
           sessionStorage.setItem(prefix + key, JSON.stringify(data))
@@ -168,7 +174,7 @@ export default {
             value = data.value
           }
         }
-        return isEncrypt ? decryptData(value) : value
+        return isEncrypt ? decryptData(value, SECRET_KEY, SECRET_IV) : value
       },
       setJSON(key: string, jsonValue: valueType, expire: number | string) {
         if (jsonValue != null) {

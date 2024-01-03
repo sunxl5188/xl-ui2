@@ -3,7 +3,7 @@
     <!--<XlTreeSelect v-model="value" :attribute="attribute"></XlTreeSelect>-->
     <!-- <XlTreeSelect /> -->
     <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
-    {{ formData }}
+
     <!-- <XlForm
       ref="myform"
       v-model="formData"
@@ -537,7 +537,10 @@ export default class App extends Vue {
     }
   }
 
-  mounted() {}
+  mounted() {
+    this.local.set('aa', 'aa')
+    this.session.set('bb', 'bbbbbb')
+  }
 
   public handleChangePage(page: object): void {
     console.log(page)
