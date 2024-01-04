@@ -1,5 +1,5 @@
 <template>
-  <div class="h-0">
+  <div>
     <el-checkbox
       v-if="isAll"
       :indeterminate="isIndeterminate"
@@ -127,7 +127,7 @@ export default class XlCheckBox extends Vue {
 
   // 获取CODE这典
   public getOption() {
-    getCode(this.$global.codeApi + this.code)
+    getCode(this.$global.codeApi + this.code, this.$cache)
       .then((res: any) => {
         this.options = res.data
       })

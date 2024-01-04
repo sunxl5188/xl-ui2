@@ -121,7 +121,7 @@ export default class XlSelect extends Vue {
   }
   // 获取CODE这典
   getOption() {
-    getCode(this.$global.codeApi + this.attribute.code)
+    getCode(this.$global.codeApi + this.attribute.code, this.$cache)
       .then((res: any) => {
         this.options = res.data
       })

@@ -277,7 +277,7 @@ export default class XlVirtualSelect extends Vue {
   // 获取CODE这典
   getOption() {
     return new Promise((resolve, reject) => {
-      getCode(this.$global.codeApi + this.code)
+      getCode(this.$global.codeApi + this.code, this.$cache)
         .then((res: any) => {
           resolve(res.data)
         })

@@ -93,7 +93,7 @@ export default class XlRadio extends Vue {
 
   // 获取CODE这典
   public getOption() {
-    getCode(this.$global.codeApi + this.code)
+    getCode(this.$global.codeApi + this.code, this.$cache)
       .then((res: any) => {
         this.options = res.data
       })

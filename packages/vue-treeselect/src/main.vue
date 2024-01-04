@@ -10,9 +10,20 @@
       }"
       :class="size"
     >
+      <!-- 选中的值 -->
       <div slot="value-label" slot-scope="{ node }">
-        <slot name="value-label" :node="node.raw">{{ node.raw.label }}</slot>
+        <slot
+          v-if="
+            attribute.slotname && attribute.slotname.includes('value-label')
+          "
+          name="value-label"
+          :node="node"
+        >
+          插槽内容
+        </slot>
+        <template v-else>{{ node.raw.label }}</template>
       </div>
+      <!-- 下拉列表 -->
       <div
         slot="option-label"
         slot-scope="{
@@ -24,17 +35,19 @@
         }"
       >
         <slot
+          v-if="
+            attribute.slotname && attribute.slotname.includes('option-label')
+          "
           name="option-label"
-          v-bind="{
-            node,
-            shouldShowCount,
-            count,
-            labelClassName,
-            countClassName
-          }"
+          :node="node"
+          :shouldShowCount="shouldShowCount"
+          :count="count"
+          :labelClassName="labelClassName"
+          :countClassName="countClassName"
         >
-          {{ node.label }}
+          插槽内容
         </slot>
+        <template v-else>{{ node.label }}</template>
       </div>
       <div slot="before-list">
         <slot name="before-list"></slot>

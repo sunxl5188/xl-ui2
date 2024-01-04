@@ -1,8 +1,6 @@
 <template>
   <div class="p-10">
-    <!--<XlTreeSelect v-model="value" :attribute="attribute"></XlTreeSelect>-->
-    <!-- <XlTreeSelect /> -->
-    <!--  <HeaderSearch :formItem="formItem1" :formData="formData1" /> -->
+    <HeaderSearch :formItem="formItem1" :formData="formData1" />
 
     <!-- <XlForm
       ref="myform"
@@ -23,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import XlCheckBox from '@/checkobx/src/main.vue'
 import { Component, Vue } from 'vue-property-decorator'
 
 // @ is an alias to /src
@@ -144,7 +143,18 @@ export default class App extends Vue {
     }
   ]
 
-  attribute = { data: this.data }
+  isSf = [
+    {
+      label: '是',
+      value: '1'
+    },
+    {
+      label: '否',
+      value: '0'
+    }
+  ]
+
+  attribute = { data: this.data, slotname: ['option-label11'] }
 
   options = [
     {
@@ -226,7 +236,7 @@ export default class App extends Vue {
   }
   formItem1 = [
     {
-      label: '国网工单编号',
+      label: '国网工单',
       prop: 'gdbh',
       span: 6,
       placeholder: '',
@@ -240,16 +250,7 @@ export default class App extends Vue {
       span: 6,
       formItemAttr: {},
       attribute: {
-        data: [
-          {
-            label: '是',
-            value: '1'
-          },
-          {
-            label: '否',
-            value: '0'
-          }
-        ]
+        data: this.isSf
       }
     },
     {
@@ -266,7 +267,9 @@ export default class App extends Vue {
       type: 'select',
       span: 6,
       formItemAttr: {},
-      attribute: { code: '1' },
+      attribute: {
+        data: this.checkArr
+      },
       events: {}
     },
     {
@@ -275,7 +278,7 @@ export default class App extends Vue {
       type: 'check',
       span: 6,
       formItemAttr: {},
-      attribute: { code: '5' }
+      attribute: { data: this.isSf }
     },
     {
       label: '抢修单状态',
@@ -283,7 +286,7 @@ export default class App extends Vue {
       type: 'radio',
       span: 6,
       formItemAttr: {},
-      attribute: { code: '4' }
+      attribute: { data: this.isSf }
     },
     {
       label: '故障范围',
@@ -316,7 +319,7 @@ export default class App extends Vue {
       span: 6,
       placeholder: '',
       formItemAttr: {},
-      attribute: { code: '8' }
+      attribute: {}
     },
     {
       label: '是否启用先复',
@@ -370,7 +373,7 @@ export default class App extends Vue {
       span: 6,
       placeholder: '',
       formItemAttr: {},
-      attribute: { code: '28' }
+      attribute: {}
     },
     {
       label: '所属馈线',
@@ -537,10 +540,7 @@ export default class App extends Vue {
     }
   }
 
-  mounted() {
-    this.local.set('aa', 'aa')
-    this.session.set('bb', 'bbbbbb')
-  }
+  mounted() {}
 
   public handleChangePage(page: object): void {
     console.log(page)

@@ -84,7 +84,7 @@ export default {
       isEncrypt = option.isEncrypt
     }
 
-    Vue.prototype.local = {
+    const local = {
       set(key: string, value: valueType, expire: number | string) {
         if (!localStorage) {
           return
@@ -118,8 +118,13 @@ export default {
           } else {
             value = data.value
           }
+          if (value) {
+            value = isEncrypt
+              ? decryptData(value, SECRET_KEY, SECRET_IV)
+              : value
+          }
         }
-        return isEncrypt ? decryptData(value, SECRET_KEY, SECRET_IV) : value
+        return value
       },
       setJSON(key: string, jsonValue: valueType, expire: number | string) {
         if (jsonValue != null) {
@@ -139,7 +144,7 @@ export default {
       }
     }
 
-    Vue.prototype.session = {
+    const session = {
       set(key: string, value: valueType, expire: number | string) {
         if (!sessionStorage) {
           return
@@ -174,7 +179,10 @@ export default {
             value = data.value
           }
         }
-        return isEncrypt ? decryptData(value, SECRET_KEY, SECRET_IV) : value
+        if (value) {
+          value = isEncrypt ? decryptData(value, SECRET_KEY, SECRET_IV) : value
+        }
+        return value
       },
       setJSON(key: string, jsonValue: valueType, expire: number | string) {
         if (jsonValue != null) {
@@ -192,6 +200,11 @@ export default {
       remove(key: string) {
         sessionStorage.removeItem(prefix + key)
       }
+    }
+
+    Vue.prototype.$cache = {
+      local: local,
+      session: session
     }
   }
 }
