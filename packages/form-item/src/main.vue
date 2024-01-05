@@ -73,6 +73,7 @@
     <template v-else-if="item.type === 'date'">
       <el-date-picker
         v-model="values"
+        :id="item.prop"
         v-bind="{
           ...{
             type: 'datetime',
@@ -114,8 +115,9 @@
     </template>
     <template v-else-if="item.type === 'textarea'">
       <el-input
-        type="textarea"
         v-model="values"
+        type="textarea"
+        :id="item.prop"
         v-bind="{
           ...{
             placeholder: '请输入',
@@ -137,6 +139,7 @@
     <template v-else>
       <el-input
         v-model="values"
+        :id="item.prop"
         v-bind="{
           ...{
             placeholder: '请输入',
@@ -161,6 +164,8 @@ import {
 } from 'vue-property-decorator'
 import { formItemType } from '@/utils/interface'
 
+type valType = string | number | string[] | number[]
+
 @Component({
   name: 'XlFormItem',
   components: {}
@@ -181,18 +186,22 @@ export default class XlFormItem extends Vue {
     | string[]
     | number
   @Emit('change')
-  public handleChange(): string | string[] | number {
+  public handleChange(): valType {
     return this.values
   }
 
-  // emit ========================
-
+  // emit ==========================
   // data ==========================
-  values = ''
-  labels = ''
+  values: valType = ''
+  labels: valType = ''
 
   // watch============
-  @Watch('values', { immediate: true, deep: true })
+  @Watch('value', { deep: true, immediate: true })
+  public handleWatchVal(): void {
+    this.values = JSON.parse(JSON.stringify(this.value))
+  }
+
+  @Watch('values', { deep: true })
   public handleWatch(): void {
     this.handleChange()
   }
@@ -203,6 +212,7 @@ export default class XlFormItem extends Vue {
     prop: string
     data: string | []
   } {
+    this.labels = data.data
     return data
   }
 }

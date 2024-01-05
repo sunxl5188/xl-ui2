@@ -10,4 +10,5 @@ export interface formItemType {
   attribute?: any
   events?: object
   formItemAttr?: object
+  layout?: object
 }

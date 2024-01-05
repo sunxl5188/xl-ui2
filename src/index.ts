@@ -42,7 +42,7 @@ const install: any = function (Vue: any, opts: any = {}): void {
 
   // 遍历注册全局组件
   components.forEach((component: any) => {
-    console.log(component.name)
+    //console.log(component.name)
     Vue.component(component.name, component)
   })
   Vue.use(cache, {

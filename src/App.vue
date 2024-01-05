@@ -1,6 +1,13 @@
 <template>
   <div class="p-10">
-    <HeaderSearch :formItem="formItem1" :formData="formData1" />
+    {{ formData1 }}
+    <HeaderSearch
+      :formItem="formItem1"
+      :formData="formData1"
+      :showRow="1"
+      btnLast
+      @search="handelSearch"
+    />
 
     <!-- <XlForm
       ref="myform"
@@ -231,8 +238,7 @@ export default class App extends Vue {
   }
   formData1 = {
     gdbh: '',
-    ssxq: '',
-    gjsjArr: []
+    ssxq: ''
   }
   formItem1 = [
     {
@@ -250,10 +256,11 @@ export default class App extends Vue {
       span: 6,
       formItemAttr: {},
       attribute: {
-        data: this.isSf
+        data: this.isSf,
+        labelname: 'ssxqname'
       }
-    },
-    {
+    }
+    /* {
       label: '故障地址',
       prop: 'gzaddr',
       span: 6,
@@ -275,7 +282,7 @@ export default class App extends Vue {
     {
       label: '接单班组',
       prop: 'jdbz',
-      type: 'check',
+      type: 'select',
       span: 6,
       formItemAttr: {},
       attribute: { data: this.isSf }
@@ -283,7 +290,7 @@ export default class App extends Vue {
     {
       label: '抢修单状态',
       prop: 'qxdzt',
-      type: 'radio',
+      type: 'select',
       span: 6,
       formItemAttr: {},
       attribute: { data: this.isSf }
@@ -401,8 +408,8 @@ export default class App extends Vue {
       attribute: { props: { label: 'label', value: 'value' } },
       placeholder: '',
       formItemAttr: {}
-    },
-    {
+    } */
+    /* {
       label: '挂机时间',
       prop: 'gjsjArr',
       type: 'date2',
@@ -414,7 +421,7 @@ export default class App extends Vue {
         'default-time': ['09:00:00', '08:00:00'],
         'value-format': 'yyyyMMddHHmmss'
       }
-    }
+    } */
   ]
   formItem = [
     {
@@ -559,6 +566,9 @@ export default class App extends Vue {
   public handleSubmit(data: any, label: any): void {
     console.log(data)
     console.log(label)
+  }
+  handelSearch(data: object) {
+    console.log(data, '=====')
   }
 }
 </script>
