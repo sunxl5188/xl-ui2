@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
 import { encryptData, decryptData } from './cryptojs'
+//https://blog.csdn.net/m0_46995864/article/details/125383362
+//https://blog.csdn.net/jx520/article/details/129688159
 
 /**
  * 设置缓存时间,返回时间戳
