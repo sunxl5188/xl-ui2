@@ -2,20 +2,30 @@
   <div class="w-full flex justify-start items-center">
     <el-date-picker
       v-model="value1"
-      v-bind="{ ...attribute, ...attributes }"
-      @change="handleChange"
+      :id="attribute.prop"
+      v-bind="{
+        ...attributes,
+        ...{ 'picker-options': pickerOptions1 },
+        ...attribute
+      }"
+      v-on="{}"
+      @change="handleChangeDate1"
     />
     <span class="px-2 text-gray-400">{{ rangeSeparator }}</span>
     <el-date-picker
       v-model="value2"
-      v-bind="{ ...attribute, ...attributes }"
-      @change="handleChange"
+      v-bind="{
+        ...attributes,
+        ...{ 'picker-options': pickerOptions2 },
+        ...attribute
+      }"
+      @change="handleChangeDate2"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Model, Prop, Vue } from 'vue-property-decorator'
+import { Component, Model, Emit, Prop, Vue } from 'vue-property-decorator'
 
 @Component({
   name: 'XlDatePicker2',
@@ -29,21 +39,32 @@ export default class XlDatePicker2 extends Vue {
       return {}
     }
   })
-  readonly attribute!: object
+  readonly attribute!: any
+
+  @Prop({
+    type: Object,
+    default() {
+      return {}
+    }
+  })
+  readonly events!: object
 
   // model =======================
   @Model('change', { type: [String, Array] }) readonly value!: string | string[]
-
-  // emit ========================
-
   @Emit('change')
   public handleChange(): string | string[] {
-    return [this.value1, this.value2]
+    return [this.value1 || '', this.value2 || '']
   }
 
   //data ====================
   value1 = ''
   value2 = ''
+  pickerOptions1 = {
+    disabledDate: this.disabledDate1
+  }
+  pickerOptions2 = {
+    disabledDate: this.disabledDate2
+  }
 
   attributes = {
     type: 'datetime',
@@ -63,10 +84,39 @@ export default class XlDatePicker2 extends Vue {
   mounted() {
     this.$nextTick(() => {
       if (Object.prototype.toString.call(this.value) === '[object Array]') {
-        this.value1 = this.value[0]
-        this.value2 = this.value[1]
+        this.value1 = this.value[0] || ''
+        this.value2 = this.value[1] || ''
       }
     })
+  }
+
+  public handleChangeDate1(e: string) {
+    this.value1 = e
+    this.handleChange()
+  }
+  public handleChangeDate2(e: string) {
+    this.value2 = e
+    this.handleChange()
+  }
+
+  public disabledDate1(time: Date): boolean {
+    let boole = false
+    let dayTime = 1000 * 60 * 60 * 24
+    if (this.value2) {
+      boole = time.getTime() > new Date(this.value2).getTime()
+    }
+    return time.getTime() < Date.now() - dayTime || boole
+  }
+
+  public disabledDate2(time: Date): boolean {
+    let times = 0
+    let dayTime = 1000 * 60 * 60 * 24
+    if (this.value1) {
+      times = new Date(this.value1).getTime() - dayTime
+    } else {
+      times = Date.now() - dayTime
+    }
+    return time.getTime() < times
   }
 }
 </script>

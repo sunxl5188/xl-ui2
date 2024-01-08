@@ -92,11 +92,11 @@
     <template v-else-if="item.type === 'date2'">
       <XlDatePicker2
         v-model="values"
-        v-bind="{
+        :attribute="{
           ...item.attribute,
           ...{ prop: item.prop }
         }"
-        v-on="{
+        :events="{
           ...{},
           ...item.events
         }"
@@ -190,20 +190,18 @@ export default class XlFormItem extends Vue {
     return this.values
   }
 
-  // emit ==========================
   // data ==========================
   values: valType = ''
   labels: valType = ''
 
-  // watch============
-  @Watch('value', { deep: true, immediate: true })
-  public handleWatchVal(): void {
-    this.values = JSON.parse(JSON.stringify(this.value))
-  }
-
   @Watch('values', { deep: true })
   public handleWatch(): void {
     this.handleChange()
+  }
+
+  @Watch('value', { deep: true })
+  handleWatchVal() {
+    this.values = this.value
   }
 
   // methods ==================
@@ -214,6 +212,10 @@ export default class XlFormItem extends Vue {
   } {
     this.labels = data.data
     return data
+  }
+
+  mounted() {
+    this.values = this.value || ''
   }
 }
 </script>

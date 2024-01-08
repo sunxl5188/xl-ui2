@@ -15,7 +15,6 @@
     }"
     @submit.native.prevent
   >
-    <div>{{ form }}</div>
     <el-row>
       <el-col
         v-for="(item, index) in formItem.slice(
@@ -23,18 +22,21 @@
           btnLast ? formItem.length : colLen
         )"
         :key="index"
-        v-bind="{
-          ...{
-            xs: 24,
-            sm: 12,
-            md: 8,
-            lg: 6,
-            xl: 6
-          },
-          ...layout
-        }"
+        v-bind="
+          item.span
+            ? { span: item.span }
+            : {
+                ...{
+                  xs: 24,
+                  sm: 12,
+                  md: 8,
+                  lg: 6,
+                  xl: 6
+                },
+                ...layout
+              }
+        "
       >
-        {{ form[item['prop']] }}--{{ item['prop'] }}
         <XlFormItem
           v-model="form[item['prop']]"
           :item="item"
@@ -71,16 +73,20 @@
             <el-col
               v-for="(item, index) in formItem.slice(colLen, formItem.length)"
               :key="index"
-              v-bind="{
-                ...{
-                  xs: 24,
-                  sm: 12,
-                  md: 8,
-                  lg: 6,
-                  xl: 6
-                },
-                ...layout
-              }"
+              v-bind="
+                item.span
+                  ? { span: item.span }
+                  : {
+                      ...{
+                        xs: 24,
+                        sm: 12,
+                        md: 8,
+                        lg: 6,
+                        xl: 6
+                      },
+                      ...layout
+                    }
+              "
             >
               <XlFormItem
                 v-model="form[item['prop']]"
@@ -113,7 +119,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
+import {
+  Component,
+  Model,
+  Emit,
+  Prop,
+  Vue,
+  Watch
+} from 'vue-property-decorator'
 import XlFormItem from '../../form-item/src/main.vue'
 import { formItemType } from '@/utils/interface'
 
@@ -123,13 +136,6 @@ import { formItemType } from '@/utils/interface'
 })
 export default class HeaderSearch extends Vue {
   // prop ========================
-  @Prop({
-    type: Object,
-    default() {
-      return {}
-    }
-  })
-  readonly formData!: object
 
   @Prop({
     type: Array,
@@ -175,9 +181,20 @@ export default class HeaderSearch extends Vue {
   })
   readonly btnLast!: boolean
 
+  // model =======================
+  @Model('change', { type: Object }) readonly formData!: object
+  @Emit('change')
+  public handleChange(): object {
+    return this.form
+  }
+
   // emit ========================
 
   // Watch ======================
+  @Watch('form', { deep: true })
+  public handleWatch(): void {
+    this.handleChange()
+  }
 
   //data==========================
   collapse = false
@@ -186,6 +203,7 @@ export default class HeaderSearch extends Vue {
   colLen = 0
   // vmounted
   mounted() {
+    this.form = JSON.parse(JSON.stringify(this.formData))
     this.getWindowWidth()
     window.addEventListener('resize', this.getWindowWidth)
   }
@@ -225,7 +243,15 @@ export default class HeaderSearch extends Vue {
   public handleSearch() {
     ;(this.$refs.myform as any).validate((valid: boolean) => {
       if (valid) {
-        const data = { ...this.form, ...this.label }
+        let data = { ...this.form, ...this.label }
+        for (const key in data) {
+          if (Object.prototype.hasOwnProperty.call(data, key)) {
+            let item = data[key]
+            if (Object.prototype.toString.call(item) === '[object Array]') {
+              data[key] = item.join(',')
+            }
+          }
+        }
         this.$emit('search', data)
       }
     })
@@ -234,13 +260,28 @@ export default class HeaderSearch extends Vue {
   //重置表单
   public resetForm() {
     ;(this.$refs.myform as any).resetFields()
-    this.form = JSON.parse(JSON.stringify(this.formData))
-    this.handleSearch()
-  }
-
-  @Watch('formData', { immediate: true, deep: true })
-  public handleWatch(data: object): void {
-    this.form = JSON.parse(JSON.stringify(data))
+    let obj: any = {}
+    for (const key in this.formData) {
+      if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
+        const item = (this.formData as any)[key]
+        if (item === undefined) {
+          obj[key] = ''
+        } else {
+          obj[key] = item
+        }
+      }
+    }
+    this.form = obj
+    let data = { ...this.form, ...this.label }
+    for (const key in data) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
+        let item = data[key]
+        if (Object.prototype.toString.call(item) === '[object Array]') {
+          data[key] = item.join(',')
+        }
+      }
+    }
+    this.$emit('clear', data)
   }
 }
 </script>

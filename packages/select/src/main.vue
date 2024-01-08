@@ -132,7 +132,7 @@ export default class XlSelect extends Vue {
 
   @Watch('value', { immediate: true, deep: true })
   public handleWatch(): void {
-    this.values = JSON.parse(JSON.stringify(this.value))
+    this.values = this.value
     if (this.value) {
       setTimeout(() => {
         this.handleChange(this.value)
