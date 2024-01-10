@@ -21,7 +21,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Model, Emit } from 'vue-property-decorator'
+import {
+  Component,
+  Vue,
+  Prop,
+  Model,
+  Emit,
+  Watch
+} from 'vue-property-decorator'
 import { getCode } from '@/utils/api'
 
 interface optionType {
@@ -106,6 +113,11 @@ export default class XlCheckBox extends Vue {
   @Emit('labelname')
   public handleLabelName() {
     return { prop: this.$attrs.labelname, data: this.checkLable }
+  }
+
+  @Watch('value', { immediate: true })
+  public handleWatch(val: Array<string | number>): void {
+    this.checkList = val
   }
 
   // ---------------------

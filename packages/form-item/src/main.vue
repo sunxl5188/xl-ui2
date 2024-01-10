@@ -21,6 +21,7 @@
         }"
         :events="item.events"
         v-on="{ labelname: handleSetLabel }"
+        @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'tree'">
@@ -31,6 +32,7 @@
           ...{ labelname: handleSetLabel },
           ...item.events
         }"
+        @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'checkbox'">
@@ -41,6 +43,7 @@
           ...{ labelname: handleSetLabel },
           ...item.events
         }"
+        @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'radio'">
@@ -51,6 +54,7 @@
           ...{ labelname: handleSetLabel },
           ...item.events
         }"
+        @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'cascader'">
@@ -68,6 +72,7 @@
           ...{ labelname: handleSetLabel },
           ...item.events
         }"
+        @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'date'">
@@ -87,6 +92,7 @@
           ...{},
           ...item.events
         }"
+        @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'date2'">
@@ -100,6 +106,7 @@
           ...{},
           ...item.events
         }"
+        @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'switch'">
@@ -109,7 +116,8 @@
           ...{ 'active-value': '1', 'inactive-value': '0' },
           ...item.attribute
         }"
-        v-on="item.events"
+        v-on="{ ...{}, ...item.events }"
+        @change="handleChange"
       >
       </el-switch>
     </template>
@@ -118,6 +126,7 @@
         v-model="values"
         type="textarea"
         :id="item.prop"
+        clearable
         v-bind="{
           ...{
             placeholder: '请输入',
@@ -134,6 +143,7 @@
           ...{},
           ...item.events
         }"
+        @change="handleChange"
       />
     </template>
     <template v-else>
@@ -147,7 +157,8 @@
           },
           ...item.attribute
         }"
-        v-on="item.events"
+        v-on="{ ...{}, ...item.events }"
+        @change="handleChange"
       />
     </template>
   </el-form-item>
@@ -193,11 +204,6 @@ export default class XlFormItem extends Vue {
   // data ==========================
   values: valType = ''
   labels: valType = ''
-
-  @Watch('values', { deep: true })
-  public handleWatch(): void {
-    this.handleChange()
-  }
 
   @Watch('value', { deep: true })
   handleWatchVal() {

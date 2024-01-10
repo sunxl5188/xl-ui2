@@ -139,7 +139,7 @@ export default class XlForm extends Vue {
 
   //=========================
   mounted() {
-    this.form = JSON.parse(JSON.stringify(this.value || this.formData))
+    this.form = this.value || this.formData
   }
 
   public handleSetLabel(data: { prop: string; data: string | [] }) {
