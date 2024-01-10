@@ -58,7 +58,7 @@
         }"
         class="pl-3 pt-1"
       >
-        <slot name="button">
+        <slot>
           <el-button type="primary" size="mini" @click="handleSearch"
             >搜索</el-button
           >
@@ -98,7 +98,7 @@
         </div>
       </el-collapse-transition>
       <div class="flex justify-end items-center w-full">
-        <slot name="button">
+        <slot>
           <el-button type="primary" size="mini" @click="handleSearch"
             >搜索</el-button
           >
@@ -131,10 +131,10 @@ import XlFormItem from '../../form-item/src/main.vue'
 import { formItemType } from '@/utils/interface'
 
 @Component({
-  name: 'HeaderSearch',
+  name: 'XlHeaderSearch',
   components: { XlFormItem }
 })
-export default class HeaderSearch extends Vue {
+export default class XlHeaderSearch extends Vue {
   // prop ========================
 
   @Prop({
@@ -163,7 +163,7 @@ export default class HeaderSearch extends Vue {
   //显示行数 默认2 1和2
   @Prop({
     type: Number,
-    default: 2
+    default: 1
   })
   readonly showRow!: number
 

@@ -8,7 +8,7 @@ import XlForm from '../packages/form'
 import XlRadio from '../packages/radio'
 import XlCascader from '../packages/cascader'
 import XlDatePicker from '../packages/datepicker'
-import HeaderSearch from '../packages/headersearch'
+import XlHeaderSearch from '../packages/headersearch'
 import XlTreeSelect from '../packages/vue-treeselect'
 
 import cache from './utils/cache'
@@ -25,7 +25,7 @@ const components = [
   XlRadio,
   XlCascader,
   XlDatePicker,
-  HeaderSearch,
+  XlHeaderSearch,
   XlTreeSelect
 ]
 
@@ -75,6 +75,6 @@ export default {
   XlRadio,
   XlCascader,
   XlDatePicker,
-  HeaderSearch,
+  XlHeaderSearch,
   XlTreeSelect
 }

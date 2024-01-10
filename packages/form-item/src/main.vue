@@ -33,7 +33,7 @@
         }"
       />
     </template>
-    <template v-else-if="item.type === 'check'">
+    <template v-else-if="item.type === 'checkbox'">
       <XlCheckBox
         v-model="values"
         v-bind="{ ...item.attribute, ...{ prop: item.prop } }"

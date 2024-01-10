@@ -65,10 +65,7 @@ export default class XlRadio extends Vue {
 
   @Emit('change')
   public handleChange(e: string): string {
-    const data = this._.filter(
-      this.options,
-      (o: any) => o[this.props['value']] === e
-    )
+    const data = this.options.filter((o: any) => o[this.props['value']] === e)
     if (data.length) {
       this.checkLable = data[0][this.props.label]
     }

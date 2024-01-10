@@ -1,5 +1,5 @@
-import HeaderSearch from './src/main.vue'
-;(HeaderSearch as any).install = (Vue: any) => {
-  Vue.component((HeaderSearch as any).extendOptions.name, HeaderSearch)
+import XlHeaderSearch from './src/main.vue'
+;(XlHeaderSearch as any).install = (Vue: any) => {
+  Vue.component((XlHeaderSearch as any).extendOptions.name, XlHeaderSearch)
 }
-export default HeaderSearch
+export default XlHeaderSearch

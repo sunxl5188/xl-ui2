@@ -202,7 +202,7 @@ export default {
       const data = this.$refs.mytree.selectedNodes
       const labels = data.map(item => item.label)
       this.labels = labels
-      this.$emit('change', this.values)
+      this.$emit('change', this.values || '')
       this.$emit('labelname', {
         prop: this.attribute.prop,
         data: this.labels.join(',')

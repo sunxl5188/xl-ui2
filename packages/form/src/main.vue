@@ -17,7 +17,23 @@
     >
       <el-row :gutter="0">
         <template v-for="(item, index) in formItem">
-          <el-col :key="index" :span="item.span || 6">
+          <el-col
+            :key="index"
+            v-bind="
+              item.span
+                ? { span: item.span }
+                : {
+                    ...{
+                      xs: 24,
+                      sm: 12,
+                      md: 8,
+                      lg: 6,
+                      xl: 6
+                    },
+                    ...layout
+                  }
+            "
+          >
             <XlFormItem
               v-model="form[item['prop']]"
               :item="item"
@@ -90,6 +106,14 @@ export default class XlForm extends Vue {
   })
   readonly rules!: object
 
+  @Prop({
+    type: Object,
+    default() {
+      return {}
+    }
+  })
+  readonly layout!: object
+
   // data ==================================
   form: any = {}
   label = {}
@@ -135,9 +159,28 @@ export default class XlForm extends Vue {
 
   //提交数据
   public handleSubmit() {
-    ;(this.$refs.myform as any).validate((valid: boolean) => {
+    ;(this.$refs.myform as any).validate((valid: boolean, error: any) => {
       if (valid) {
-        this.$emit('change', this.form, JSON.parse(JSON.stringify(this.label)))
+        let data = { ...this.form, ...this.label }
+        for (const key in data) {
+          if (Object.prototype.hasOwnProperty.call(data, key)) {
+            const item = data[key]
+            if (Object.prototype.toString.call(item) === '[object Array]') {
+              data[key] = item.join(',')
+            }
+          }
+        }
+        this.$emit('change', data)
+      } else {
+        if ((this.formAttribute as any)['show-message'] === false) {
+          for (const key in error) {
+            if (Object.prototype.hasOwnProperty.call(error, key)) {
+              const { message } = error[key][0]
+              this.$message({ message, type: 'error' })
+              break
+            }
+          }
+        }
       }
     })
   }

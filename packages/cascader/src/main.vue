@@ -19,14 +19,7 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Emit,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from 'vue-property-decorator'
+import { Component, Emit, Model, Prop, Vue } from 'vue-property-decorator'
 import { city } from '@/utils/city'
 
 @Component({
@@ -100,7 +93,12 @@ export default class XlCascader extends Vue {
   labels = ''
   options = city
 
-  mounted() {}
+  mounted() {
+    const data = (this.attribute as any).data
+    if (data) {
+      this.options = data
+    }
+  }
 }
 </script>
 
