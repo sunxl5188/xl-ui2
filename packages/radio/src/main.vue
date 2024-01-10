@@ -12,7 +12,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Model, Prop, Vue } from 'vue-property-decorator'
+import {
+  Component,
+  Emit,
+  Model,
+  Prop,
+  Vue,
+  Watch
+} from 'vue-property-decorator'
 import { getCode } from '@/utils/api'
 
 interface optionType {
@@ -76,6 +83,11 @@ export default class XlRadio extends Vue {
   @Emit('labelname')
   public handleLabelName() {
     return { prop: this.$attrs.labelname, data: this.checkLable }
+  }
+
+  @Watch('value', { immediate: true })
+  public handleWatch(val: string): void {
+    this.checkValue = val
   }
 
   // ---------------------
