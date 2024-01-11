@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
-import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import cookies from '@/utils/cookies'
@@ -24,7 +22,5 @@ Vue.use(dayjs)
 //Vue.prototype.$ELEMENT = { size: 'mini', zIndex: 100 }
 
 new Vue({
-  router,
-  store,
   render: h => h(App)
 }).$mount('#app')

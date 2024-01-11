@@ -12,16 +12,9 @@
     >
       <!-- 选中的值 -->
       <div slot="value-label" slot-scope="{ node }">
-        <slot
-          v-if="
-            attribute.slotname && attribute.slotname.includes('value-label')
-          "
-          name="value-label"
-          :node="node"
-        >
-          插槽内容
+        <slot name="value-label" :node="node">
+          {{ node.raw.label }}
         </slot>
-        <template v-else>{{ node.raw.label }}</template>
       </div>
       <!-- 下拉列表 -->
       <div
@@ -35,9 +28,6 @@
         }"
       >
         <slot
-          v-if="
-            attribute.slotname && attribute.slotname.includes('option-label')
-          "
           name="option-label"
           :node="node"
           :shouldShowCount="shouldShowCount"
@@ -45,9 +35,8 @@
           :labelClassName="labelClassName"
           :countClassName="countClassName"
         >
-          插槽内容
+          {{ node.label }}
         </slot>
-        <template v-else>{{ node.label }}</template>
       </div>
       <div slot="before-list">
         <slot name="before-list"></slot>
@@ -100,13 +89,61 @@ export default {
     data: {
       type: Array,
       default() {
-        return []
+        return [
+          {
+            id: 'a',
+            label: 'a',
+            children: [
+              {
+                id: 'aa',
+                label: 'aa'
+              },
+              {
+                id: 'ab',
+                label: 'ab'
+              }
+            ]
+          },
+          {
+            id: 'b',
+            label: 'b'
+          },
+          {
+            id: 'c',
+            label: 'c'
+          }
+        ]
       }
     },
     attribute: {
       type: Object,
       default() {
-        return {}
+        return {
+          data: [
+            {
+              id: '1',
+              label: '一级分类',
+              children: [
+                {
+                  id: '1-1',
+                  label: '一级子分类1'
+                },
+                {
+                  id: '1-2',
+                  label: '一级子分类2'
+                }
+              ]
+            },
+            {
+              id: '2',
+              label: '二级分类'
+            },
+            {
+              id: '3',
+              label: '三级分类'
+            }
+          ]
+        }
       }
     },
     value: {
