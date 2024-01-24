@@ -5,21 +5,17 @@ import request from './request'
  * @param code 字典ID
  * @returns Data
  */
-export const getCode = (url: string, cache: any) => {
+export const getCode = (url: string) => {
   return new Promise((resolve, reject) => {
-    if (cache.session.get(url)) {
-      resolve(cache.session.get(url))
-    } else {
-      request({
-        url,
-        method: 'get'
+    request({
+      url,
+      method: 'get'
+    })
+      .then((res: any) => {
+        resolve(res)
       })
-        .then((res: any) => {
-          resolve(res)
-        })
-        .catch(err => {
-          reject(err)
-        })
-    }
+      .catch(err => {
+        reject(err)
+      })
   })
 }

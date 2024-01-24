@@ -10,6 +10,7 @@
     <template v-if="item.type === 'select'">
       <XlSelect
         v-model="values"
+        :labelName.sync="labelName"
         :props="item.attribute.props || { value: 'value', label: 'label' }"
         :attribute="{
           ...{
@@ -20,7 +21,6 @@
           ...{ prop: item.prop }
         }"
         :events="item.events"
-        v-on="{ labelname: handleSetLabel }"
         @change="handleChange"
       />
     </template>
@@ -203,7 +203,7 @@ export default class XlFormItem extends Vue {
 
   // data ==========================
   values: valType = ''
-  labels: valType = ''
+  labelName: valType = ''
 
   @Watch('value', { deep: true })
   handleWatchVal() {
@@ -211,13 +211,9 @@ export default class XlFormItem extends Vue {
   }
 
   // methods ==================
-  @Emit('labelname')
-  public handleSetLabel(data: { prop: string; data: string | [] }): {
-    prop: string
-    data: string | []
-  } {
-    this.labels = data.data
-    return data
+  @Emit('update:labelname')
+  public handleSetLabel(): string {
+    return this.labelName
   }
 
   mounted() {

@@ -112,12 +112,9 @@ export default class XlSelect extends Vue {
     return this.values
   }
 
-  @Emit('labelname')
-  public handleLabelName(): object {
-    return {
-      prop: this.attribute.labelname,
-      data: this.labels
-    }
+  @Emit('update:labelName')
+  public handleLabelName(): string {
+    return this.labels
   }
 
   // ---------------------
@@ -142,7 +139,7 @@ export default class XlSelect extends Vue {
 
   // 获取CODE这典
   getOption() {
-    getCode(this.$global.codeApi + this.attribute.code, this.$cache)
+    getCode(this.$global.codeApi + this.attribute.code)
       .then((res: any) => {
         this.options = res.data
       })
