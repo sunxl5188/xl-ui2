@@ -117,6 +117,11 @@ export default class XlSelect extends Vue {
     return this.labels
   }
 
+  @Watch('value', { immediate: true, deep: true })
+  public handleWatch(): void {
+    this.values = JSON.parse(JSON.stringify(this.value))
+  }
+
   // ---------------------
   async mounted() {
     await this.$nextTick()
@@ -124,16 +129,9 @@ export default class XlSelect extends Vue {
       this.getOption()
     } else if (this.attribute.data) {
       this.options = this.attribute.data
-    }
-  }
-
-  @Watch('value', { immediate: true, deep: true })
-  public handleWatch(): void {
-    this.values = this.value
-    if (this.value) {
-      setTimeout(() => {
+      if (this.value) {
         this.handleChange(this.value)
-      }, 0)
+      }
     }
   }
 

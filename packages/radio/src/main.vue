@@ -80,29 +80,32 @@ export default class XlRadio extends Vue {
     return e
   }
 
-  @Emit('labelname')
-  public handleLabelName() {
-    return { prop: this.$attrs.labelname, data: this.checkLable }
+  @Emit('update:labelName')
+  public handleLabelName(): string {
+    return this.checkLable
   }
 
   @Watch('value', { immediate: true })
   public handleWatch(val: string): void {
-    this.checkValue = val
+    this.checkValue = JSON.parse(JSON.stringify(val))
   }
 
   // ---------------------
-  mounted() {
-    if (this.data) {
-      this.options = this.data as []
-    }
+  async mounted() {
+    await this.$nextTick()
     if (this.code) {
       this.getOption()
+    } else if (this.data) {
+      this.options = this.data as []
+      if (this.checkValue) {
+        this.handleChange(this.checkValue)
+      }
     }
   }
 
   // 获取CODE这典
   public getOption() {
-    getCode(this.$global.codeApi + this.code, this.$cache)
+    getCode(this.$global.codeApi + this.code)
       .then((res: any) => {
         this.options = res.data
       })

@@ -88,14 +88,16 @@ export default class XlCheckBox extends Vue {
   readonly isAll!: boolean
 
   //回调选中的值
-  @Model('change', { type: [Array, String] }) readonly value!: [] | string
+  @Model('change', { type: [Array, String] }) readonly value!: (
+    | number
+    | string
+  )[]
 
   @Emit('change')
   public handleChange(value: Array<string | number>): (string | number)[] {
     const data = this.options.filter((item: any) => {
       return this.checkList.includes(item[this.props['value']])
     })
-
     let labArr = data.map((item: any) => {
       return item[this.props.label]
     })
@@ -110,25 +112,28 @@ export default class XlCheckBox extends Vue {
     return this.checkList
   }
 
-  @Emit('labelname')
+  @Emit('update:labelName')
   public handleLabelName() {
-    return { prop: this.$attrs.labelname, data: this.checkLable }
+    return this.checkLable
   }
 
   @Watch('value', { immediate: true })
   public handleWatch(val: Array<string | number>): void {
-    this.checkList = val
+    this.checkList = JSON.parse(JSON.stringify(val)) || []
   }
 
   // ---------------------
-  mounted() {
-    if (this.data) {
-      this.options = this.data as []
-    }
+  async mounted() {
+    await this.$nextTick()
     if (this.code) {
       this.getOption()
+    } else if (this.data) {
+      this.options = this.data as []
+      this.optionVal = this.options.map((o: any) => o[this.props['value']])
+      if (this.checkList.length) {
+        this.handleChange(this.checkList)
+      }
     }
-    this.optionVal = this.options.map((o: any) => o[this.props['value']])
   }
 
   //全选
@@ -139,7 +144,7 @@ export default class XlCheckBox extends Vue {
 
   // 获取CODE这典
   public getOption() {
-    getCode(this.$global.codeApi + this.code, this.$cache)
+    getCode(this.$global.codeApi + this.code)
       .then((res: any) => {
         this.options = res.data
       })

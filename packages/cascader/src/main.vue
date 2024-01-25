@@ -10,7 +10,7 @@
         ...{
           filterable: true
         },
-        ...attribute
+        ...($attrs || {})
       }"
       v-on="events"
       @change="handleChange"
@@ -41,15 +41,6 @@ export default class XlCascader extends Vue {
   })
   readonly props!: object
 
-  //绑定属性
-  @Prop({
-    type: Object,
-    default() {
-      return {}
-    }
-  })
-  readonly attribute!: object
-
   //绑定事件
   @Prop({
     type: Object,
@@ -79,13 +70,13 @@ export default class XlCascader extends Vue {
     } else {
       this.labels = ''
     }
-    this.handleLabelName()
+    this.$attrs.labelName && this.handleLabelName()
     return e
   }
 
-  @Emit('labelname')
+  @Emit('update:labelName')
   public handleLabelName() {
-    return { prop: this.$attrs.prop, data: this.labels }
+    return this.labels
   }
 
   // data ======================
@@ -93,8 +84,9 @@ export default class XlCascader extends Vue {
   labels = ''
   options = city
 
-  mounted() {
-    const data = (this.attribute as any).data
+  async mounted() {
+    await this.$nextTick()
+    const data = (this.$attrs as any).data
     if (data) {
       this.options = data
     }

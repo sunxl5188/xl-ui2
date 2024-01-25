@@ -17,8 +17,7 @@
             placeholder: '请选择',
             clearable: true
           },
-          ...item.attribute,
-          ...{ prop: item.prop }
+          ...item.attribute
         }"
         :events="item.events"
         @change="handleChange"
@@ -27,17 +26,17 @@
     <template v-else-if="item.type === 'tree'">
       <XlTreeSelect
         v-model="values"
-        :attribute="{ ...item.attribute, ...{ prop: item.prop } }"
-        v-on="{
-          ...{ labelname: handleSetLabel },
-          ...item.events
-        }"
+        :labelName.sync="labelName"
+        :attribute="item.attribute"
+        v-on="item.events"
         @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'checkbox'">
       <XlCheckBox
         v-model="values"
+        :labelName.sync="labelName"
+        :props="item.attribute.props || { value: 'value', label: 'label' }"
         v-bind="{ ...item.attribute, ...{ prop: item.prop } }"
         v-on="{
           ...{ labelname: handleSetLabel },
@@ -49,29 +48,25 @@
     <template v-else-if="item.type === 'radio'">
       <XlRadio
         v-model="values"
+        :labelName.sync="labelName"
+        :props="item.attribute.props || { value: 'value', label: 'label' }"
         v-bind="{ ...item.attribute, ...{ prop: item.prop } }"
-        v-on="{
-          ...{ labelname: handleSetLabel },
-          ...item.events
-        }"
+        v-on="item.events"
         @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'cascader'">
       <XlCascader
         v-model="values"
+        :labelName.sync="labelName"
         v-bind="{
           ...{
             placeholder: '请输入',
             clearable: true
           },
-          ...item.attribute,
-          ...{ prop: item.prop }
+          ...item.attribute
         }"
-        v-on="{
-          ...{ labelname: handleSetLabel },
-          ...item.events
-        }"
+        v-on="item.events"
         @change="handleChange"
       />
     </template>
@@ -198,6 +193,13 @@ export default class XlFormItem extends Vue {
     | number
   @Emit('change')
   public handleChange(): valType {
+    if (
+      ['select', 'cascader', 'radio', 'checkbox', 'tree'].includes(
+        this.item.type
+      )
+    ) {
+      this.handleSetLabel()
+    }
     return this.values
   }
 
@@ -207,17 +209,15 @@ export default class XlFormItem extends Vue {
 
   @Watch('value', { deep: true })
   handleWatchVal() {
-    this.values = this.value
+    this.values = JSON.parse(JSON.stringify(this.value))
   }
 
   // methods ==================
-  @Emit('update:labelname')
-  public handleSetLabel(): string {
-    return this.labelName
-  }
+  @Emit('labelname')
+  public handleSetLabel(): valType {
+    console.log(this.item.prop, this.labelName)
 
-  mounted() {
-    this.values = this.value || ''
+    return this.labelName
   }
 }
 </script>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ form }}
     <el-form
       ref="myform"
       :model="form"
@@ -37,7 +38,7 @@
             <XlFormItem
               v-model="form[item['prop']]"
               :item="item"
-              @labelname="handleSetLabel"
+              @labelname="handleSetLabel($event, item.attribute.labelname)"
             />
           </el-col>
           <template v-if="cloumnsNum(index)">
@@ -122,28 +123,26 @@ export default class XlForm extends Vue {
   @Model('input', { type: Object }) readonly value!: object
   @Emit('input')
   public handleChange(data: object) {
-    this.handleLabelName()
     return data
   }
-  // emit ========================
-  @Emit('labelname')
-  public handleLabelName() {
-    return this.label
-  }
-
   // Watch ======================
   @Watch('form', { immediate: true, deep: true })
   handleWatchFormData(data: object) {
-    this.handleChange(data)
+    //this.handleChange(data)
   }
 
   //=========================
   mounted() {
-    this.form = this.value || this.formData
+    this.form = JSON.parse(JSON.stringify(this.formData))
   }
 
-  public handleSetLabel(data: { prop: string; data: string | [] }) {
-    this.$set(this.label, data.prop, data.data)
+  public handleSetLabel(
+    data: string | number | string[] | number[],
+    prop: string | undefined
+  ) {
+    if (prop) {
+      this.$set(this.form, prop, data)
+    }
   }
 
   public cloumnsNum(i: number): boolean {

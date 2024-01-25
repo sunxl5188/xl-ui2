@@ -3,7 +3,7 @@
     <Treeselect
       ref="mytree"
       v-model="values"
-      :options="attribute.data"
+      :options="data"
       v-bind="{ ...defAttribute, ...attribute }"
       v-on="{
         input: handleInput
@@ -91,26 +91,26 @@ export default {
       default() {
         return [
           {
-            id: 'a',
-            label: 'a',
+            id: '1',
+            label: '一级分类',
             children: [
               {
-                id: 'aa',
-                label: 'aa'
+                id: '1-1',
+                label: '一级子分类1'
               },
               {
-                id: 'ab',
-                label: 'ab'
+                id: '1-2',
+                label: '一级子分类2'
               }
             ]
           },
           {
-            id: 'b',
-            label: 'b'
+            id: '2',
+            label: '二级分类'
           },
           {
-            id: 'c',
-            label: 'c'
+            id: '3',
+            label: '三级分类'
           }
         ]
       }
@@ -118,32 +118,7 @@ export default {
     attribute: {
       type: Object,
       default() {
-        return {
-          data: [
-            {
-              id: '1',
-              label: '一级分类',
-              children: [
-                {
-                  id: '1-1',
-                  label: '一级子分类1'
-                },
-                {
-                  id: '1-2',
-                  label: '一级子分类2'
-                }
-              ]
-            },
-            {
-              id: '2',
-              label: '二级分类'
-            },
-            {
-              id: '3',
-              label: '三级分类'
-            }
-          ]
-        }
+        return {}
       }
     },
     value: {
@@ -179,7 +154,7 @@ export default {
         clearable: true, //是否显示重置值的“×”按钮
         clearAllText: '清除所有', //当：multiple=“true”时，“×”按钮的标题
         clearOnSelect: false, //选择选项后是否清除搜索输入。仅在以下情况下使用：multiple=“true”。对于单选模式，无论道具值如何，它总是在选择后清除输入
-        defaultExpandLevel: 0, //加载时应自动展开多少级别的分支节点。设置“无限”以使所有分支节点在默认情况下展开
+        defaultExpandLevel: Infinity, //加载时应自动展开多少级别的分支节点。设置“Infinity”以使所有分支节点在默认情况下展开
         defaultOptions: false, //在用户开始搜索之前显示的默认选项集。用于异步搜索模式。当设置为true时，将自动加载作为空字符串的搜索查询结果
         deleteRemoves: true, //如果没有文本输入，是否删除最后一项
         delimiter: ',', //用于连接隐藏字段值的多个值的分隔符
@@ -239,11 +214,8 @@ export default {
       const data = this.$refs.mytree.selectedNodes
       const labels = data.map(item => item.label)
       this.labels = labels
+      this.$emit('update:labelName', this.labels.join(','))
       this.$emit('change', this.values || '')
-      this.$emit('labelname', {
-        prop: this.attribute.prop,
-        data: this.labels.join(',')
-      })
     }
   }
 }
