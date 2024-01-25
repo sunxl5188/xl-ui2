@@ -37,11 +37,8 @@
         v-model="values"
         :labelName.sync="labelName"
         :props="item.attribute.props || { value: 'value', label: 'label' }"
-        v-bind="{ ...item.attribute, ...{ prop: item.prop } }"
-        v-on="{
-          ...{ labelname: handleSetLabel },
-          ...item.events
-        }"
+        v-bind="item.attribute"
+        v-on="item.events"
         @change="handleChange"
       />
     </template>
@@ -50,7 +47,7 @@
         v-model="values"
         :labelName.sync="labelName"
         :props="item.attribute.props || { value: 'value', label: 'label' }"
-        v-bind="{ ...item.attribute, ...{ prop: item.prop } }"
+        v-bind="item.attribute"
         v-on="item.events"
         @change="handleChange"
       />
@@ -83,24 +80,15 @@
           },
           ...item.attribute
         }"
-        v-on="{
-          ...{},
-          ...item.events
-        }"
+        v-on="item.events"
         @change="handleChange"
       />
     </template>
     <template v-else-if="item.type === 'date2'">
       <XlDatePicker2
         v-model="values"
-        :attribute="{
-          ...item.attribute,
-          ...{ prop: item.prop }
-        }"
-        :events="{
-          ...{},
-          ...item.events
-        }"
+        :attribute="item.attribute"
+        :events="item.events"
         @change="handleChange"
       />
     </template>
@@ -111,7 +99,7 @@
           ...{ 'active-value': '1', 'inactive-value': '0' },
           ...item.attribute
         }"
-        v-on="{ ...{}, ...item.events }"
+        v-on="item.events"
         @change="handleChange"
       >
       </el-switch>
@@ -131,13 +119,9 @@
             resize: 'none',
             clearable: true
           },
-          ...item.attribute,
-          ...{ prop: item.prop }
+          ...item.attribute
         }"
-        v-on="{
-          ...{},
-          ...item.events
-        }"
+        v-on="item.events"
         @change="handleChange"
       />
     </template>
@@ -152,7 +136,7 @@
           },
           ...item.attribute
         }"
-        v-on="{ ...{}, ...item.events }"
+        v-on="item.events"
         @change="handleChange"
       />
     </template>

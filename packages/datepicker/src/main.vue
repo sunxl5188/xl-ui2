@@ -14,6 +14,7 @@
     <span class="px-2 text-gray-400">{{ rangeSeparator }}</span>
     <el-date-picker
       v-model="value2"
+      :disabled="!value[0]"
       v-bind="{
         ...attributes,
         ...{ 'picker-options': pickerOptions2 },
@@ -101,22 +102,19 @@ export default class XlDatePicker2 extends Vue {
 
   public disabledDate1(time: Date): boolean {
     let boole = false
-    let dayTime = 1000 * 60 * 60 * 24
     if (this.value2) {
-      boole = time.getTime() > new Date(this.value2).getTime()
+      boole = time.getTime() >= new Date(this.value2).getTime()
     }
-    return time.getTime() < Date.now() - dayTime || boole
+    return boole
   }
 
   public disabledDate2(time: Date): boolean {
-    let times = 0
+    let boole = false
     let dayTime = 1000 * 60 * 60 * 24
     if (this.value1) {
-      times = new Date(this.value1).getTime() - dayTime
-    } else {
-      times = Date.now() - dayTime
+      boole = new Date(this.value1).getTime() - dayTime >= time.getTime()
     }
-    return time.getTime() < times
+    return boole
   }
 }
 </script>

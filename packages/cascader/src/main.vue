@@ -19,7 +19,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Model, Prop, Vue } from 'vue-property-decorator'
+import {
+  Component,
+  Emit,
+  Model,
+  Prop,
+  Vue,
+  Watch
+} from 'vue-property-decorator'
 import { city } from '@/utils/city'
 
 @Component({
@@ -70,13 +77,18 @@ export default class XlCascader extends Vue {
     } else {
       this.labels = ''
     }
-    this.$attrs.labelName && this.handleLabelName()
+    this.$attrs.labelname && this.handleLabelName()
     return e
   }
 
   @Emit('update:labelName')
   public handleLabelName() {
     return this.labels
+  }
+
+  @Watch('value', { immediate: true })
+  public handleWatch(val: string[] | string): void {
+    this.values = JSON.parse(JSON.stringify(val))
   }
 
   // data ======================
@@ -89,6 +101,9 @@ export default class XlCascader extends Vue {
     const data = (this.$attrs as any).data
     if (data) {
       this.options = data
+    }
+    if (this.values && this.values.length) {
+      this.handleChange(this.values)
     }
   }
 }

@@ -1,29 +1,26 @@
 <template>
-  <div>
-    <el-select
-      v-model="values"
-      :id="attribute.prop"
-      v-bind="{
-        ...{
-          clearable: true,
-          filterable: true,
-          placeholder: '请选择',
-          'collapse-tags': true
-        },
-        ...attribute
-      }"
-      v-on="events"
-      @change="handleChange"
+  <el-select
+    v-model="values"
+    v-bind="{
+      ...{
+        clearable: true,
+        filterable: true,
+        placeholder: '请选择',
+        'collapse-tags': true
+      },
+      ...attribute
+    }"
+    v-on="events"
+    @change="handleChange"
+  >
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item[props.label]"
+      :value="item[props.value]"
     >
-      <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item[props.label]"
-        :value="item[props.value]"
-      >
-      </el-option>
-    </el-select>
-  </div>
+    </el-option>
+  </el-select>
 </template>
 
 <script lang="ts">
