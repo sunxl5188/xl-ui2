@@ -87,7 +87,7 @@ export default class XlRadio extends Vue {
 
   @Watch('value', { immediate: true })
   public handleWatch(val: string): void {
-    this.checkValue = JSON.parse(JSON.stringify(val))
+    this.checkValue = JSON.parse(JSON.stringify(val || ''))
   }
 
   // ---------------------

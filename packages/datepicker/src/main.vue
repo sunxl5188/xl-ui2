@@ -26,7 +26,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Model, Emit, Prop, Vue } from 'vue-property-decorator'
+import {
+  Component,
+  Model,
+  Emit,
+  Prop,
+  Vue,
+  Watch
+} from 'vue-property-decorator'
 
 @Component({
   name: 'XlDatePicker2',
@@ -82,16 +89,21 @@ export default class XlDatePicker2 extends Vue {
     return attr['range-separator']
   }
 
-  mounted() {
-    this.$nextTick(() => {
-      if (Object.prototype.toString.call(this.value) === '[object Array]') {
-        this.value1 = this.value[0] || ''
-        this.value2 = this.value[1] || ''
-      }
-    })
+  @Watch('value', { immediate: true })
+  public handleWatch(val: Array<string>): void {
+    if (Object.prototype.toString.call(val) === '[object Array]') {
+      this.value1 = val[0] || ''
+      this.value2 = val[1] || ''
+    }
+  }
+  async mounted() {
+    await this.$nextTick()
   }
 
   public handleChangeDate1(e: string) {
+    if (e === null) {
+      this.value2 = ''
+    }
     this.value1 = e
     this.handleChange()
   }

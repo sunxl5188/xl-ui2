@@ -10,6 +10,7 @@ import XlCascader from '../packages/cascader'
 import XlDatePicker from '../packages/datepicker'
 import XlHeaderSearch from '../packages/headersearch'
 import XlTreeSelect from '../packages/vue-treeselect'
+import XlDateTime from '../packages/datetime'
 
 import cache from './utils/cache'
 
@@ -26,7 +27,8 @@ const components = [
   XlCascader,
   XlDatePicker,
   XlHeaderSearch,
-  XlTreeSelect
+  XlTreeSelect,
+  XlDateTime
 ]
 
 // 定义 install 方法，接收 Vue 作为参数。如果使用 use 注册插件，则所有的组件都将被注册
@@ -75,5 +77,6 @@ export default {
   XlCascader,
   XlDatePicker,
   XlHeaderSearch,
-  XlTreeSelect
+  XlTreeSelect,
+  XlDateTime
 }

@@ -1,53 +1,56 @@
 <template>
-  <div>
-    {{ form }}
-    <el-form
-      ref="myform"
-      :model="form"
-      :rules="rules"
-      v-bind="{
-        ...{
-          'label-width': '120px',
-          'label-suffix': ':',
-          inline: false,
-          'label-position': 'right'
-        },
-        ...formAttribute
-      }"
-      @submit.native.prevent
-    >
-      <el-row :gutter="0">
-        <template v-for="(item, index) in formItem">
-          <el-col
-            :key="index"
-            v-bind="
-              item.span
-                ? { span: item.span }
-                : {
-                    ...{
-                      xs: 24,
-                      sm: 12,
-                      md: 8,
-                      lg: 6,
-                      xl: 6
-                    },
-                    ...layout
-                  }
-            "
-          >
-            <XlFormItem
-              v-model="form[item['prop']]"
-              :item="item"
-              @labelname="handleSetLabel($event, item.attribute.labelname)"
-            />
-          </el-col>
-          <template v-if="cloumnsNum(index)">
-            <div :key="index + 'div'" class="clearfix"></div>
-          </template>
+  <el-form
+    ref="myform"
+    :model="form"
+    :rules="rules"
+    v-bind="{
+      ...{
+        'label-width': '120px',
+        'label-suffix': ':',
+        inline: false,
+        'label-position': 'right'
+      },
+      ...formAttribute
+    }"
+    @submit.native.prevent="handleSubmit"
+  >
+    <el-row :gutter="0">
+      <template v-for="(item, index) in formItem">
+        <el-col
+          :key="index"
+          v-bind="
+            item.span
+              ? { span: item.span }
+              : {
+                  ...{
+                    xs: 24,
+                    sm: 12,
+                    md: 8,
+                    lg: 6,
+                    xl: 6
+                  },
+                  ...layout
+                }
+          "
+        >
+          <XlFormItem
+            v-model="form[item['prop']]"
+            :item="item"
+            @labelname="handleSetLabel($event, item.attribute.labelname)"
+          />
+        </el-col>
+        <template v-if="cloumnsNum(index)">
+          <div :key="index + 'div'" class="clearfix"></div>
         </template>
-      </el-row>
-    </el-form>
-  </div>
+      </template>
+    </el-row>
+    <slot name="button">
+      <el-form-item>
+        <el-button type="primary" native-type="submit">保存</el-button>
+        <el-button @click="handleResetForm">重置</el-button>
+      </el-form-item>
+    </slot>
+  </el-form>
 </template>
 <script lang="ts">
 /**
@@ -58,14 +61,7 @@
  *  </el-form-item>
  * </template>
  **/
-import {
-  Component,
-  Emit,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from 'vue-property-decorator'
+import { Component, Emit, Model, Prop, Vue } from 'vue-property-decorator'
 import XlFormItem from '../../form-item/src/main.vue'
 import { formItemType } from '@/utils/interface'
 
@@ -116,6 +112,7 @@ export default class XlForm extends Vue {
   readonly layout!: object
 
   // data ==================================
+  defaultFormData: object = {}
   form: any = {}
   label = {}
 
@@ -126,14 +123,10 @@ export default class XlForm extends Vue {
     return data
   }
   // Watch ======================
-  @Watch('form', { immediate: true, deep: true })
-  handleWatchFormData(data: object) {
-    //this.handleChange(data)
-  }
-
   //=========================
   mounted() {
-    this.form = JSON.parse(JSON.stringify(this.formData))
+    this.defaultFormData = Object.assign({}, this.formData)
+    this.form = Object.assign({}, this.formData)
   }
 
   public handleSetLabel(
@@ -182,6 +175,10 @@ export default class XlForm extends Vue {
         }
       }
     })
+  }
+  //重置表单
+  public handleResetForm() {
+    this.form = Object.assign({}, this.defaultFormData)
   }
 }
 </script>

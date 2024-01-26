@@ -106,7 +106,7 @@
     </template>
     <template v-else-if="item.type === 'textarea'">
       <el-input
-        v-model="values"
+        v-model.trim="values"
         type="textarea"
         :id="item.prop"
         clearable
@@ -127,7 +127,7 @@
     </template>
     <template v-else>
       <el-input
-        v-model="values"
+        v-model.trim="values"
         :id="item.prop"
         v-bind="{
           ...{
@@ -184,7 +184,7 @@ export default class XlFormItem extends Vue {
     ) {
       this.handleSetLabel()
     }
-    return this.values
+    return this.values || ''
   }
 
   // data ==========================
@@ -193,14 +193,12 @@ export default class XlFormItem extends Vue {
 
   @Watch('value', { deep: true })
   handleWatchVal() {
-    this.values = JSON.parse(JSON.stringify(this.value))
+    this.values = JSON.parse(JSON.stringify(this.value || ''))
   }
 
   // methods ==================
   @Emit('labelname')
   public handleSetLabel(): valType {
-    console.log(this.item.prop, this.labelName)
-
     return this.labelName
   }
 }

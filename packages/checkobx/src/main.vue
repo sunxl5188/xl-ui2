@@ -119,7 +119,7 @@ export default class XlCheckBox extends Vue {
 
   @Watch('value', { immediate: true })
   public handleWatch(val: Array<string | number>): void {
-    this.checkList = JSON.parse(JSON.stringify(val)) || []
+    this.checkList = JSON.parse(JSON.stringify(val || []))
   }
 
   // ---------------------

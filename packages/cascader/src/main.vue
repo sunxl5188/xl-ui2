@@ -66,7 +66,6 @@ export default class XlCascader extends Vue {
   handleChange(e: Array<string>) {
     let cascader = this.$refs.cascader as any
     let nodes = cascader.getCheckedNodes()
-
     if (nodes.length) {
       let { pathLabels } = nodes[0]
       if (pathLabels.length) {
@@ -88,7 +87,7 @@ export default class XlCascader extends Vue {
 
   @Watch('value', { immediate: true })
   public handleWatch(val: string[] | string): void {
-    this.values = JSON.parse(JSON.stringify(val))
+    this.values = JSON.parse(JSON.stringify(val || []))
   }
 
   // data ======================
