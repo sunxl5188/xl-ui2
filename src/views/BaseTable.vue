@@ -6,7 +6,6 @@
       :total="total"
       :currentPage.sync="currentPage"
       :pageSize.sync="pageSize"
-      :page-sizes="pageSizes"
       :table-attribute="{ 'max-height': 500 }"
       selection
       @change="handleChangePage"
@@ -28,11 +27,26 @@ export default class extends Vue {
     {
       label: '序号',
       prop: 'idx'
+    },
+    {
+      label: '标题',
+      prop: 'title',
+      customRender: '',
+      attribute: {}
+    },
+    {
+      label: '更新时间',
+      prop: 'addTime',
+      customRender: '',
+      attribute: {}
     }
   ]
   currentPage = 1
   pageSize = 10
   total = 0
+
+  public handleChangePage(): void {}
+  public handleSelect(): void {}
 }
 </script>
 
