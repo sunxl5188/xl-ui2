@@ -53,13 +53,6 @@ export default class extends Vue {
       attribute: { labelname: 'sfjtName', code: '4' }
     },
     {
-      label: '来源',
-      prop: 'source',
-      type: 'checkbox',
-      formItemAttr: {},
-      attribute: { labelname: 'sourceName', code: '9' }
-    },
-    {
       label: '开票人',
       prop: 'kpr',
       type: 'tree',
@@ -91,9 +84,17 @@ export default class extends Vue {
       label: '复电时间',
       prop: 'fdsj',
       type: 'date2',
-      span: 24,
+      span: 12,
       formItemAttr: {},
       attribute: {}
+    },
+    {
+      label: '来源',
+      prop: 'source',
+      span: 12,
+      type: 'checkbox',
+      formItemAttr: {},
+      attribute: { labelname: 'sourceName', code: '9' }
     },
     {
       label: '是否归档',
@@ -106,7 +107,8 @@ export default class extends Vue {
   formAttribute = {}
   rules = {
     org: [{ required: true, message: '请输入工单编号' }],
-    jddw: [{ required: true, message: '请选择接单单位' }]
+    jddw: [{ required: true, message: '请选择接单单位' }],
+    address: [{ required: true, message: '请选择接单单位' }]
   }
 
   public handleSaveForm(data: object): void {

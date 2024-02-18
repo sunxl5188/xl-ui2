@@ -108,4 +108,17 @@ export default class XlCascader extends Vue {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.el-cascader {
+  height: 40px;
+  &--medium {
+    height: 36px;
+  }
+  &--small {
+    height: 32px;
+  }
+  &--mini {
+    height: 28px;
+  }
+}
+</style>

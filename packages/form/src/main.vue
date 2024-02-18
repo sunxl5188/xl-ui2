@@ -39,15 +39,16 @@
             @labelname="handleSetLabel($event, item.attribute.labelname)"
           />
         </el-col>
-        <template v-if="cloumnsNum(index)">
-          <div :key="index + 'div'" class="clearfix"></div>
-        </template>
       </template>
     </el-row>
     <slot name="button">
       <el-form-item>
-        <el-button type="primary" native-type="submit">保存</el-button>
-        <el-button @click="handleResetForm">重置</el-button>
+        <el-button type="primary" native-type="submit">
+          {{ confirmText }}
+        </el-button>
+        <el-button @click="handleResetForm">
+          {{ resetText }}
+        </el-button>
       </el-form-item>
     </slot>
   </el-form>
@@ -111,6 +112,18 @@ export default class XlForm extends Vue {
   })
   readonly layout!: object
 
+  @Prop({
+    type: String,
+    default: '保存'
+  })
+  readonly confirmText!: string
+
+  @Prop({
+    type: String,
+    default: '重置'
+  })
+  readonly resetText!: string
+
   // data ==================================
   defaultFormData: object = {}
   form: any = {}
@@ -136,17 +149,6 @@ export default class XlForm extends Vue {
     if (prop) {
       this.$set(this.form, prop, data)
     }
-  }
-
-  public cloumnsNum(i: number): boolean {
-    let len = 0
-    this.formItem.every((item, index, arr) => {
-      if (index <= i) {
-        len += item.span || 6
-      }
-      return index <= i
-    })
-    return len % 24 === 0
   }
 
   //提交数据

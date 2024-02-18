@@ -205,10 +205,27 @@ export default class XlFormItem extends Vue {
 </script>
 
 <style scoped lang="scss">
-::v-deep {
-  .el-form-item {
-    margin-bottom: 10px;
+.el-form-item {
+  height: 40px;
+  &.el-form-item {
+    &--medium {
+      height: 36px;
+    }
+    &--small {
+      height: 32px;
+    }
+    &--mini {
+      height: 28px;
+    }
   }
+  .el-form-item__content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    line-height: normal;
+  }
+}
+::v-deep {
   .el-date-editor,
   .el-cascader,
   .el-select {
