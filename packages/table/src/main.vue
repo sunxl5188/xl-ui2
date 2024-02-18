@@ -12,7 +12,7 @@
           rowKey: 'id',
           border: true
         },
-        ...attribute
+        ...tableAttribute
       }"
       v-on="{
         ...{},
@@ -120,6 +120,8 @@ interface columnType {
 })
 export default class XlTable extends Vue {
   // prop ========================
+  @Prop({ type: Object, default: () => {} })
+  readonly tableAttribute!: object
 
   @Prop({
     type: Object,

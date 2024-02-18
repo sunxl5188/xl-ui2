@@ -40,7 +40,7 @@
         <XlFormItem
           v-model="form[item['prop']]"
           :item="item"
-          @labelname="handleSetLabel"
+          @labelname="handleSetLabel($event, item.attribute.labelname)"
         />
       </el-col>
       <!-- 按钮 -->
@@ -56,13 +56,11 @@
           },
           ...layout
         }"
-        class="pl-3 pt-1"
+        class="pl-3"
       >
         <slot>
-          <el-button type="primary" size="mini" @click="handleSearch"
-            >搜索</el-button
-          >
-          <el-button size="mini" @click="resetForm">清空</el-button>
+          <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
+          <el-button @click="resetForm"> 清空 </el-button>
         </slot>
       </el-col>
     </el-row>
@@ -91,7 +89,7 @@
               <XlFormItem
                 v-model="form[item['prop']]"
                 :item="item"
-                @labelname="handleSetLabel"
+                @labelname="handleSetLabel($event, item.attribute.labelname)"
               />
             </el-col>
           </el-row>
@@ -99,15 +97,12 @@
       </el-collapse-transition>
       <div class="flex justify-end items-center w-full">
         <slot>
-          <el-button type="primary" size="mini" @click="handleSearch"
-            >搜索</el-button
-          >
-          <el-button size="mini">清空</el-button>
+          <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
+          <el-button @click="resetForm">清空</el-button>
         </slot>
         <el-button
           v-if="formItem.length > colLen"
           type="text"
-          size="mini"
           :icon="collapse ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
           @click="collapse = !collapse"
         >
@@ -119,14 +114,7 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Model,
-  Emit,
-  Prop,
-  Vue,
-  Watch
-} from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import XlFormItem from '../../form-item/src/main.vue'
 import { formItemType } from '@/utils/interface'
 
@@ -136,6 +124,9 @@ import { formItemType } from '@/utils/interface'
 })
 export default class XlHeaderSearch extends Vue {
   // prop ========================
+
+  @Prop({ type: Object, default: () => {} })
+  readonly formData!: any
 
   @Prop({
     type: Array,
@@ -181,21 +172,6 @@ export default class XlHeaderSearch extends Vue {
   })
   readonly btnLast!: boolean
 
-  // model =======================
-  @Model('change', { type: Object }) readonly formData!: object
-  @Emit('change')
-  public handleChange(): object {
-    return this.form
-  }
-
-  // emit ========================
-
-  // Watch ======================
-  @Watch('form', { deep: true })
-  public handleWatch(): void {
-    this.handleChange()
-  }
-
   //data==========================
   collapse = false
   form: any = {}
@@ -203,9 +179,14 @@ export default class XlHeaderSearch extends Vue {
   colLen = 0
   // vmounted
   mounted() {
-    this.form = JSON.parse(JSON.stringify(this.formData))
+    this.form = Object.assign({}, this.formData)
     this.getWindowWidth()
     window.addEventListener('resize', this.getWindowWidth)
+    this.formItem.forEach(item => {
+      if (['select'].includes(item.type) && this.formData[item.prop]) {
+        this.handleSetLabel(this.formData[item.prop], item.prop)
+      }
+    })
   }
 
   beforeDestroy() {
@@ -236,9 +217,15 @@ export default class XlHeaderSearch extends Vue {
     }
   }
 
-  public handleSetLabel(data: { prop: string; data: string | [] }) {
-    this.$set(this.label, data.prop, data.data)
+  public handleSetLabel(
+    data: string | number | string[] | number[],
+    prop: string | undefined
+  ) {
+    if (prop) {
+      this.$set(this.form, prop, data)
+    }
   }
+
   //搜索
   public handleSearch() {
     ;(this.$refs.myform as any).validate((valid: boolean) => {
@@ -281,7 +268,7 @@ export default class XlHeaderSearch extends Vue {
         }
       }
     }
-    this.$emit('clear', data)
+    this.$emit('cancel', data)
   }
 }
 </script>

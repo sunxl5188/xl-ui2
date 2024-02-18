@@ -121,24 +121,26 @@ export default class XlSelect extends Vue {
 
   // ---------------------
   async mounted() {
-    await this.$nextTick()
     if (this.attribute.code) {
-      this.getOption()
+      const data = await this.getOption()
+      this.options = data as []
     } else if (this.attribute.data) {
       this.options = this.attribute.data
-      if (this.value) {
-        this.handleChange(this.value)
-      }
+    }
+    if (this.value) {
+      this.handleChange(this.value)
     }
   }
 
   // 获取CODE这典
   getOption() {
-    getCode(this.$global.codeApi + this.attribute.code)
-      .then((res: any) => {
-        this.options = res.data
-      })
-      .catch(err => err)
+    return new Promise((resolve, reject) => {
+      getCode(this.$global.codeApi + this.attribute.code)
+        .then((res: any) => {
+          resolve(res.data)
+        })
+        .catch(err => reject(err))
+    })
   }
 }
 </script>
