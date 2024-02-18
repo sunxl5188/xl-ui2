@@ -7,7 +7,16 @@
       :rules="rules"
       :form-attribute="formAttribute"
       @change="handleSaveForm"
-    ></XlForm>
+    >
+      <div slot="customItem">22</div>
+      <template #customItem="{ row, form }">
+        <el-input
+          v-model="form[row.prop]"
+          placeholder="自定义输入框"
+          clearable
+        />
+      </template>
+    </XlForm>
   </div>
 </template>
 
@@ -20,6 +29,7 @@ import { Component, Vue } from 'vue-property-decorator'
 })
 export default class extends Vue {
   formData = {
+    custom: '',
     org: '111111',
     jddw: '0592',
     ifjt: '1',
@@ -32,6 +42,13 @@ export default class extends Vue {
     isgd: '1'
   }
   formItem = [
+    {
+      label: '插槽',
+      prop: 'custom',
+      slotname: 'customItem',
+      formItemAttr: {},
+      attribute: {}
+    },
     {
       label: '工单编号',
       prop: 'org',

@@ -33,7 +33,17 @@
                 }
           "
         >
+          <template v-if="item.slotname">
+            <el-form-item
+              :label="item.label"
+              :prop="item.prop"
+              v-bind="item.formItemAttr"
+            >
+              <slot :name="item.slotname" :row="item" :form="form"></slot>
+            </el-form-item>
+          </template>
           <XlFormItem
+            v-else
             v-model="form[item['prop']]"
             :item="item"
             @labelname="handleSetLabel($event, item.attribute.labelname)"
@@ -185,4 +195,6 @@ export default class XlForm extends Vue {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import '../form-item.scss';
+</style>

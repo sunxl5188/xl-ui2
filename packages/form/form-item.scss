@@ -1,0 +1,20 @@
+.el-form-item {
+  height: 40px;
+  &.el-form-item {
+    &--medium {
+      height: 36px;
+    }
+    &--small {
+      height: 32px;
+    }
+    &--mini {
+      height: 28px;
+    }
+  }
+  .el-form-item__content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    line-height: normal;
+  }
+}

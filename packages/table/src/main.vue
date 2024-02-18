@@ -21,17 +21,21 @@
     >
       <!-- 选择 -->
       <el-table-column
-        v-if="selection === 'check'"
-        type="selection"
-        reserve-selection
-        width="55"
-        align="center"
+        v-if="selection === 'checkbox'"
+        v-bind="{
+          type: 'selection',
+          'reserve-selection': true,
+          width: '55',
+          align: 'center'
+        }"
       />
       <el-table-column
         v-if="selection === 'radio'"
-        label="选择"
-        width="55"
-        align="center"
+        v-bind="{
+          label: '选择',
+          width: '55',
+          align: 'center'
+        }"
       >
         <template #default="{ row }">
           <el-radio
@@ -116,6 +120,7 @@ interface columnType {
 })
 export default class XlTable extends Vue {
   // prop ========================
+
   @Prop({
     type: Object,
     default() {
@@ -138,7 +143,7 @@ export default class XlTable extends Vue {
       return []
     }
   })
-  readonly sourceData!: object[]
+  readonly sourceData!: any[]
 
   @Prop({
     type: Array,
@@ -158,7 +163,7 @@ export default class XlTable extends Vue {
     type: String,
     default: ''
   })
-  readonly selection!: string // check:多选 radio:单选
+  readonly selection!: string // checkbox:多选 radio:单选
 
   @Prop({
     type: Number,
@@ -174,7 +179,7 @@ export default class XlTable extends Vue {
 
   @Prop({
     type: Number,
-    default: 0
+    default: 10
   })
   readonly pageSize!: number // 每页大小
 

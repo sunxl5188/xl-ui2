@@ -4,9 +4,6 @@
     :prop="item.prop"
     v-bind="item.formItemAttr"
   >
-    <template v-if="item.slotname">
-      <slot :name="item.slotname" :row="item"></slot>
-    </template>
     <template v-if="item.type === 'select'">
       <XlSelect
         v-model="values"
@@ -205,26 +202,7 @@ export default class XlFormItem extends Vue {
 </script>
 
 <style scoped lang="scss">
-.el-form-item {
-  height: 40px;
-  &.el-form-item {
-    &--medium {
-      height: 36px;
-    }
-    &--small {
-      height: 32px;
-    }
-    &--mini {
-      height: 28px;
-    }
-  }
-  .el-form-item__content {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    line-height: normal;
-  }
-}
+@import '../../form/form-item.scss';
 ::v-deep {
   .el-date-editor,
   .el-cascader,
