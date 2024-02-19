@@ -7,6 +7,7 @@ import dayjs from '@/utils/dayjs'
 import _ from '@/utils/lodash'
 import directive from '@/directive'
 import '@/assets/main.scss'
+import '@/assets/tailwind.css'
 
 // main.ts 文件
 import sxlUi from './index'

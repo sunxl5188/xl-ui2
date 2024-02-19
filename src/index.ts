@@ -14,6 +14,8 @@ import XlDateTime from '../packages/datetime'
 
 import cache from './utils/cache'
 
+import './assets/main.scss'
+
 // 存储组件列表
 const components = [
   XlTable,

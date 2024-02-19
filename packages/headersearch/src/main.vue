@@ -1,116 +1,118 @@
 <template>
-  <el-form
-    ref="myform"
-    :model="form"
-    :rules="rules"
-    v-bind="{
-      ...{
-        inline: false,
-        'label-width': '100px',
-        'label-suffix': '',
-        'label-position': 'right',
-        'show-message': false
-      },
-      ...formAttribute
-    }"
-    @submit.native.prevent
-  >
-    <el-row>
-      <el-col
-        v-for="(item, index) in formItem.slice(
-          0,
-          btnLast ? formItem.length : colLen
-        )"
-        :key="index"
-        v-bind="
-          item.span
-            ? { span: item.span }
-            : {
-                ...{
-                  xs: 24,
-                  sm: 12,
-                  md: 8,
-                  lg: 6,
-                  xl: 6
-                },
-                ...layout
-              }
-        "
-      >
-        <XlFormItem
-          v-model="form[item['prop']]"
-          :item="item"
-          @labelname="handleSetLabel($event, item.attribute.labelname)"
-        />
-      </el-col>
-      <!-- 按钮 -->
-      <el-col
-        v-if="btnLast"
-        v-bind="{
-          ...{
-            xs: 24,
-            sm: 12,
-            md: 8,
-            lg: 6,
-            xl: 4
-          },
-          ...layout
-        }"
-        class="pl-3"
-      >
-        <slot>
-          <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
-          <el-button @click="resetForm"> 清空 </el-button>
-        </slot>
-      </el-col>
-    </el-row>
-    <template v-if="!btnLast">
-      <el-collapse-transition>
-        <div v-show="collapse">
-          <el-row>
-            <el-col
-              v-for="(item, index) in formItem.slice(colLen, formItem.length)"
-              :key="index"
-              v-bind="
-                item.span
-                  ? { span: item.span }
-                  : {
-                      ...{
-                        xs: 24,
-                        sm: 12,
-                        md: 8,
-                        lg: 6,
-                        xl: 6
-                      },
-                      ...layout
-                    }
-              "
-            >
-              <XlFormItem
-                v-model="form[item['prop']]"
-                :item="item"
-                @labelname="handleSetLabel($event, item.attribute.labelname)"
-              />
-            </el-col>
-          </el-row>
-        </div>
-      </el-collapse-transition>
-      <div class="flex justify-end items-center w-full">
-        <slot>
-          <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
-          <el-button @click="resetForm">清空</el-button>
-        </slot>
-        <el-button
-          v-if="formItem.length > colLen"
-          type="text"
-          :icon="collapse ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
-          @click="collapse = !collapse"
+  <div>
+    <el-form
+      ref="myform"
+      :model="form"
+      :rules="rules"
+      v-bind="{
+        ...{
+          inline: false,
+          'label-width': '100px',
+          'label-suffix': '',
+          'label-position': 'right',
+          'show-message': false
+        },
+        ...formAttribute
+      }"
+      @submit.native.prevent
+    >
+      <el-row>
+        <el-col
+          v-for="(item, index) in formItem.slice(
+            0,
+            btnLast ? formItem.length : colLen
+          )"
+          :key="index"
+          v-bind="
+            item.span
+              ? { span: item.span }
+              : {
+                  ...{
+                    xs: 24,
+                    sm: 12,
+                    md: 8,
+                    lg: 6,
+                    xl: 6
+                  },
+                  ...layout
+                }
+          "
         >
-          {{ collapse ? '收起' : '展开' }}
-        </el-button>
-      </div>
-    </template>
-  </el-form>
+          <XlFormItem
+            v-model="form[item['prop']]"
+            :item="item"
+            @labelname="handleSetLabel($event, item.attribute.labelname)"
+          />
+        </el-col>
+        <!-- 按钮 -->
+        <el-col
+          v-if="btnLast"
+          v-bind="{
+            ...{
+              xs: 24,
+              sm: 12,
+              md: 8,
+              lg: 6,
+              xl: 4
+            },
+            ...layout
+          }"
+          class="pl-3"
+        >
+          <slot>
+            <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
+            <el-button @click="resetForm"> 清空 </el-button>
+          </slot>
+        </el-col>
+      </el-row>
+      <template v-if="!btnLast">
+        <el-collapse-transition>
+          <div v-show="collapse">
+            <el-row>
+              <el-col
+                v-for="(item, index) in formItem.slice(colLen, formItem.length)"
+                :key="index"
+                v-bind="
+                  item.span
+                    ? { span: item.span }
+                    : {
+                        ...{
+                          xs: 24,
+                          sm: 12,
+                          md: 8,
+                          lg: 6,
+                          xl: 6
+                        },
+                        ...layout
+                      }
+                "
+              >
+                <XlFormItem
+                  v-model="form[item['prop']]"
+                  :item="item"
+                  @labelname="handleSetLabel($event, item.attribute.labelname)"
+                />
+              </el-col>
+            </el-row>
+          </div>
+        </el-collapse-transition>
+        <div class="flex justify-end items-center w-full">
+          <slot>
+            <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
+            <el-button @click="resetForm">清空</el-button>
+          </slot>
+          <el-button
+            v-if="formItem.length > colLen"
+            type="text"
+            :icon="collapse ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"
+            @click="collapse = !collapse"
+          >
+            {{ collapse ? '收起' : '展开' }}
+          </el-button>
+        </div>
+      </template>
+    </el-form>
+  </div>
 </template>
 
 <script lang="ts">

@@ -6,7 +6,7 @@
         ...attributes1,
         ...attribute1
       }"
-      v-on="events1"
+      v-on="events1 || {}"
       @change="handleChangeDate1"
     />
     <span class="px-2 text-gray-400"> - </span>
@@ -17,7 +17,7 @@
         ...attributes2,
         ...attribute2
       }"
-      v-on="events2"
+      v-on="events2 || {}"
       @change="handleChangeDate2"
     />
   </div>

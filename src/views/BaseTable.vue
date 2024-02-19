@@ -162,11 +162,11 @@ export default class extends Vue {
   public handleDel({ id }: { id: number }): void {
     console.log(id)
   }
-  handleDate1() {
-    console.log(11)
+  handleDate1(e: any) {
+    console.log(e)
   }
-  handleDate2() {
-    console.log(222)
+  handleDate2(e: any) {
+    console.log(e)
   }
 }
 </script>

@@ -192,9 +192,9 @@ export default class XlFormItem extends Vue {
   values: valType = ''
   labelName: valType = ''
 
-  @Watch('value', { deep: true })
-  handleWatchVal() {
-    this.values = JSON.parse(JSON.stringify(this.value || ''))
+  @Watch('value', { deep: true, immediate: true })
+  handleWatchVal(e: valType) {
+    this.values = e || ''
   }
 
   // methods ==================
