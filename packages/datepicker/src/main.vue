@@ -2,24 +2,22 @@
   <div class="w-full flex justify-start items-center">
     <el-date-picker
       v-model="value1"
-      :id="attribute.prop"
       v-bind="{
-        ...attributes,
-        ...{ 'picker-options': pickerOptions1 },
-        ...attribute
+        ...attributes1,
+        ...attribute1
       }"
-      v-on="{}"
+      v-on="events1"
       @change="handleChangeDate1"
     />
-    <span class="px-2 text-gray-400">{{ rangeSeparator }}</span>
+    <span class="px-2 text-gray-400"> - </span>
     <el-date-picker
       v-model="value2"
       :disabled="!value[0]"
       v-bind="{
-        ...attributes,
-        ...{ 'picker-options': pickerOptions2 },
-        ...attribute
+        ...attributes2,
+        ...attribute2
       }"
+      v-on="events2"
       @change="handleChangeDate2"
     />
   </div>
@@ -47,7 +45,7 @@ export default class XlDatePicker2 extends Vue {
       return {}
     }
   })
-  readonly attribute!: any
+  readonly attribute1!: any
 
   @Prop({
     type: Object,
@@ -55,7 +53,23 @@ export default class XlDatePicker2 extends Vue {
       return {}
     }
   })
-  readonly events!: object
+  readonly attribute2!: any
+
+  @Prop({
+    type: Object,
+    default() {
+      return {}
+    }
+  })
+  readonly events1!: object
+
+  @Prop({
+    type: Object,
+    default() {
+      return {}
+    }
+  })
+  readonly events2!: object
 
   // model =======================
   @Model('change', { type: [String, Array] }) readonly value!: string | string[]
@@ -67,26 +81,24 @@ export default class XlDatePicker2 extends Vue {
   //data ====================
   value1 = ''
   value2 = ''
-  pickerOptions1 = {
-    disabledDate: this.disabledDate1
-  }
-  pickerOptions2 = {
-    disabledDate: this.disabledDate2
-  }
 
-  attributes = {
+  attributes1 = {
     type: 'datetime',
     clearable: true,
     placeholder: '请选择日期',
     'value-format': 'yyyy-MM-dd HH:mm:ss',
     'default-time': this.$dayjs().format('HH:mm:ss'),
-    'range-separator': '-'
+    'range-separator': '-',
+    'picker-options': { disabledDate: this.disabledDate1 }
   }
-
-  get rangeSeparator(): string {
-    const attrs = JSON.parse(JSON.stringify(this.attribute))
-    const attr = { ...attrs, ...this.attributes }
-    return attr['range-separator']
+  attributes2 = {
+    type: 'datetime',
+    clearable: true,
+    placeholder: '请选择日期',
+    'value-format': 'yyyy-MM-dd HH:mm:ss',
+    'default-time': this.$dayjs().format('HH:mm:ss'),
+    'range-separator': '-',
+    'picker-options': { disabledDate: this.disabledDate2 }
   }
 
   @Watch('value', { immediate: true })

@@ -34,7 +34,14 @@
           "
         >
           <template v-if="item.slotname">
+            <slot
+              v-if="item.type === 'custom'"
+              :name="item.slotname"
+              :row="item"
+              :form="form"
+            ></slot>
             <el-form-item
+              v-else
               :label="item.label"
               :prop="item.prop"
               v-bind="item.formItemAttr"
@@ -51,7 +58,7 @@
         </el-col>
       </template>
     </el-row>
-    <slot name="button">
+    <slot v-if="showButton" name="button">
       <el-form-item>
         <el-button type="primary" native-type="submit">
           {{ confirmText }}
@@ -82,6 +89,9 @@ import { formItemType } from '@/utils/interface'
 })
 export default class XlForm extends Vue {
   // prop ========================
+  @Prop({ type: Boolean, default: true })
+  readonly showButton!: boolean
+
   @Prop({
     type: Array,
     default() {
@@ -195,6 +205,4 @@ export default class XlForm extends Vue {
 }
 </script>
 
-<style scoped lang="scss">
-@import '../form-item.scss';
-</style>
+<style scoped lang="scss"></style>

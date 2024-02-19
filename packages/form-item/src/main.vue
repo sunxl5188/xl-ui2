@@ -3,6 +3,7 @@
     :label="item.label"
     :prop="item.prop"
     v-bind="item.formItemAttr"
+    :style="item.type === 'text' ? 'margin-bottom:0px' : ''"
   >
     <template v-if="item.type === 'select'">
       <XlSelect
@@ -84,8 +85,10 @@
     <template v-else-if="item.type === 'date2'">
       <XlDatePicker2
         v-model="values"
-        :attribute="item.attribute"
-        :events="item.events"
+        :attribute1="item.attribute1 || {}"
+        :attribute2="item.attribute2 || {}"
+        :events1="item.events1 || {}"
+        :events2="item.events2 || {}"
         @change="handleChange"
       />
     </template>
@@ -122,6 +125,7 @@
         @change="handleChange"
       />
     </template>
+    <template v-else-if="item.type === 'text'"> {{ values }}</template>
     <template v-else>
       <el-input
         v-model.trim="values"
@@ -202,7 +206,6 @@ export default class XlFormItem extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import '../../form/form-item.scss';
 ::v-deep {
   .el-date-editor,
   .el-cascader,

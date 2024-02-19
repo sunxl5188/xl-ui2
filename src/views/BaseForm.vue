@@ -6,6 +6,7 @@
       :form-item="formItem"
       :rules="rules"
       :form-attribute="formAttribute"
+      :showButton="false"
       @change="handleSaveForm"
     >
       <div slot="customItem">22</div>
@@ -39,7 +40,8 @@ export default class extends Vue {
     gdsj: '2020-12-20 08:00:20',
     jdsj: '',
     fdsj: ['2020-12-20 08:00:20', '2024-01-25 00:00:00'],
-    isgd: '1'
+    isgd: '1',
+    text: '123456'
   }
   formItem = [
     {
@@ -117,6 +119,13 @@ export default class extends Vue {
       label: '是否归档',
       prop: 'isgd',
       type: 'switch',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '文本',
+      prop: 'text',
+      type: 'text',
       formItemAttr: {},
       attribute: {}
     }

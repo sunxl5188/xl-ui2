@@ -79,7 +79,8 @@ export default class extends Vue {
   formData = {
     name: '',
     address: '',
-    classId: '1'
+    classId: '1',
+    dates: []
   }
   formItem = [
     {
@@ -100,6 +101,16 @@ export default class extends Vue {
       type: 'select',
       formItemAttr: {},
       attribute: { code: '2' }
+    },
+    {
+      label: '日期',
+      prop: 'dates',
+      type: 'date2',
+      formItemAttr: {},
+      attribute1: { placeholder: '请选择开始时间' },
+      attribute2: { placeholder: '请选择结束时间' },
+      events1: { change: this.handleDate1 },
+      events2: { change: this.handleDate2 }
     }
   ]
 
@@ -150,6 +161,12 @@ export default class extends Vue {
   //删除
   public handleDel({ id }: { id: number }): void {
     console.log(id)
+  }
+  handleDate1() {
+    console.log(11)
+  }
+  handleDate2() {
+    console.log(222)
   }
 }
 </script>
