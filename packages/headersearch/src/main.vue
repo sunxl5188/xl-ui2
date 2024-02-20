@@ -27,13 +27,7 @@
             item.span
               ? { span: item.span }
               : {
-                  ...{
-                    xs: 24,
-                    sm: 12,
-                    md: 8,
-                    lg: 6,
-                    xl: 6
-                  },
+                  ...defLayout,
                   ...layout
                 }
           "
@@ -48,20 +42,15 @@
         <el-col
           v-if="btnLast"
           v-bind="{
-            ...{
-              xs: 24,
-              sm: 12,
-              md: 8,
-              lg: 6,
-              xl: 4
-            },
+            ...defLayout,
             ...layout
           }"
-          class="pl-3"
         >
           <slot>
-            <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
-            <el-button @click="resetForm"> 清空 </el-button>
+            <div class="pl-3">
+              <el-button type="primary" @click="handleSearch"> 搜索 </el-button>
+              <el-button @click="resetForm"> 清空 </el-button>
+            </div>
           </slot>
         </el-col>
       </el-row>
@@ -76,13 +65,7 @@
                   item.span
                     ? { span: item.span }
                     : {
-                        ...{
-                          xs: 24,
-                          sm: 12,
-                          md: 8,
-                          lg: 6,
-                          xl: 6
-                        },
+                        ...defLayout,
                         ...layout
                       }
                 "
@@ -116,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import XlFormItem from '../../form-item/src/main.vue'
 import { formItemType } from '@/utils/interface'
 
@@ -176,11 +159,20 @@ export default class XlHeaderSearch extends Vue {
 
   //data==========================
   collapse = false
+  initform: any = {}
   form: any = {}
   label = {}
   colLen = 0
+  defLayout = {
+    xs: 24,
+    sm: 12,
+    md: 8,
+    lg: 6,
+    xl: 6
+  }
   // vmounted
   mounted() {
+    this.initform = Object.assign({}, this.formData)
     this.form = Object.assign({}, this.formData)
     this.getWindowWidth()
     window.addEventListener('resize', this.getWindowWidth)
@@ -250,9 +242,9 @@ export default class XlHeaderSearch extends Vue {
   public resetForm() {
     ;(this.$refs.myform as any).resetFields()
     let obj: any = {}
-    for (const key in this.formData) {
-      if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
-        const item = (this.formData as any)[key]
+    for (const key in this.initform) {
+      if (Object.prototype.hasOwnProperty.call(this.initform, key)) {
+        const item = (this.initform as any)[key]
         if (item === undefined) {
           obj[key] = ''
         } else {

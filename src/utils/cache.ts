@@ -73,19 +73,7 @@ const expireTime = (option: any, expire: number | string): number => {
 
 export default {
   install(Vue: any, option: any) {
-    let prefix = ''
-    let isEncrypt = false
-    const SECRET_KEY = option && option.isEncrypt ? option.isEncrypt : '123456'
-    const SECRET_IV = option && option.SECRET_IV ? option.SECRET_IV : '123456'
-    if (option && option.prefix) {
-      prefix = option.prefix
-    } else {
-      prefix = process.env.VUE_APP_CACHEPREFIX || 'sxl-'
-    }
-    if (option && option.isEncrypt) {
-      isEncrypt = option.isEncrypt
-    }
-
+    const prefix = option.prefix || 'xl-'
     const local = {
       set(key: string, value: valueType, expire: number | string) {
         if (!localStorage) {
@@ -93,8 +81,8 @@ export default {
         }
         if (key != null && value != null) {
           const data = {
-            value: isEncrypt
-              ? encryptData(value, SECRET_KEY, SECRET_IV)
+            value: option.isEncrypt
+              ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
               : value,
             expire: expireTime(option, expire)
           }
@@ -121,8 +109,8 @@ export default {
             value = data.value
           }
           if (value) {
-            value = isEncrypt
-              ? decryptData(value, SECRET_KEY, SECRET_IV)
+            value = option.isEncrypt
+              ? decryptData(value, option.SECRET_KEY, option.SECRET_IV)
               : value
           }
         }
@@ -153,8 +141,8 @@ export default {
         }
         if (key != null && value != null) {
           const data = {
-            value: isEncrypt
-              ? encryptData(value, SECRET_KEY, SECRET_IV)
+            value: option.isEncrypt
+              ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
               : value,
             expire: expireTime(option, expire)
           }
@@ -182,7 +170,9 @@ export default {
           }
         }
         if (value) {
-          value = isEncrypt ? decryptData(value, SECRET_KEY, SECRET_IV) : value
+          value = option.isEncrypt
+            ? decryptData(value, option.SECRET_KEY, option.SECRET_IV)
+            : value
         }
         return value
       },
