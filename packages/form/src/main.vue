@@ -53,7 +53,7 @@
             v-else
             v-model="form[item['prop']]"
             :item="item"
-            @labelname="handleSetLabel($event, item.attribute.labelname)"
+            @labelname="handleSetLabel"
           />
         </el-col>
       </template>
@@ -147,7 +147,6 @@ export default class XlForm extends Vue {
   // data ==================================
   defaultFormData: object = {}
   form: any = {}
-  label = {}
 
   // model =======================
   @Model('input', { type: Object }) readonly value!: object
@@ -155,18 +154,21 @@ export default class XlForm extends Vue {
   public handleChange(data: object) {
     return data
   }
-  // Watch ======================
   //=========================
   mounted() {
     this.defaultFormData = Object.assign({}, this.formData)
     this.form = Object.assign({}, this.formData)
   }
 
-  public handleSetLabel(
-    data: string | number | string[] | number[],
-    prop: string | undefined
-  ) {
+  public handleSetLabel({
+    prop,
+    data
+  }: {
+    prop: string
+    data: string | string[]
+  }) {
     if (prop) {
+      console.log(prop, data)
       this.$set(this.form, prop, data)
     }
   }
@@ -175,7 +177,7 @@ export default class XlForm extends Vue {
   public handleSubmit() {
     ;(this.$refs.myform as any).validate((valid: boolean, error: any) => {
       if (valid) {
-        let data = { ...this.form, ...this.label }
+        let data = Object.assign({}, this.form)
         for (const key in data) {
           if (Object.prototype.hasOwnProperty.call(data, key)) {
             const item = data[key]

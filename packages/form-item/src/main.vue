@@ -178,13 +178,7 @@ export default class XlFormItem extends Vue {
     | number
   @Emit('change')
   public handleChange(): valType {
-    if (
-      ['select', 'cascader', 'radio', 'checkbox', 'tree'].includes(
-        this.item.type
-      )
-    ) {
-      this.handleSetLabel()
-    }
+    this.handleGetLabel()
     return this.values || ''
   }
 
@@ -199,8 +193,23 @@ export default class XlFormItem extends Vue {
 
   // methods ==================
   @Emit('labelname')
-  public handleSetLabel(): valType {
-    return this.labelName
+  public handleSetLabel(): any {
+    return { prop: this.item.attribute.labelname, data: this.labelName }
+  }
+  mounted() {
+    this.handleGetLabel()
+  }
+
+  public handleGetLabel() {
+    if (
+      this.item.attribute.labelname &&
+      ['select', 'cascader', 'radio', 'checkbox', 'tree'].includes(
+        this.item.type
+      ) &&
+      this.value
+    ) {
+      this.handleSetLabel()
+    }
   }
 }
 </script>

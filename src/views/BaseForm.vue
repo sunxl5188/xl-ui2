@@ -34,7 +34,7 @@ export default class extends Vue {
     org: '111111',
     jddw: '0592',
     ifjt: '1',
-    source: ['2', '3'],
+    source: ['1'],
     kpr: '1-2',
     address: ['350000', '350200', '350211'],
     gdsj: '2020-12-20 08:00:20',
