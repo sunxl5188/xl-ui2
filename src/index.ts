@@ -45,8 +45,13 @@ const install: any = function (Vue: any, opts: any = {}): void {
   if (install.installed) return
   // 遍历注册全局组件
   components.forEach((component: any) => {
-    //console.log(component.name)
-    Vue.component(component.name, component)
+    if (component.extendOptions) {
+      //console.log(component.extendOptions.name)
+      Vue.component(component.extendOptions.name, component)
+    } else {
+      //console.log(component.name)
+      Vue.component(component.name, component)
+    }
   })
   Vue.use(cache, {
     ...{

@@ -106,7 +106,7 @@
 <script lang="ts">
 import { Component, Emit, Model, Prop, Vue } from 'vue-property-decorator'
 
-interface columnType {
+interface ColumnType {
   label: string
   prop: string
   customRender?: string
@@ -153,7 +153,7 @@ export default class XlTable extends Vue {
       return []
     }
   })
-  readonly columns!: columnType[]
+  readonly columns!: ColumnType[]
 
   @Prop({
     type: Boolean,
