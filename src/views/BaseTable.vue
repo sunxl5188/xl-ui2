@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import type { pageType } from '../../packages/table'
+import type { PageType } from '../../packages/table'
 
 @Component({
   name: 'MyXlTable',
@@ -147,7 +147,7 @@ export default class extends Vue {
     console.log('清除搜索', data)
   }
 
-  public handleChangePage(page: pageType): void {
+  public handleChangePage(page: PageType): void {
     console.log(page)
     this.handleGenerate()
   }
@@ -170,5 +170,3 @@ export default class extends Vue {
   }
 }
 </script>
-
-<style scoped></style>

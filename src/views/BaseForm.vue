@@ -34,14 +34,15 @@ export default class extends Vue {
     org: '111111',
     jddw: '0592',
     ifjt: '1',
-    source: ['2', '3'],
+    source: ['1'],
     kpr: '1-2',
     address: ['350000', '350200', '350211'],
     gdsj: '2020-12-20 08:00:20',
     jdsj: '',
     fdsj: ['2020-12-20 08:00:20', '2024-01-25 00:00:00'],
     isgd: '1',
-    text: '123456'
+    text: '123456',
+    check: ['2']
   }
   formItem = [
     {
@@ -100,6 +101,20 @@ export default class extends Vue {
       attribute: {}
     },
     {
+      label: '是否归档',
+      prop: 'isgd',
+      type: 'switch',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
+      label: '文本',
+      prop: 'text',
+      type: 'text',
+      formItemAttr: {},
+      attribute: {}
+    },
+    {
       label: '复电时间',
       prop: 'fdsj',
       type: 'date2',
@@ -116,18 +131,12 @@ export default class extends Vue {
       attribute: { labelname: 'sourceName', code: '9' }
     },
     {
-      label: '是否归档',
-      prop: 'isgd',
-      type: 'switch',
+      label: '多选框',
+      prop: 'check',
+      type: 'checkbox',
+      span: 12,
       formItemAttr: {},
-      attribute: {}
-    },
-    {
-      label: '文本',
-      prop: 'text',
-      type: 'text',
-      formItemAttr: {},
-      attribute: {}
+      attribute: { code: '2' }
     }
   ]
   formAttribute = {}

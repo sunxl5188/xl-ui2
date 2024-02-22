@@ -126,13 +126,14 @@ export default class XlCheckBox extends Vue {
   async mounted() {
     await this.$nextTick()
     if (this.code) {
-      this.getOption()
+      const data = await this.getOption()
+      this.options = data as []
     } else if (this.data) {
       this.options = this.data as []
       this.optionVal = this.options.map((o: any) => o[this.props['value']])
-      if (this.checkList.length) {
-        this.handleChange(this.checkList)
-      }
+    }
+    if (this.checkList.length) {
+      this.handleChange(this.checkList)
     }
   }
 
@@ -144,11 +145,13 @@ export default class XlCheckBox extends Vue {
 
   // 获取CODE这典
   public getOption() {
-    getCode(this.$global.codeApi + this.code)
-      .then((res: any) => {
-        this.options = res.data
-      })
-      .catch(err => err)
+    return new Promise((resolve, reject) => {
+      getCode(this.$global.codeApi + this.code)
+        .then((res: any) => {
+          resolve(res.data)
+        })
+        .catch(err => reject(err))
+    })
   }
 }
 </script>

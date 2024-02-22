@@ -94,22 +94,25 @@ export default class XlRadio extends Vue {
   async mounted() {
     await this.$nextTick()
     if (this.code) {
-      this.getOption()
+      const data = await this.getOption()
+      this.options = data as []
     } else if (this.data) {
       this.options = this.data as []
-      if (this.checkValue) {
-        this.handleChange(this.checkValue)
-      }
+    }
+    if (this.checkValue) {
+      this.handleChange(this.checkValue)
     }
   }
 
   // 获取CODE这典
   public getOption() {
-    getCode(this.$global.codeApi + this.code)
-      .then((res: any) => {
-        this.options = res.data
-      })
-      .catch(err => err)
+    return new Promise((resolve, reject) => {
+      getCode(this.$global.codeApi + this.code)
+        .then((res: any) => {
+          resolve(res.data)
+        })
+        .catch(err => reject(err))
+    })
   }
 }
 </script>
