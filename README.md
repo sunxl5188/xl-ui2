@@ -116,6 +116,7 @@ formItem: [
   :total="total"
   :currentPage.sync="currentPage"
   :pageSize.sync="pageSize"
+  :selectable="handleSelectable"
   :tableAttribute="{}"
   @change="handleChangePage"
 >
@@ -143,4 +144,19 @@ columns: [
 currentPage: 1,
 pageSize: 10,
 total: 0
+```
+
+```
+方法返回值用来决定这一行的 CheckBox radio 是否可以勾选
+handleSelectable(row: any, index: number): boolean {
+    if ([2, 5, 9].includes(index)) {
+      return true //不禁用
+    } else {
+      return false //禁用
+    }
+}
+清除选择
+handleClearSelection()
+表格重新渲染，加载数据
+handleDoLayout()
 ```

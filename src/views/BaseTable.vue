@@ -8,7 +8,12 @@
       @search="handleSearch"
       @cancel="handleCancel"
     />
+    <div class="py-4">
+      <el-button type="primary" @click="handleClearSelect">清除选择</el-button>
+      <el-button type="primary" @click="handleDoLayout">表格重新布局</el-button>
+    </div>
     <XlTable
+      ref="mytable"
       :sourceData="sourceData"
       :columns="columns"
       :currentPage.sync="currentPage"
@@ -16,6 +21,7 @@
       :table-attribute="{ 'max-height': 500 }"
       :total="total"
       selection="checkbox"
+      :selectable="handleSelectable"
       @change="handleChangePage"
       @selection-change="handleSelect"
     >
@@ -167,6 +173,22 @@ export default class extends Vue {
   }
   handleDate2(e: any) {
     console.log(e)
+  }
+  //表格重新渲染，加载数据
+  handleDoLayout() {
+    ;(this.$refs.mytable as any).handleDoLayout()
+  }
+  //清除选择
+  handleClearSelect(e: any) {
+    ;(this.$refs.mytable as any).handleClearSelection()
+  }
+  // 方法返回值用来决定这一行的 CheckBox 是否可以勾选
+  public handleSelectable(row: any, index: number): boolean {
+    if ([2, 5, 9].includes(index)) {
+      return true //不禁用
+    } else {
+      return false //禁用
+    }
   }
 }
 </script>
