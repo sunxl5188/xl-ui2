@@ -160,3 +160,26 @@ handleClearSelection()
 表格重新渲染，加载数据
 handleDoLayout()
 ```
+
+### XlForm
+
+```
+<XlForm
+ref="myform"
+:form-data="formData"
+:form-item="formItem"
+:rules="rules"
+:form-attribute="formAttribute"
+:showButton="false"
+@change="handleSaveForm" >
+<div slot="customItem">22</div>
+<template #customItem="{ row, form }">
+<el-input
+          v-model="form[row.prop]"
+          placeholder="自定义输入框"
+          clearable
+        />
+</template>
+</XlForm>
+
+```
