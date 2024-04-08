@@ -53,13 +53,13 @@ const getExpireTimes = (expireTimes: any) => {
   return _expires
 }
 
-type valueType = string | object | string[]
+type TimeType = string | number | Date | undefined
 
-const expireTime = (option: any, expire: number | string): number => {
+const expireTime = (option: any, expire: TimeType): number => {
   let _expire = 0
   if (expire) {
     _expire = getExpireTimes(expire)
-  } else if (option && option.expire) {
+  } else if (option?.expire) {
     _expire = getExpireTimes(option.expire)
   }
   return _expire
@@ -69,67 +69,70 @@ export default {
   install(Vue: any, option: any) {
     const prefix = option.prefix || 'xl-'
     const local = {
-      set(key: string, value: valueType, expire: number | string) {
+      /**
+       * 设置localStorage缓存
+       * @param key localStorage名
+       * @param value localStorage 值
+       * @param expire 过期时间
+       * @returns
+       */
+      set(key: string, value: any, expire?: TimeType) {
         if (!localStorage) {
           return
         }
-        if (key != null && value != null) {
+        if (key !== null && value !== null) {
           const data = {
             value: option.isEncrypt
               ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
-              : value,
+              : JSON.stringify(value),
             expire: expireTime(option, expire)
           }
           localStorage.setItem(prefix + key, JSON.stringify(data))
         }
       },
+      /**
+       * 获取localStorage值
+       * @param key localStorage名
+       * @returns localStorage 值
+       */
       get(key: string) {
-        if (!localStorage) {
-          return null
-        }
-        if (key == null) {
-          return null
-        }
-        let value = null
-        let data: any = localStorage.getItem(prefix + key)
-        if (data !== null) {
-          data = JSON.parse(data)
-          if (data.expire === 0) {
-            value = data.value
-          } else if (data.expire < Date.now()) {
-            value = null
-            this.remove(key)
-          } else {
-            value = data.value
-          }
-          if (value) {
-            value = option.isEncrypt
-              ? decryptData(value, option.SECRET_KEY, option.SECRET_IV)
-              : value
+        let value = ''
+        if (key && localStorage) {
+          let data: any = localStorage.getItem(prefix + key)
+          if (data !== null) {
+            data = JSON.parse(data)
+            if (data.expire === 0) {
+              value = data.value
+            } else if (data.expire < Date.now()) {
+              this.remove(key)
+            } else {
+              value = data.value
+            }
+            if (option.isEncrypt) {
+              value = decryptData(value, option.SECRET_KEY, option.SECRET_IV)
+            }
           }
         }
-        return value
+        return JSON.parse(value)
       },
-      setJSON(key: string, jsonValue: valueType, expire: number | string) {
-        if (jsonValue != null) {
-          this.set(key, jsonValue, option.expire || expire)
-        }
-      },
-      getJSON(key: string) {
-        const value = this.get(key)
-        if (value != null) {
-          return value
-        } else {
-          return null
-        }
-      },
+      /**
+       * 删除localStorage
+       * @param key localStorage名
+       */
       remove(key: string) {
         localStorage.removeItem(prefix + key)
       }
     }
 
     const session = {
-      set(key: string, value: valueType, expire: number | string) {
+      /**
+       * 设置sessionStorage
+       * @param key sessionStorage名
+       * @param value sessionStorage值
+       * @param expire 过期时间
+       * @returns void
+       */
+      set(key: string, value: any, expire?: TimeType) {
         if (!sessionStorage) {
           return
         }
@@ -137,52 +140,41 @@ export default {
           const data = {
             value: option.isEncrypt
               ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
-              : value,
+              : JSON.stringify(value),
             expire: expireTime(option, expire)
           }
           sessionStorage.setItem(prefix + key, JSON.stringify(data))
         }
       },
+      /**
+       * 获取 sessionStorage
+       * @param key sessionStorage名
+       * @returns 返回sessionStorage值得
+       */
       get(key: string) {
-        if (!sessionStorage) {
-          return null
-        }
-        if (key == null) {
-          return null
-        }
-        let value = null
-        let data: any = sessionStorage.getItem(prefix + key)
-        if (data !== null) {
-          data = JSON.parse(data)
-          if (data.expire === 0) {
-            value = data.value
-          } else if (data.expire < Date.now()) {
-            value = null
-            this.remove(key)
-          } else {
-            value = data.value
+        let value = ''
+        if (key && sessionStorage) {
+          let data: any = sessionStorage.getItem(prefix + key)
+          if (data !== null) {
+            data = JSON.parse(data)
+            if (data.expire === 0) {
+              value = data.value
+            } else if (data.expire < Date.now()) {
+              this.remove(key)
+            } else {
+              value = data.value
+            }
+          }
+          if (option.isEncrypt) {
+            value = decryptData(value, option.SECRET_KEY, option.SECRET_IV)
           }
         }
-        if (value) {
-          value = option.isEncrypt
-            ? decryptData(value, option.SECRET_KEY, option.SECRET_IV)
-            : value
-        }
-        return value
+        return JSON.parse(value)
       },
-      setJSON(key: string, jsonValue: valueType, expire: number | string) {
-        if (jsonValue != null) {
-          this.set(key, jsonValue, expire)
-        }
-      },
-      getJSON(key: string) {
-        const value = this.get(key)
-        if (value != null) {
-          return value
-        } else {
-          return null
-        }
-      },
+      /**
+       * 删除sessionStorage
+       * @param key sessionStorage名
+       */
       remove(key: string) {
         sessionStorage.removeItem(prefix + key)
       }

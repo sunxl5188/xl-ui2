@@ -1,7 +1,7 @@
 {
   "name": "xl-ui2",
-  "version": "0.1.54-beta.7",
-  "description": "基于Element-UI二次封装",
+  "version": "0.1.54-beta.8",
+  "description": "基于elementUI二次封装",
   "author": "sunxl",
   "main": "lib/index.esm.js",
   "style": "lib/index.css",
@@ -86,5 +86,8 @@
   "repository": {
     "type": "git",
     "url": "https://gitee.com/sxl5188/sxl-ui"
+  },
+  "engines": {
+    "node": ">=16.14"
   }
 }

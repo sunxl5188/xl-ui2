@@ -26,7 +26,8 @@
           type: 'selection',
           'reserve-selection': true,
           width: '55',
-          align: 'center'
+          align: 'center',
+          selectable: selectable
         }"
       />
       <el-table-column
@@ -37,10 +38,11 @@
           align: 'center'
         }"
       >
-        <template #default="{ row }">
+        <template #default="scope">
           <el-radio
             v-model="selectData"
-            :label="row"
+            :label="scope.row"
+            :disabled="!selectable(scope.row, scope.$index)"
             @change="handleSelectionChange"
           ></el-radio>
         </template>
@@ -211,6 +213,12 @@ export default class XlTable extends Vue {
   })
   readonly pageHidden!: boolean // 是否显示分页
 
+  @Prop({
+    type: Function,
+    default: undefined
+  })
+  readonly selectable!: any //方法返回值用来决定这一行的 CheckBox radio 是否可以勾选
+
   // model =======================
   @Model('change', { type: String }) readonly value!: string
 
@@ -243,6 +251,30 @@ export default class XlTable extends Vue {
    */
   public indexMethod(index: number): number {
     return index + 1 + (this.currentPage - 1) * this.pageSize // 返回表格序号
+  }
+  // 用于多选表格
+  public handleToggleRowSelection(rows: any[], selected = true): void {
+    const table = this.$refs.myTable as any
+    if (rows) {
+      console.log(rows)
+
+      rows.forEach(row => {
+        const item = this.sourceData.filter(o => o === row)
+        if (item.length) {
+          table.toggleRowSelection(row, selected)
+        }
+      })
+    } else {
+      table.clearSelection()
+    }
+  }
+  // 用于多选表格，清空用户的选择
+  public handleClearSelection(): void {
+    ;(this.$refs.myTable as any).clearSelection()
+  }
+  // 对 Table 进行重新布局
+  public handleDoLayout(): void {
+    ;(this.$refs.myTable as any).doLayout()
   }
 }
 </script>

@@ -145,7 +145,9 @@ export default class extends Vue {
     jddw: [{ required: true, message: '请选择接单单位' }],
     address: [{ required: true, message: '请选择接单单位' }]
   }
-
+  public handleSubmit(): void {
+    ;(this.$refs.myform as any).handleSubmit()
+  }
   public handleSaveForm(data: object): void {
     console.log(data)
   }
