@@ -9,7 +9,7 @@ import { encryptData, decryptData } from './cryptojs'
  */
 const getExpireTimes = (expireTimes: any) => {
   let _expires = dayjs().add(1, 'day').valueOf() // 默认一天时间
-  const reg = /^(\d{1,})(?:y|m|d|h|min|s)$/i
+  const reg = /^(\d+)(?:[ymdh])$/i
   const expireTime = expireTimes.replace(reg, '$1')
   if (expireTimes) {
     switch (expireTimes.constructor) {
@@ -17,15 +17,18 @@ const getExpireTimes = (expireTimes: any) => {
         _expires = dayjs().add(expireTimes, 'second').valueOf()
         break
       case String:
-        if (/^(?:\d{1,}(y|m|d|h|min|s))$/i.test(expireTimes.toString())) {
+        if (/^(?:\d+[ymdh])$/i.test(expireTimes.toString())) {
           // get capture type group , to lower case
           switch (
             expireTimes
               .toString()
-              .replace(/^(?:\d{1,})(y|m|d|h|min|s)$/i, '$1')
+              .replace(/^(?:\d+)[ymdh]$/i, '$1')
               .toLowerCase()
           ) {
             // Frequency sorting
+            case 'y': //年
+              _expires = dayjs().add(expireTime, 'year').valueOf()
+              break
             case 'm': //月
               _expires = dayjs().add(expireTime, 'month').valueOf()
               break
@@ -35,17 +38,8 @@ const getExpireTimes = (expireTimes: any) => {
             case 'h': //小时
               _expires = dayjs().add(expireTime, 'hour').valueOf()
               break
-            case 'min': //分钟
-              _expires = dayjs().add(expireTime, 'minute').valueOf()
-              break
-            case 's': //秒
-              _expires = dayjs().add(expireTime, 'second').valueOf()
-              break
-            case 'y': //年
-              _expires = dayjs().add(expireTime, 'year').valueOf()
-              break
             default:
-              new Error("unknown exception of 'set operation'")
+              console.error('未知异常')
           }
         } else {
           _expires = dayjs().add(expireTime, 'second').valueOf()
