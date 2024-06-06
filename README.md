@@ -55,10 +55,17 @@ this.$cache.session.remove('KEY');删除sessionStorage
   ref="search"
   :formData="formData"
   :formItem="formItem"
-  btnLast
+  :btnLast="true"
   @search="handleSearch"
   @cancel="handleCancel"
-/>
+>
+  <template #customItem="{ row, form }">
+    <!--插槽-->
+    <el-form-item :label="row.label">
+      <el-input v-model="form[row.prop]"></el-input>
+    </el-form-item>
+  </template>
+</XlHeaderSearch>
 --------------------
 绑定属性
 formData //绑定的字段
