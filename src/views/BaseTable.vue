@@ -4,16 +4,22 @@
       ref="search"
       :formData="formData"
       :formItem="formItem"
-      btnLast
+      :btnLast="true"
       @search="handleSearch"
       @cancel="handleCancel"
-    />
+    >
+      <template #customItem="{ row, form }">
+        <el-form-item :label="row.label">
+          <el-input v-model="form[row.prop]"></el-input>
+        </el-form-item>
+      </template>
+    </XlHeaderSearch>
     <div class="py-4">
       <el-button type="primary" @click="handleClearSelect">清除选择</el-button>
       <el-button type="primary" @click="handleDoLayout">表格重新布局</el-button>
     </div>
     <XlTable
-      ref="mytable"
+      ref="myTable"
       :sourceData="sourceData"
       :columns="columns"
       :currentPage.sync="currentPage"
@@ -80,13 +86,14 @@ export default class extends Vue {
   currentPage = 1
   pageSize = 10
   total = 100
-  tabkey = 0
+  tabKey = 0
 
   formData = {
     name: '',
     address: '',
     classId: '1',
-    dates: []
+    dates: [],
+    slotValue: '11'
   }
   formItem = [
     {
@@ -117,6 +124,13 @@ export default class extends Vue {
       attribute2: { placeholder: '请选择结束时间' },
       events1: { change: this.handleDate1 },
       events2: { change: this.handleDate2 }
+    },
+    {
+      label: '插槽',
+      prop: 'slotValue',
+      slotName: 'customItem',
+      formItemAttr: {},
+      attribute: {}
     }
   ]
 
@@ -174,13 +188,13 @@ export default class extends Vue {
   handleDate2(e: any) {
     console.log(e)
   }
-  //表格重新渲染，加载数据
+  //表格重新渲染，加载数据A
   handleDoLayout() {
-    ;(this.$refs.mytable as any).handleDoLayout()
+    ;(this.$refs.myTable as any).handleDoLayout()
   }
   //清除选择
   handleClearSelect(e: any) {
-    ;(this.$refs.mytable as any).handleClearSelection()
+    ;(this.$refs.myTable as any).handleClearSelection()
   }
   // 方法返回值用来决定这一行的 CheckBox 是否可以勾选
   public handleSelectable(row: any, index: number): boolean {

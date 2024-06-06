@@ -1,7 +1,7 @@
 <template>
   <div>
     <XlForm
-      ref="myform"
+      ref="myForm"
       :form-data="formData"
       :form-item="formItem"
       :rules="rules"
@@ -48,7 +48,7 @@ export default class extends Vue {
     {
       label: '插槽',
       prop: 'custom',
-      slotname: 'customItem',
+      slotName: 'customItem',
       formItemAttr: {},
       attribute: {}
     },
@@ -63,28 +63,28 @@ export default class extends Vue {
       prop: 'jddw',
       type: 'select',
       formItemAttr: {},
-      attribute: { labelname: 'jddwName', code: '1' }
+      attribute: { labelName: 'jddwName', code: '1' }
     },
     {
       label: '是否接通',
       prop: 'ifjt',
       type: 'radio',
       formItemAttr: {},
-      attribute: { labelname: 'sfjtName', code: '4' }
+      attribute: { labelName: 'sfjtName', code: '4' }
     },
     {
       label: '开票人',
       prop: 'kpr',
       type: 'tree',
       formItemAttr: {},
-      attribute: { labelname: 'kprName' }
+      attribute: { labelName: 'kprName' }
     },
     {
       label: '故障地址',
       prop: 'address',
       type: 'cascader',
       formItemAttr: {},
-      attribute: { labelname: 'addressName' }
+      attribute: { labelName: 'addressName' }
     },
     {
       label: '故障时间',
@@ -128,7 +128,7 @@ export default class extends Vue {
       span: 12,
       type: 'checkbox',
       formItemAttr: {},
-      attribute: { labelname: 'sourceName', code: '9' }
+      attribute: { labelName: 'sourceName', code: '9' }
     },
     {
       label: '多选框',
@@ -146,12 +146,10 @@ export default class extends Vue {
     address: [{ required: true, message: '请选择接单单位' }]
   }
   public handleSubmit(): void {
-    ;(this.$refs.myform as any).handleSubmit()
+    ;(this.$refs.myForm as any).handleSubmit()
   }
   public handleSaveForm(data: object): void {
     console.log(data)
   }
 }
 </script>
-
-<style scoped></style>

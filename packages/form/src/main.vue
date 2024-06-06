@@ -1,6 +1,6 @@
 <template>
   <el-form
-    ref="myform"
+    ref="myForm"
     :model="form"
     :rules="rules"
     v-bind="{
@@ -33,10 +33,10 @@
                 }
           "
         >
-          <template v-if="item.slotname">
+          <template v-if="item.slotName">
             <slot
               v-if="item.type === 'custom'"
-              :name="item.slotname"
+              :name="item.slotName"
               :row="item"
               :form="form"
             ></slot>
@@ -46,14 +46,14 @@
               :prop="item.prop"
               v-bind="item.formItemAttr"
             >
-              <slot :name="item.slotname" :row="item" :form="form"></slot>
+              <slot :name="item.slotName" :row="item" :form="form"></slot>
             </el-form-item>
           </template>
           <XlFormItem
             v-else
             v-model="form[item['prop']]"
             :item="item"
-            @labelname="handleSetLabel"
+            @labelName="handleSetLabel"
           />
         </el-col>
       </template>
@@ -75,7 +75,7 @@
  * 插槽使用
  * <template #custom="{ row, form }">
  *  <el-form-item label="自定义">
- *    <el-input vmodel="form[row.prop]" />
+ *    <el-input v-model="form[row.prop]" />
  *  </el-form-item>
  * </template>
  **/
@@ -156,8 +156,8 @@ export default class XlForm extends Vue {
   }
   //=========================
   mounted() {
-    this.defaultFormData = Object.assign({}, this.formData)
-    this.form = Object.assign({}, this.formData)
+    this.defaultFormData = { ...this.formData }
+    this.form = { ...this.formData }
   }
 
   public handleSetLabel({
@@ -175,9 +175,9 @@ export default class XlForm extends Vue {
 
   //提交数据
   public handleSubmit() {
-    ;(this.$refs.myform as any).validate((valid: boolean, error: any) => {
+    ;(this.$refs.myForm as any).validate((valid: boolean, error: any) => {
       if (valid) {
-        let data = Object.assign({}, this.form)
+        let data = { ...this.form }
         for (const key in data) {
           if (Object.prototype.hasOwnProperty.call(data, key)) {
             const item = data[key]
@@ -187,14 +187,12 @@ export default class XlForm extends Vue {
           }
         }
         this.$emit('change', data)
-      } else {
-        if ((this.formAttribute as any)['show-message'] === false) {
-          for (const key in error) {
-            if (Object.prototype.hasOwnProperty.call(error, key)) {
-              const { message } = error[key][0]
-              this.$message({ message, type: 'error' })
-              break
-            }
+      } else if ((this.formAttribute as any)['show-message'] === false) {
+        for (const key in error) {
+          if (Object.prototype.hasOwnProperty.call(error, key)) {
+            const { message } = error[key][0]
+            this.$message({ message, type: 'error' })
+            break
           }
         }
       }
@@ -202,9 +200,7 @@ export default class XlForm extends Vue {
   }
   //重置表单
   public handleResetForm() {
-    this.form = Object.assign({}, this.defaultFormData)
+    this.form = { ...this.defaultFormData }
   }
 }
 </script>
-
-<style scoped lang="scss"></style>

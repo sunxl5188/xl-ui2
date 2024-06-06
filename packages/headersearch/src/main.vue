@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form
-      ref="myform"
+      ref="myForm"
       :model="form"
       :rules="rules"
       v-bind="{
@@ -32,10 +32,16 @@
                 }
           "
         >
+          <template v-if="item.slotName">
+            <slot :name="item.slotName" :row="item" :form="form">
+              --插槽--
+            </slot>
+          </template>
           <XlFormItem
+            v-else
             v-model="form[item['prop']]"
             :item="item"
-            @labelname="handleSetLabel($event, item.attribute.labelname)"
+            @labelName="handleSetLabel($event, item.attribute.labelName)"
           />
         </el-col>
         <!-- 按钮 -->
@@ -70,10 +76,16 @@
                       }
                 "
               >
+                <template v-if="item.slotName">
+                  <slot :name="item.slotName" :row="item" :form="form">
+                    --插槽--
+                  </slot>
+                </template>
                 <XlFormItem
+                  v-else
                   v-model="form[item['prop']]"
                   :item="item"
-                  @labelname="handleSetLabel($event, item.attribute.labelname)"
+                  @labelName="handleSetLabel($event, item.attribute.labelName)"
                 />
               </el-col>
             </el-row>
@@ -159,7 +171,7 @@ export default class XlHeaderSearch extends Vue {
 
   //data==========================
   collapse = false
-  initform: any = {}
+  initForm: any = {}
   form: any = {}
   label = {}
   colLen = 0
@@ -170,10 +182,10 @@ export default class XlHeaderSearch extends Vue {
     lg: 6,
     xl: 6
   }
-  // vmounted
+
   mounted() {
-    this.initform = Object.assign({}, this.formData)
-    this.form = Object.assign({}, this.formData)
+    this.initForm = { ...this.formData }
+    this.form = { ...this.formData }
     this.getWindowWidth()
     window.addEventListener('resize', this.getWindowWidth)
     this.formItem.forEach(item => {
@@ -222,7 +234,7 @@ export default class XlHeaderSearch extends Vue {
 
   //搜索
   public handleSearch() {
-    ;(this.$refs.myform as any).validate((valid: boolean) => {
+    ;(this.$refs.myForm as any).validate((valid: boolean) => {
       if (valid) {
         let data = { ...this.form, ...this.label }
         for (const key in data) {
@@ -240,11 +252,11 @@ export default class XlHeaderSearch extends Vue {
 
   //重置表单
   public resetForm() {
-    ;(this.$refs.myform as any).resetFields()
+    ;(this.$refs.myForm as any).resetFields()
     let obj: any = {}
-    for (const key in this.initform) {
-      if (Object.prototype.hasOwnProperty.call(this.initform, key)) {
-        const item = (this.initform as any)[key]
+    for (const key in this.initForm) {
+      if (Object.prototype.hasOwnProperty.call(this.initForm, key)) {
+        const item = this.initForm[key]
         if (item === undefined) {
           obj[key] = ''
         } else {
@@ -266,5 +278,3 @@ export default class XlHeaderSearch extends Vue {
   }
 }
 </script>
-
-<style scoped lang="scss"></style>

@@ -192,9 +192,9 @@ export default class XlFormItem extends Vue {
   }
 
   // methods ==================
-  @Emit('labelname')
+  @Emit('labelName')
   public handleSetLabel(): any {
-    return { prop: this.item.attribute.labelname, data: this.labelName }
+    return { prop: this.item.attribute.labelName, data: this.labelName }
   }
   mounted() {
     setTimeout(() => {
@@ -205,7 +205,7 @@ export default class XlFormItem extends Vue {
   public handleGetLabel() {
     if (this.item.attribute && this.value) {
       if (
-        this.item.attribute.labelname &&
+        this.item.attribute.labelName &&
         ['select', 'cascader', 'radio', 'checkbox', 'tree'].includes(
           this.item.type
         )

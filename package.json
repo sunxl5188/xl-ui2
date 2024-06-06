@@ -1,6 +1,6 @@
 {
   "name": "xl-ui2",
-  "version": "0.1.54-beta.8",
+  "version": "0.1.54-beta.9",
   "description": "基于elementUI二次封装",
   "author": "sunxl",
   "main": "lib/index.esm.js",

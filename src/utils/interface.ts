@@ -3,7 +3,7 @@ export interface formItemType {
   prop: string
   prop2: string
   type: string
-  slotname: string
+  slotName: string
   span?: number
   data?: string[]
   code?: string
