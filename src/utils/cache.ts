@@ -59,17 +59,10 @@ const getExpireTimes = (expires: any): number => {
 
 type TimeType = string | number | Date | undefined
 
-export default {
+/* export default {
   install(Vue: any, option: any) {
     const prefix = option.prefix || 'xl-'
     const local = {
-      /**
-       * 设置localStorage缓存
-       * @param key localStorage名
-       * @param value localStorage 值
-       * @param expire 过期时间
-       * @returns
-       */
       set(key: string, value: any, expire?: TimeType) {
         if (!localStorage) {
           return
@@ -84,11 +77,7 @@ export default {
           localStorage.setItem(prefix + key, JSON.stringify(data))
         }
       },
-      /**
-       * 获取localStorage值
-       * @param key localStorage名
-       * @returns localStorage 值
-       */
+
       get(key: string): string | object {
         let value = ''
         if (!key && !localStorage) return ''
@@ -108,23 +97,14 @@ export default {
         }
         return value
       },
-      /**
-       * 删除localStorage
-       * @param key localStorage名
-       */
+
       remove(key: string) {
         localStorage.removeItem(prefix + key)
       }
     }
 
     const session = {
-      /**
-       * 设置sessionStorage
-       * @param key sessionStorage名
-       * @param value sessionStorage值
-       * @param expire 过期时间
-       * @returns void
-       */
+
       set(key: string, value: any, expire?: TimeType) {
         if (!sessionStorage) {
           return
@@ -139,11 +119,7 @@ export default {
           sessionStorage.setItem(prefix + key, JSON.stringify(data))
         }
       },
-      /**
-       * 获取 sessionStorage
-       * @param key sessionStorage名
-       * @returns 返回sessionStorage值得
-       */
+
       get(key: string): string | object {
         let value = ''
         if (!key && !sessionStorage) return ''
@@ -163,10 +139,7 @@ export default {
         }
         return value
       },
-      /**
-       * 删除sessionStorage
-       * @param key sessionStorage名
-       */
+
       remove(key: string) {
         sessionStorage.removeItem(prefix + key)
       }
@@ -176,5 +149,111 @@ export default {
       local: local,
       session: session
     }
+  }
+} */
+
+export class Local {
+  prefix: string //存储前缀
+  expire: string //过期时间，默认为一天
+  isEncrypt: boolean //支持加密、解密数据处理
+  SECRET_KEY: string //加密的KEY,十六位十六进制数作为密钥
+  SECRET_IV: string //加密的IV,十六位十六进制数作为密钥偏移量
+
+  constructor(opt: any) {
+    this.prefix = opt.prefix
+    this.expire = opt.expire
+    this.isEncrypt = opt.isEncrypt
+    this.SECRET_KEY = opt.SECRET_KEY
+    this.SECRET_IV = opt.SECRET_IV
+  }
+  set(key: string, value: any, expire?: TimeType) {
+    if (!localStorage) {
+      return
+    }
+    if (key !== null && value !== null) {
+      const data = {
+        value: this.isEncrypt
+          ? encryptData(value, this.SECRET_KEY, this.SECRET_IV)
+          : value,
+        expire: getExpireTimes(expire ?? this.expire)
+      }
+      localStorage.setItem(this.prefix + key, JSON.stringify(data))
+    }
+  }
+  get(key: string): string | object {
+    let value = ''
+    if (!key && !localStorage) return ''
+
+    let data: any = localStorage.getItem(this.prefix + key)
+    if (data !== null) {
+      data = JSON.parse(data)
+      if (data.expire < Date.now()) {
+        this.remove(key)
+      } else {
+        value = data.value
+      }
+      if (this.isEncrypt) {
+        value = decryptData(value, this.SECRET_KEY, this.SECRET_IV)
+        if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
+      }
+    }
+    return value
+  }
+  remove(key: string) {
+    localStorage.removeItem(this.prefix + key)
+  }
+}
+
+export class Session {
+  prefix: string //存储前缀
+  expire: string //过期时间，默认为一天
+  isEncrypt: boolean //支持加密、解密数据处理
+  SECRET_KEY: string //加密的KEY,十六位十六进制数作为密钥
+  SECRET_IV: string //加密的IV,十六位十六进制数作为密钥偏移量
+
+  constructor(opt: any) {
+    this.prefix = opt.prefix
+    this.expire = opt.expire
+    this.isEncrypt = opt.isEncrypt
+    this.SECRET_KEY = opt.SECRET_KEY
+    this.SECRET_IV = opt.SECRET_IV
+  }
+  set(key: string, value: any, expire?: TimeType) {
+    if (!sessionStorage) {
+      return
+    }
+    if (key != null && value != null) {
+      const data = {
+        value: this.isEncrypt
+          ? encryptData(value, this.SECRET_KEY, this.SECRET_IV)
+          : value,
+        expire: getExpireTimes(expire ?? this.expire)
+      }
+      sessionStorage.setItem(this.prefix + key, JSON.stringify(data))
+    }
+  }
+
+  get(key: string): string | object {
+    let value = ''
+    if (!key && !sessionStorage) return ''
+
+    let data: any = sessionStorage.getItem(this.prefix + key)
+    if (data !== null) {
+      data = JSON.parse(data)
+      if (data.expire < Date.now()) {
+        this.remove(key)
+      } else {
+        value = data.value
+      }
+    }
+    if (this.isEncrypt) {
+      value = decryptData(value, this.SECRET_KEY, this.SECRET_IV)
+      if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
+    }
+    return value
+  }
+
+  remove(key: string) {
+    sessionStorage.removeItem(this.prefix + key)
   }
 }
