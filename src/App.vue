@@ -34,13 +34,7 @@ import MyXlTable from '@/views/BaseTable.vue'
 })
 export default class App extends Vue {
   component = 'Home'
-  mounted() {
-    this.$cache.session.set('a', { a: '1', bb: 'rtryy' })
-    console.log(this.$cache.session.get('a'))
-    // setInterval(() => {
-    //   console.log(this.$cache.session.get('a'))
-    // }, 1000)
-  }
+  mounted() {}
 
   public handleSelected(e: string) {
     this.component = e
