@@ -9,21 +9,19 @@ import { encryptData, decryptData } from './cryptojs'
  */
 const getExpireTimes = (expireTimes: any) => {
   let _expires = dayjs().add(1, 'day').valueOf() // 默认一天时间
-  const reg = /^(\d+)(?:[ymdh])$/i
+  const reg = /^(\d+)(y|m|d|h|min|s)$/i
   const expireTime = expireTimes.replace(reg, '$1')
+
   if (expireTimes) {
     switch (expireTimes.constructor) {
       case Number:
         _expires = dayjs().add(expireTimes, 'second').valueOf()
         break
       case String:
-        if (/^(?:\d+[ymdh])$/i.test(expireTimes.toString())) {
+        if (/^(?:\d+(y|m|d|h|min|s))$/i.test(expireTimes)) {
           // get capture type group , to lower case
           switch (
-            expireTimes
-              .toString()
-              .replace(/^(?:\d+)[ymdh]$/i, '$1')
-              .toLowerCase()
+            expireTimes.replace(/^(?:\d+)(y|m|d|h|min|s)$/i, '$1').toLowerCase()
           ) {
             // Frequency sorting
             case 'y': //年
@@ -37,6 +35,12 @@ const getExpireTimes = (expireTimes: any) => {
               break
             case 'h': //小时
               _expires = dayjs().add(expireTime, 'hour').valueOf()
+              break
+            case 'min':
+              _expires = dayjs().add(expireTime, 'minute').valueOf()
+              break // 60
+            case 's':
+              _expires = dayjs().add(expireTime, 'second').valueOf()
               break
             default:
               console.error('未知异常')
@@ -84,7 +88,7 @@ export default {
           const data = {
             value: option.isEncrypt
               ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
-              : JSON.stringify(value),
+              : value,
             expire: expireTime(option, expire)
           }
           localStorage.setItem(prefix + key, JSON.stringify(data))
@@ -110,10 +114,11 @@ export default {
             }
             if (option.isEncrypt) {
               value = decryptData(value, option.SECRET_KEY, option.SECRET_IV)
+              if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
             }
           }
         }
-        return JSON.parse(value)
+        return value
       },
       /**
        * 删除localStorage

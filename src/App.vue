@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import Home from '@/views/Home.vue'
 import MyXlForm from '@/views/BaseForm.vue'
 import MyXlTable from '@/views/BaseTable.vue'
 
@@ -29,16 +30,17 @@ import MyXlTable from '@/views/BaseTable.vue'
 
 @Component({
   name: 'App',
-  components: { MyXlForm, MyXlTable }
+  components: { Home, MyXlForm, MyXlTable }
 })
 export default class App extends Vue {
-  component = 'MyXlForm'
-  mounted() {}
+  component = 'Home'
+  mounted() {
+    this.$cache.local.set('a', 'bbbb', 1000)
+    console.log(this.$cache.local.get('a'))
+  }
 
   public handleSelected(e: string) {
     this.component = e
   }
 }
 </script>
-
-<style lang="scss" scoped></style>
