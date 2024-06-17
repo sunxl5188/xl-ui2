@@ -9,9 +9,9 @@ pnpm install xl-ui2
 ### 组件引入
 
 ```
-import xlui2 from 'xl-ui2';
+import xlUi2 from 'xl-ui2';
 import 'xl-ui2/lib/index.css';
-Vue.use(xlui2, {
+Vue.use(xlUi2, {
   codeApi: '/index/system/index/code/'码表接口地址
   storage: { 本地缓存配置
       prefix: 'xl-', //存储前缀
@@ -28,10 +28,8 @@ Vue.use(xlui2, {
 #### localStorage
 
 ```
-this.$cache.local.set('KEY', 'OBJECT');设置值
-this.$cache.local.setJSON('KEY', 'OBJECT');设置JSON值
+this.$cache.local.set('KEY', {});设置值
 this.$cache.local.get('KEY');获取值
-this.$cache.local.getJSON('KEY');获取JSON值
 this.$cache.local.remove('KEY');删除localStorage
 
 ```
@@ -41,10 +39,8 @@ this.$cache.local.remove('KEY');删除localStorage
 #### sessionStorage
 
 ```
-this.$cache.session.set('KEY', 'OBJECT');设置值
-this.$cache.session.setJSON('KEY', 'OBJECT');设置JSON值
+this.$cache.session.set('KEY', {});设置值
 this.$cache.session.get('KEY');获取值
-this.$cache.session.getJSON('KEY');获取JSON值
 this.$cache.session.remove('KEY');删除sessionStorage
 ```
 
