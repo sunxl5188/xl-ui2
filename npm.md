@@ -16,4 +16,7 @@ npm login
 更新 npm pushlish
 删除
 npm unpublish <包名> --force
+废弃指定版本
+npm deprecate <pkg>[@<version>] <message>
+如: npm deprecate @duanjiefei/babel@1.2.0 'test deprecate'
 ```

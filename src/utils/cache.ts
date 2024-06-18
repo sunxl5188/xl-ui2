@@ -1,5 +1,13 @@
 import dayjs from 'dayjs'
 import { encryptData, decryptData } from './cryptojs'
+
+const option = {
+  prefix: 'xl-', //存储前缀
+  expire: '1d', //过期时间，默认为一天
+  isEncrypt: true, //支持加密、解密数据处理
+  SECRET_KEY: 'ccdde6e143439161', //加密的KEY,十六位十六进制数作为密钥
+  SECRET_IV: 'aabbe7e3ba84431a' //加密的IV,十六位十六进制数作为密钥偏移量
+}
 //https://blog.csdn.net/m0_46995864/article/details/125383362
 //https://blog.csdn.net/jx520/article/details/129688159
 
@@ -152,108 +160,50 @@ type TimeType = string | number | Date | undefined
   }
 } */
 
-export class Local {
-  prefix: string //存储前缀
-  expire: string //过期时间，默认为一天
-  isEncrypt: boolean //支持加密、解密数据处理
-  SECRET_KEY: string //加密的KEY,十六位十六进制数作为密钥
-  SECRET_IV: string //加密的IV,十六位十六进制数作为密钥偏移量
+const cache = {
+  local: {
+    set: (key: string, value: any, expire?: TimeType) => {
+      if (!localStorage) {
+        return
+      }
+      if (key !== null && value !== null) {
+        const data = {
+          value: option.isEncrypt
+            ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
+            : value,
+          expire: getExpireTimes(expire ?? option.expire)
+        }
+        localStorage.setItem(option.prefix + key, JSON.stringify(data))
+      }
+    },
+    get: (key: string) => {
+      let value = ''
+      if (!key && !localStorage) return ''
 
-  constructor(opt: any) {
-    this.prefix = opt.prefix
-    this.expire = opt.expire
-    this.isEncrypt = opt.isEncrypt
-    this.SECRET_KEY = opt.SECRET_KEY
-    this.SECRET_IV = opt.SECRET_IV
-  }
-  set(key: string, value: any, expire?: TimeType) {
-    if (!localStorage) {
-      return
-    }
-    if (key !== null && value !== null) {
-      const data = {
-        value: this.isEncrypt
-          ? encryptData(value, this.SECRET_KEY, this.SECRET_IV)
-          : value,
-        expire: getExpireTimes(expire ?? this.expire)
+      let data: any = localStorage.getItem(option.prefix + key)
+      if (data !== null) {
+        data = JSON.parse(data)
+        if (data.expire < Date.now()) {
+          cache.local.remove(key)
+        } else {
+          value = data.value
+        }
+        if (option.isEncrypt) {
+          value = decryptData(value, option.SECRET_KEY, option.SECRET_IV)
+          if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
+        }
       }
-      localStorage.setItem(this.prefix + key, JSON.stringify(data))
+      return value
+    },
+    remove: (key: string) => {
+      localStorage.removeItem(option.prefix + key)
     }
-  }
-  get(key: string): string | object {
-    let value = ''
-    if (!key && !localStorage) return ''
-
-    let data: any = localStorage.getItem(this.prefix + key)
-    if (data !== null) {
-      data = JSON.parse(data)
-      if (data.expire < Date.now()) {
-        this.remove(key)
-      } else {
-        value = data.value
-      }
-      if (this.isEncrypt) {
-        value = decryptData(value, this.SECRET_KEY, this.SECRET_IV)
-        if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
-      }
-    }
-    return value
-  }
-  remove(key: string) {
-    localStorage.removeItem(this.prefix + key)
+  },
+  session: {
+    set: () => {},
+    get: () => {},
+    remove: () => {}
   }
 }
 
-export class Session {
-  prefix: string //存储前缀
-  expire: string //过期时间，默认为一天
-  isEncrypt: boolean //支持加密、解密数据处理
-  SECRET_KEY: string //加密的KEY,十六位十六进制数作为密钥
-  SECRET_IV: string //加密的IV,十六位十六进制数作为密钥偏移量
-
-  constructor(opt: any) {
-    this.prefix = opt.prefix
-    this.expire = opt.expire
-    this.isEncrypt = opt.isEncrypt
-    this.SECRET_KEY = opt.SECRET_KEY
-    this.SECRET_IV = opt.SECRET_IV
-  }
-  set(key: string, value: any, expire?: TimeType) {
-    if (!sessionStorage) {
-      return
-    }
-    if (key != null && value != null) {
-      const data = {
-        value: this.isEncrypt
-          ? encryptData(value, this.SECRET_KEY, this.SECRET_IV)
-          : value,
-        expire: getExpireTimes(expire ?? this.expire)
-      }
-      sessionStorage.setItem(this.prefix + key, JSON.stringify(data))
-    }
-  }
-
-  get(key: string): string | object {
-    let value = ''
-    if (!key && !sessionStorage) return ''
-
-    let data: any = sessionStorage.getItem(this.prefix + key)
-    if (data !== null) {
-      data = JSON.parse(data)
-      if (data.expire < Date.now()) {
-        this.remove(key)
-      } else {
-        value = data.value
-      }
-    }
-    if (this.isEncrypt) {
-      value = decryptData(value, this.SECRET_KEY, this.SECRET_IV)
-      if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
-    }
-    return value
-  }
-
-  remove(key: string) {
-    sessionStorage.removeItem(this.prefix + key)
-  }
-}
+export default cache

@@ -12,7 +12,7 @@ import XlHeaderSearch from '../packages/header-search'
 import XlTreeSelect from '../packages/tree-select'
 import XlDateTime from '../packages/date-time'
 
-import { Local, Session } from './utils/cache'
+import cache from './utils/cache'
 
 import './assets/main.scss'
 
@@ -52,8 +52,7 @@ const install: any = function (Vue: any, opts: any = {}): void {
     },
     ...opts
   }
-  Vue.prototype.$cache.local = new Local(cacheOpt)
-  Vue.prototype.$cache.session = new Session(cacheOpt)
+  Vue.prototype.$cache = cache
   // 判断是否安装
   if (install.installed) return
   // 遍历注册全局组件
