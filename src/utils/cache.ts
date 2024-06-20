@@ -18,99 +18,6 @@ interface ValueType {
 }
 type TimeType = string | number | Date
 
-/* export default {
-  install(Vue: any, option: any) {
-    const prefix = option.prefix || 'xl-'
-    const local = {
-      set(key: string, value: any, expire?: TimeType) {
-        if (!localStorage) {
-          return
-        }
-        if (key !== null && value !== null) {
-          const data = {
-            value: option.isEncrypt
-              ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
-              : value,
-            expire: getExpireTimes(expire ?? option.expire)
-          }
-          localStorage.setItem(prefix + key, JSON.stringify(data))
-        }
-      },
-
-      get(key: string): string | object {
-        let value = ''
-        if (!key && !localStorage) return ''
-
-        let data: any = localStorage.getItem(prefix + key)
-        if (data !== null) {
-          data = JSON.parse(data)
-          if (data.expire < Date.now()) {
-            this.remove(key)
-          } else {
-            value = data.value
-          }
-          if (option.isEncrypt) {
-            value = decryptData(value, option.SECRET_KEY, option.SECRET_IV)
-            if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
-          }
-        }
-        return value
-      },
-
-      remove(key: string) {
-        localStorage.removeItem(prefix + key)
-      }
-    }
-
-    const session = {
-
-      set(key: string, value: any, expire?: TimeType) {
-        if (!sessionStorage) {
-          return
-        }
-        if (key != null && value != null) {
-          const data = {
-            value: option.isEncrypt
-              ? encryptData(value, option.SECRET_KEY, option.SECRET_IV)
-              : value,
-            expire: getExpireTimes(expire ?? option.expire)
-          }
-          sessionStorage.setItem(prefix + key, JSON.stringify(data))
-        }
-      },
-
-      get(key: string): string | object {
-        let value = ''
-        if (!key && !sessionStorage) return ''
-
-        let data: any = sessionStorage.getItem(prefix + key)
-        if (data !== null) {
-          data = JSON.parse(data)
-          if (data.expire < Date.now()) {
-            this.remove(key)
-          } else {
-            value = data.value
-          }
-        }
-        if (option.isEncrypt) {
-          value = decryptData(value, option.SECRET_KEY, option.SECRET_IV)
-          if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
-        }
-        return value
-      },
-
-      remove(key: string) {
-        sessionStorage.removeItem(prefix + key)
-      }
-    }
-
-    Vue.prototype.$cache = {
-      local: local,
-      session: session
-    }
-  }
-} */
-
 /**
  * 设置缓存时间
  * @param expires 缴缓存时间
@@ -166,11 +73,12 @@ const getExpireTimes = (expires: TimeType): number => {
 }
 
 export class Local {
-  prefix: string
-  expire: string
-  isEncrypt: boolean
-  SECRET_KEY: string
-  SECRET_IV: string
+  private prefix: string
+  private expire: string
+  private isEncrypt: boolean
+  private SECRET_KEY: string
+  private SECRET_IV: string
+
   constructor(params: OptionType) {
     this.prefix = params.prefix
     this.expire = params.expire
@@ -179,7 +87,7 @@ export class Local {
     this.SECRET_IV = params.SECRET_IV
   }
   public set(key: string, value: string | object, expire?: TimeType): void {
-    if (key !== null && value !== null) {
+    if (key && value) {
       const data = {
         value: this.isEncrypt
           ? encryptData(value, this.SECRET_KEY, this.SECRET_IV)
@@ -215,11 +123,12 @@ export class Local {
 }
 
 export class Session {
-  prefix: string
-  expire: string
-  isEncrypt: boolean
-  SECRET_KEY: string
-  SECRET_IV: string
+  private prefix: string
+  private expire: string
+  private isEncrypt: boolean
+  private SECRET_KEY: string
+  private SECRET_IV: string
+
   constructor(opt: OptionType) {
     this.prefix = opt.prefix
     this.expire = opt.expire
@@ -227,11 +136,39 @@ export class Session {
     this.SECRET_KEY = opt.SECRET_KEY
     this.SECRET_IV = opt.SECRET_IV
   }
-  set(): void {
-    console.log(this.expire)
+  public set(key: string, value: any, expire?: TimeType): void {
+    if (key && value) {
+      const data = {
+        value: this.isEncrypt
+          ? encryptData(value, this.SECRET_KEY, this.SECRET_IV)
+          : value,
+        expire: getExpireTimes(expire || this.expire)
+      }
+      sessionStorage.setItem(this.prefix + key, JSON.stringify(data))
+    }
   }
-  get(): string | object {
-    return ''
+
+  public get(key: string): string | object {
+    let value = ''
+    if (!key) return ''
+
+    const data: string | null = sessionStorage.getItem(this.prefix + key)
+    if (data !== null) {
+      const obj: ValueType = JSON.parse(data)
+      if (obj.expire < Date.now()) {
+        this.remove(key)
+      } else {
+        value = obj.value
+      }
+    }
+    if (this.isEncrypt) {
+      value = decryptData(value, this.SECRET_KEY, this.SECRET_IV)
+      if (/^{(.*)}$/.test(value)) value = JSON.parse(value)
+    }
+    return value
   }
-  remove(): void {}
+
+  public remove(key: string): void {
+    sessionStorage.removeItem(this.prefix + key)
+  }
 }

@@ -12,7 +12,7 @@ import XlHeaderSearch from '../packages/header-search'
 import XlTreeSelect from '../packages/tree-select'
 import XlDateTime from '../packages/date-time'
 
-import { Local } from './utils/cache'
+import { Local, Session } from './utils/cache'
 
 import './assets/main.scss'
 
@@ -40,7 +40,8 @@ const install: any = function (Vue: any, opts: any = {}): void {
     expire: '1d', //过期时间，默认为一天
     isEncrypt: true, //支持加密、解密数据处理
     SECRET_KEY: 'ccdde6e143439161', //加密的KEY,十六位十六进制数作为密钥
-    SECRET_IV: 'aabbe7e3ba84431a' //加密的IV,十六位十六进制数作为密钥偏移量
+    SECRET_IV: 'aabbe7e3ba84431a', //加密的IV,十六位十六进制数作为密钥偏移量
+    ...(opts.storage || {})
   }
 
   Vue.prototype.$global = {
@@ -49,7 +50,11 @@ const install: any = function (Vue: any, opts: any = {}): void {
     },
     ...opts
   }
-  Vue.prototype.$cache = new Local(cacheOpt)
+  Vue.prototype.$cache = {
+    local: new Local(cacheOpt),
+    session: new Session(cacheOpt)
+  }
+
   // 判断是否安装
   if (install.installed) return
   // 遍历注册全局组件
@@ -62,17 +67,6 @@ const install: any = function (Vue: any, opts: any = {}): void {
       Vue.component(component.name, component)
     }
   })
-
-  /*   Vue.use(cache, {
-    ...{
-      prefix: 'xl-', //存储前缀
-      expire: '1d', //过期时间，默认为一天
-      isEncrypt: true, //支持加密、解密数据处理
-      SECRET_KEY: 'ccdde6e143439161', //加密的KEY,十六位十六进制数作为密钥
-      SECRET_IV: 'aabbe7e3ba84431a' //加密的IV,十六位十六进制数作为密钥偏移量
-    },
-    ...opts?.storage
-  }) */
 }
 // 判断是否是直接引入文件
 if (typeof window !== 'undefined' && window.Vue) {

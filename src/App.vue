@@ -25,6 +25,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import Home from '@/views/Home.vue'
 import MyXlForm from '@/views/BaseForm.vue'
 import MyXlTable from '@/views/BaseTable.vue'
+import { Local } from '@/utils/cache'
 
 // @ is an alias to /src
 
