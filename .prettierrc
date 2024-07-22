@@ -15,7 +15,7 @@
   "requirePragma": false,
   "insertPragma": false,
   "proseWrap": "preserve",
-  "htmlWhitespaceSensitivity": "css",
+  "htmlWhitespaceSensitivity": "ignore",
   "bracketSameLine": false,
   "overrides": [
     {
